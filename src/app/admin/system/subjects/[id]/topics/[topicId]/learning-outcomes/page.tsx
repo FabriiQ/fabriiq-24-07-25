@@ -146,9 +146,9 @@ function TopicLearningOutcomesPageContent({ subjectId, topicId }: { subjectId: s
 }
 
 // Main page component that unwraps params
-export default function TopicLearningOutcomesPage({ params }: { params: { id: string; topicId: string } | Promise<{ id: string; topicId: string }> }) {
-  // Unwrap params properly using React.use() for future compatibility
-  const unwrappedParams = params instanceof Promise ? use(params) : params;
+export default function TopicLearningOutcomesPage({ params }: { params: Promise<{ id: string; topicId: string }> }) {
+  // Unwrap params properly using React.use() for Next.js 15 compatibility
+  const unwrappedParams = use(params);
   const subjectId = unwrappedParams.id;
   const topicId = unwrappedParams.topicId;
 

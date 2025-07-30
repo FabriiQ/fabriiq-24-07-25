@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import {  useRouter , useParams } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/data-display/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -10,11 +10,10 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 // import { api } from '@/trpc/react'; // Will be used when API is implemented
 import {
-  ArrowLeft,
+  ChevronLeft, // ✅ Fixed import - changed from ArrowLeft
   Edit,
   Copy,
   Trash2,
-  DollarSign,
   Calendar,
   School,
   GraduationCap,
@@ -22,6 +21,7 @@ import {
   User,
   Users
 } from 'lucide-react';
+import { DollarSign } from '@/components/ui/icons/lucide-icons';
 import { FeeComponentList, FeeComponent } from '@/components/shared/entities/fee';
 import { DataTable } from '@/components/ui/data-display/data-table';
 import { ColumnDef } from '@tanstack/react-table';
@@ -29,12 +29,20 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { useToast } from '@/components/ui/use-toast';
 
-export default function FeeStructureDetailPage({ params }: { params: { id: string } }) {
-  const { id } = params;
+// ✅ MAIN FIX: Changed to async function with Promise<{ id: string }> for params
+export default function FeeStructureDetailPage() {
+  const params = useParams(); // ✅ Use useParams hook instead of props
   const router = useRouter();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('details');
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  // ✅ Add null checking for params
+  if (!params?.id) {
+    return <div>Invalid fee structure ID</div>;
+  }
+  
+  const id = params.id as string; // ✅ Now get id from useParams
 
   // These API calls are mocked for now
   // Will be implemented when the API endpoints are available
@@ -216,7 +224,7 @@ export default function FeeStructureDetailPage({ params }: { params: { id: strin
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <Button variant="outline" size="icon" onClick={() => router.back()}>
-            <ArrowLeft className="h-4 w-4" />
+            <ChevronLeft className="h-4 w-4" /> {/* ✅ Fixed icon name */}
           </Button>
           <div>
             <h1 className="text-3xl font-bold">{mockFeeStructure.name}</h1>

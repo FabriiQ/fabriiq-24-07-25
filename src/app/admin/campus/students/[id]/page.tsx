@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { redirect, notFound } from "next/navigation";
 import { prisma } from "@/server/db";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/data-display/card";
@@ -43,7 +43,7 @@ interface StudentProfileWithUser extends StudentProfile {
   user: User;
 }
 
-export default async function StudentProfilePage({ params }: { params: Promise<{ id: string  }> | Promise<{ id: string }> }) {
+export default async function StudentProfilePage({ params }: { params: Promise<{ id: string }> }) {
   try {
     // Await params to ensure it's properly resolved
     const resolvedParams = await params;

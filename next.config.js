@@ -1,13 +1,26 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // ESLint configuration
+  eslint: {
+    ignoreDuringBuilds: false,
+    dirs: ['src', 'app'],
+  },
+  // TypeScript configuration
+  typescript: {
+    ignoreBuildErrors: false, // Keep this false to catch actual TS errors
+  },
   // Memory optimization settings
   experimental: {
     // Reduce memory usage during build
     workerThreads: false,
-    // Enable SWC minification for better performance
-    swcMinify: true,
-    // Optimize package imports to reduce bundle size
-    optimizePackageImports: ['@prisma/client', 'socket.io', 'socket.io-client'],
+    // Optimize package imports to reduce bundle size (excluding @prisma/client to avoid conflicts)
+    optimizePackageImports: ['socket.io', 'socket.io-client'],
+    // Enable View Transitions API for smooth page transitions
+    viewTransition: true,
+    // Disable CSS optimization to avoid critters dependency
+    optimizeCss: false,
+    // Maintain scroll position during navigation
+    scrollRestoration: true,
   },
 
   // Compiler optimizations
@@ -60,14 +73,6 @@ const nextConfig = {
   transpilePackages: ['@lumieducation/h5p-react', '@lumieducation/h5p-webcomponents'],
   // External packages configuration moved to root level
   serverExternalPackages: ['@prisma/client', '@prisma/engines'],
-  experimental: {
-    // Enable View Transitions API for smooth page transitions
-    viewTransition: true,
-    // Disable CSS optimization to avoid critters dependency
-    optimizeCss: false,
-    // Maintain scroll position during navigation
-    scrollRestoration: true,
-  },
   // Optimize image formats for better performance
   images: {
     formats: ['image/avif', 'image/webp'],

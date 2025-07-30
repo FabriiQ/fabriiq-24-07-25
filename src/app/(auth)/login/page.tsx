@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { LoginForm } from "@/components/ui/organisms/login-form-new";
 import { Logo } from "@/components/ui/logo";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { UserType } from "@prisma/client";
 import { logger } from "@/server/api/utils/logger";

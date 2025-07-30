@@ -7,7 +7,8 @@ import { Card } from "~/components/ui/atoms/card";
 import { Button } from "~/components/ui/atoms/button";
 import { PageHeader } from "~/components/ui/atoms/page-header";
 import { Breadcrumbs } from "~/components/ui/navigation/breadcrumbs";
-import { ArrowLeft, Save } from "lucide-react";
+import { Save } from "lucide-react";
+import { ArrowLeft } from "@/components/ui/icons/lucide-icons";
 import { useToast } from "@/components/ui/feedback/toast";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -51,12 +52,12 @@ type FormValues = z.infer<typeof contentFormSchema>;
 export default function EditContentPage({
   params,
 }: {
-  params: Promise<{ id: string; contentId: string }> | { id: string; contentId: string };
+  params: Promise<{ id: string; contentId: string }>;
 }) {
   const router = useRouter();
   const { toast } = useToast();
 
-  // Unwrap params with React.use() to avoid the warning in Next.js 15+
+  // Unwrap params with React.use() - this is correct
   const unwrappedParams = use(params);
   const subjectId = unwrappedParams.id;
   const contentId = unwrappedParams.contentId;

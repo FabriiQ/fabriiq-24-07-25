@@ -6,14 +6,18 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/data-display/card';
 import { Separator } from '@/components/ui/separator';
 import { api } from '@/trpc/react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from '@/components/ui/icons/lucide-icons';
 import { DiscountTypeForm, DiscountTypeFormValues } from '@/components/shared/entities/fee';
 import { useToast } from '@/components/ui/use-toast';
 import { LoadingSpinner } from '@/components/ui/loading';
 
 export default function EditDiscountTypePage() {
   const params = useParams();
-  const id = params.id as string;
+  const id = params?.id as string;
+
+  if (!id) {
+    return <div>Invalid discount type ID</div>;
+  }
   const router = useRouter();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -50,7 +54,7 @@ export default function EditDiscountTypePage() {
       toast({
         title: 'Error updating discount type',
         description: error.message,
-        variant: 'destructive',
+        variant: 'error',
       });
     },
   });
@@ -93,7 +97,7 @@ export default function EditDiscountTypePage() {
 
       {discountTypeLoading ? (
         <div className="flex justify-center items-center h-64">
-          <LoadingSpinner size="lg" />
+          <LoadingSpinner />
         </div>
       ) : (
         <Card>
@@ -110,7 +114,6 @@ export default function EditDiscountTypePage() {
                 isPercentage: mockDiscountType.isPercentage,
                 maxAmount: mockDiscountType.maxAmount,
                 applicableFor: mockDiscountType.applicableFor,
-                status: mockDiscountType.status,
               }}
               onSubmit={handleSubmit}
               isLoading={isSubmitting}

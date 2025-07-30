@@ -7,7 +7,8 @@ import { Card } from "~/components/ui/atoms/card";
 import { Button } from "~/components/ui/atoms/button";
 import { PageHeader } from "~/components/ui/atoms/page-header";
 import { Breadcrumbs } from "~/components/ui/navigation/breadcrumbs";
-import { ArrowLeft, Save } from "lucide-react";
+import { Save } from "lucide-react";
+import { ArrowLeft } from "@/components/ui/icons/lucide-icons";
 import { useToast } from "@/components/ui/feedback/toast";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -35,7 +36,8 @@ type FormValues = z.infer<typeof objectiveFormSchema>;
 export default function EditObjectivePage({
   params,
 }: {
-  params: Promise<{ id: string; objectiveId: string }> | { id: string; objectiveId: string };
+  params: Promise<{ id: string; objectiveId: string }>;
+
 }) {
   const router = useRouter();
   const { toast } = useToast();

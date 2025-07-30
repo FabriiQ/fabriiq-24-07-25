@@ -2,7 +2,7 @@ import React from 'react';
 import { TeacherClassPerformanceDetail } from '@/components/teacher/performance/TeacherClassPerformanceDetail';
 import { TeacherLayout } from '@/components/teacher/layout/TeacherLayout';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/server/db';
 

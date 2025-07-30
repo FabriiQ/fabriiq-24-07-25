@@ -6,7 +6,7 @@ import { z } from "zod";
 import { withRateLimit } from "../middleware/rate-limit.middleware";
 import { UserType } from "../constants";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { ensureUserPrimaryCampus } from "../utils/user-helpers";
 
 /**

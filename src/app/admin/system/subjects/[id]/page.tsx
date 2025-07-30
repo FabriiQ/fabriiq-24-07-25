@@ -30,11 +30,13 @@ import { BloomsDistributionChart } from "@/features/bloom/components/taxonomy/Bl
 import { BloomsDistribution } from "@/features/bloom/types";
 import { ThemeWrapper } from "@/features/activties/components/ui/ThemeWrapper";
 
-export default function SubjectDetailPage({
+export default function SubjectPage({
   params,
 }: {
-  params: { id: string } | Promise<{ id: string }>;
+  params: Promise<{ id: string }>;
 }) {
+  // Use React.use() to unwrap the Promise
+  const { id } = use(params);
   const router = useRouter();
   const { toast } = useToast();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);

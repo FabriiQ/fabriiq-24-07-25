@@ -228,9 +228,13 @@ function TopicDetailPageContent({ subjectId, topicId }: { subjectId: string; top
 }
 
 // Main page component that unwraps params
-export default function TopicDetailPage({ params }: { params: { id: string; topicId: string } | Promise<{ id: string; topicId: string }> }) {
-  // Unwrap params properly using React.use() for future compatibility
-  const unwrappedParams = params instanceof Promise ? use(params) : params;
+export default function TopicDetailPage({ 
+  params 
+}: { 
+  params: Promise<{ id: string; topicId: string }> 
+}) {
+  // Always use React.use() to unwrap the Promise
+  const unwrappedParams = use(params);
   const subjectId = unwrappedParams.id;
   const topicId = unwrappedParams.topicId;
 

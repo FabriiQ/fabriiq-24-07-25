@@ -11,8 +11,8 @@ import { FeeStructureForm, FeeStructureFormValues, FeeComponent } from '@/compon
 import { useToast } from '@/components/ui/use-toast';
 import { LoadingSpinner } from '@/components/ui/loading';
 
-export default function EditFeeStructurePage({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default async function EditFeeStructurePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params; // Now correctly awaited
   const router = useRouter();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);

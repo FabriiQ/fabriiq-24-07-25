@@ -14,7 +14,7 @@ import { trpcConfig } from "@/utils/trpc-config";
 import { createContext } from './context';
 import { AcademicCycleService } from "./services/academic-cycle.service";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import type { Session } from "next-auth";
 import { UserType } from "@prisma/client";
 import superjson from "superjson";

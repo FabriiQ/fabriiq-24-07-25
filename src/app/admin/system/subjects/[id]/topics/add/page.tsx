@@ -1,17 +1,18 @@
 'use client';
-import { useParams } from 'next/navigation';
-
-import React, { use } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { TopicForm } from "~/components/admin/subjects/TopicForm";
 import { Button } from "~/components/ui";
 import { ArrowLeft } from "lucide-react";
+import { use } from "react";
 
 // Create a wrapper component to handle the params
 function TopicPageContent({ id }: { id: string }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const parentTopicId = searchParams.get('parentTopicId') || undefined;
+  
+  // Fix: Handle possible null searchParams
+  const parentTopicId = searchParams?.get('parentTopicId') || undefined;
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -35,11 +36,14 @@ function TopicPageContent({ id }: { id: string }) {
   );
 }
 
-// Main page component that unwraps params
-export default function AddTopicPage({ params }: { params: { id: string } | Promise<{ id: string }> }) {
-  // Unwrap params properly using React.use() for future compatibility
-  const unwrappedParams = params instanceof Promise ? use(params) : params;
-  const id = unwrappedParams.id;
+// Main page component - FIXED TYPE DEFINITION
+export default function AddTopicPage({ 
+  params 
+}: { 
+  params: Promise<{ id: string }> 
+}) {
+  // Use React.use() to unwrap the Promise
+  const { id } = use(params);
 
   return <TopicPageContent id={id} />;
 }

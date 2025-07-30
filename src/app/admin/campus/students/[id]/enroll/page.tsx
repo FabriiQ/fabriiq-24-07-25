@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/server/db";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/data-display/card";
@@ -8,7 +8,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { EnrollmentForm } from "./enrollment-form";
 
-export default async function EnrollStudentPage(props: { params: Promise<{ id: string  }> | Promise<{ id: string }> }) {
+export default async function EnrollStudentPage(props: { params: Promise<{ id: string }> }) {
   // Await params to ensure it's properly resolved
   const resolvedParams = await props.params;
   const studentId: string = resolvedParams.id;
