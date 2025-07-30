@@ -14,12 +14,15 @@ export const metadata: Metadata = {
 };
 
 interface PageProps {
-  params: {
+  params: Promise<{
     subjectId: string;
-  };
+  
+  }>;
 }
 
 export default async function SubjectLeaderboardPage({ params }: PageProps) {
+  const { subjectId } = await params;
+
   try {
     const session = await getSessionCache();
 
@@ -44,11 +47,11 @@ export default async function SubjectLeaderboardPage({ params }: PageProps) {
 
     // Get subject details
     const subject = await prisma.subject.findUnique({
-      where: { id: params.subjectId },
+      where: { id: subjectId },
     });
 
     if (!subject) {
-      logger.error("Subject not found", { subjectId: params.subjectId });
+      logger.error("Subject not found", { subjectId: subjectId });
       return redirect("/teacher/subjects");
     }
 
@@ -58,7 +61,7 @@ export default async function SubjectLeaderboardPage({ params }: PageProps) {
     });
 
     if (!course) {
-      logger.error("Course not found for subject", { subjectId: params.subjectId, courseId: subject.courseId });
+      logger.error("Course not found for subject", { subjectId: subjectId, courseId: subject.courseId });
       return redirect("/teacher/subjects");
     }
 
@@ -71,7 +74,7 @@ export default async function SubjectLeaderboardPage({ params }: PageProps) {
     });
 
     if (!courseCampus) {
-      logger.error("Course campus not found for subject", { subjectId: params.subjectId, courseId: subject.courseId });
+      logger.error("Course campus not found for subject", { subjectId: subjectId, courseId: subject.courseId });
       return redirect("/teacher/subjects");
     }
 
@@ -92,7 +95,7 @@ export default async function SubjectLeaderboardPage({ params }: PageProps) {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href={`/teacher/subjects/${params.subjectId}`}>
+              <BreadcrumbLink href={`/teacher/subjects/${subjectId}`}>
                 {subject.name}
               </BreadcrumbLink>
             </BreadcrumbItem>
@@ -109,7 +112,7 @@ export default async function SubjectLeaderboardPage({ params }: PageProps) {
         />
 
         <TeacherSubjectLeaderboardClient
-          subjectId={params.subjectId}
+          subjectId={subjectId}
           campusId={campusId}
           subjectName={subject.name}
           campusName={campusName}

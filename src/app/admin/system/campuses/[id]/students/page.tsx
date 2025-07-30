@@ -5,14 +5,11 @@ import { prisma } from "@/server/db";
 import { CampusStudentsContent } from "./CampusStudentsContent";
 
 interface CampusStudentsPageProps {
-  params: {
-    id: string;
-  };
-  searchParams: {
-    search?: string;
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ search?: string;
     programId?: string;
     _debugInfo?: any;
-  };
+   }>;
 }
 
 export default async function CampusStudentsPage({ 

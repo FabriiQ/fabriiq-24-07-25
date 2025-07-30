@@ -43,7 +43,7 @@ interface StudentProfileWithUser extends StudentProfile {
   user: User;
 }
 
-export default async function StudentProfilePage({ params }: { params: { id: string } | Promise<{ id: string }> }) {
+export default async function StudentProfilePage({ params }: { params: Promise<{ id: string  }> | Promise<{ id: string }> }) {
   try {
     // Await params to ensure it's properly resolved
     const resolvedParams = await params;

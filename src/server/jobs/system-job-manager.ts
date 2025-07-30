@@ -37,6 +37,9 @@ export class SystemJobManager {
 
     // Register activity archiving jobs
     this.registerActivityArchivingJobs();
+
+    // Register performance optimization jobs
+    this.registerPerformanceOptimizationJobs();
   }
 
   /**
@@ -194,5 +197,105 @@ export class SystemJobManager {
     }
     
     return results;
+  }
+
+  /**
+   * Register performance optimization jobs
+   */
+  private registerPerformanceOptimizationJobs(): void {
+    // Session cleanup job (every 15 minutes)
+    const sessionCleanupJob: JobDefinition = {
+      id: 'system-session-cleanup',
+      name: 'Session Cleanup',
+      description: 'Cleans up expired NextAuth sessions and verification tokens',
+      frequency: JobFrequency.CUSTOM,
+      customInterval: 15 * 60 * 1000, // 15 minutes
+      handler: async () => {
+        logger.info('Running session cleanup');
+
+        // Clean up expired NextAuth sessions
+        const sessionResult = await this.prisma.session.deleteMany({
+          where: {
+            expires: {
+              lt: new Date()
+            }
+          }
+        });
+
+        // Clean up expired verification tokens
+        const tokenResult = await this.prisma.verificationToken.deleteMany({
+          where: {
+            expires: {
+              lt: new Date()
+            }
+          }
+        });
+
+        logger.info(`Cleaned up ${sessionResult.count} expired sessions and ${tokenResult.count} expired tokens`);
+
+        return {
+          deletedSessions: sessionResult.count,
+          deletedTokens: tokenResult.count
+        };
+      },
+      priority: 7,
+      timeout: 5 * 60 * 1000, // 5 minutes
+      retryCount: 2,
+      retryDelay: 5 * 60 * 1000, // 5 minutes
+      enabled: true
+    };
+    this.jobSystem.registerJob(sessionCleanupJob);
+
+    // Performance monitoring job (every 5 minutes)
+    const performanceMonitoringJob: JobDefinition = {
+      id: 'system-performance-monitoring',
+      name: 'Performance Monitoring',
+      description: 'Monitors system performance metrics and logs warnings',
+      frequency: JobFrequency.CUSTOM,
+      customInterval: 5 * 60 * 1000, // 5 minutes
+      handler: async () => {
+        logger.debug('Running performance monitoring');
+
+        let memoryUsageMB = 0;
+        let uptime = 0;
+
+        // Monitor memory usage (if available)
+        if (typeof process !== 'undefined') {
+          if (process.memoryUsage) {
+            const memoryUsage = process.memoryUsage();
+            memoryUsageMB = Math.round(memoryUsage.heapUsed / 1024 / 1024);
+
+            if (memoryUsageMB > 512) { // 512MB threshold
+              logger.warn(`High memory usage detected: ${memoryUsageMB}MB`);
+            }
+          }
+
+          if (process.uptime) {
+            uptime = Math.round(process.uptime());
+          }
+        }
+
+        // Monitor database connections (simplified)
+        // In a real implementation, you might query pg_stat_activity
+        const connectionCount = 0; // Placeholder
+
+        if (connectionCount > 50) { // Threshold for warning
+          logger.warn(`High database connection count: ${connectionCount}`);
+        }
+
+        return {
+          memoryUsageMB,
+          uptime,
+          connectionCount,
+          timestamp: new Date().toISOString()
+        };
+      },
+      priority: 9,
+      timeout: 2 * 60 * 1000, // 2 minutes
+      retryCount: 1,
+      retryDelay: 1 * 60 * 1000, // 1 minute
+      enabled: process.env.ENABLE_PERFORMANCE_MONITORING === 'true'
+    };
+    this.jobSystem.registerJob(performanceMonitoringJob);
   }
 }

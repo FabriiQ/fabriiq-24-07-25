@@ -6,6 +6,7 @@ import { Input } from "../atoms/input";
 import { Eye, X, User, GraduationCap, School, Home } from "lucide-react";
 import Link from "next/link";
 import { logger } from "@/server/api/utils/logger";
+import { logLoginPerformance } from "@/utils/performance-monitor";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 
@@ -87,98 +88,74 @@ export function LoginForm({ callbackUrl }: LoginFormProps) {
     setError("");
     setIsLoading(true);
 
+    const startTime = performance.now();
+
     try {
-      // Use the direct login target URL if available, otherwise use the callback URL
+      // Determine target URL based on username (for demo accounts)
       let targetUrl = directLoginTargetUrl || callbackUrl;
 
-      // If no targetUrl is provided, determine the appropriate dashboard URL
       if (!targetUrl) {
-        // Map usernames to their role-specific dashboards
-        // IMPORTANT: Always use role-specific URLs to avoid the /dashboard redirect
-        if (username === "sys_admin") {
-          targetUrl = "/admin/system";
-        } else if (username === "michael_smith" || username === "sarah_williams") {
-          targetUrl = "/admin/campus";
-        } else if (username === "alex_johnson") {
-          targetUrl = "/admin/coordinator";
-        } else if (username.includes("teacher") || username === "robert_brown" ||
-                  username === "jennifer_davis" || username === "james_anderson") {
-          targetUrl = "/teacher/dashboard";
-        } else if (username.includes("student") || username === "john_smith" ||
-                  username === "emily_johnson") {
-          targetUrl = "/student/classes";
-        } else {
-          // For unknown users, use /dashboard
-          // The redirect callback in NextAuth will handle this and redirect to the appropriate dashboard
-          targetUrl = "/dashboard";
-        }
+        // Map demo usernames directly to role-specific URLs
+        const roleUrls: Record<string, string> = {
+          "sys_admin": "/admin/system",
+          "michael_smith": "/admin/campus",
+          "sarah_williams": "/admin/campus",
+          "alex_johnson": "/admin/coordinator",
+          "robert_brown": "/teacher/dashboard",
+          "jennifer_davis": "/teacher/dashboard",
+          "james_anderson": "/teacher/dashboard",
+          "john_smith": "/student/classes",
+          "emily_johnson": "/student/classes"
+        };
+
+        targetUrl = roleUrls[username] || "/dashboard";
       }
 
-      console.log('[LOGIN-FORM] Using target URL', {
-        targetUrl,
-        directLoginTargetUrl,
-        callbackUrl
-      });
+      console.log('[LOGIN-FORM] Direct target URL', { username, targetUrl });
 
-      // Add institution context to the target URL if available and needed
-      if (institutionId && !targetUrl.includes(`/${institutionId}`) && !targetUrl.startsWith('/admin/system')) {
-        // If targetUrl starts with /, add institution after the first /
-        if (targetUrl.startsWith('/')) {
-          targetUrl = `/${institutionId}${targetUrl}`;
-        } else {
-          // Otherwise, add institution at the beginning
-          targetUrl = `/${institutionId}/${targetUrl}`;
-        }
-      }
-
-      console.log(`[AUTH] Attempting login for ${username}, will redirect to ${targetUrl} with institution: ${institutionId || 'none'}`);
-
-      // Use NextAuth's signIn directly with the target URL as the callback URL
-      // This avoids the redirect to /dashboard and the flicker
       const { signIn } = await import('next-auth/react');
-
-      // IMPORTANT: For a frictionless login experience, we need to handle the redirect differently
-      // We'll use the /dashboard URL with the bypassDashboard flag
-      // The NextAuth redirect callback and dashboard page will handle the redirect based on the user role
-
-      // We've tried using role-specific URLs directly, but it doesn't work reliably
-      // because the session might not be available yet when the redirect happens
-
-      // Instead, we'll use the /dashboard URL with the bypassDashboard flag
-      // This approach is more reliable because it doesn't depend on the session being available
-
-      // The dashboard page will handle the redirect based on the user role
-      targetUrl = "/dashboard";
-
-      console.log('[LOGIN-FORM] Using role-specific URL', { targetUrl });
-
-      // Add a special flag to the URL to indicate that we want to bypass the dashboard redirect
-      // This is handled by the redirect callback in NextAuth
-      const finalTargetUrl = targetUrl.includes('?')
-        ? `${targetUrl}&bypassDashboard=true`
-        : `${targetUrl}?bypassDashboard=true`;
-
-      console.log('[LOGIN-FORM] Final target URL with bypass flag', { finalTargetUrl });
 
       const result = await signIn('credentials', {
         username,
         password,
         redirect: true,
-        callbackUrl: finalTargetUrl
+        callbackUrl: targetUrl
       });
 
-      // This code will only run if redirect is set to false
       if (result?.error) {
-        console.error('[LOGIN-FORM] Login error:', result.error);
+        // Log failed login performance
+        logLoginPerformance({
+          username,
+          startTime,
+          endTime: performance.now(),
+          targetUrl,
+          success: false,
+          error: result.error
+        });
+
         setError(result.error || 'Authentication failed');
         setIsLoading(false);
-      } else if (result?.url) {
-        // Redirect to the URL returned by NextAuth
-        window.location.href = result.url;
+      } else {
+        // Log successful login performance
+        logLoginPerformance({
+          username,
+          startTime,
+          endTime: performance.now(),
+          targetUrl,
+          success: true
+        });
       }
-
-      return;
     } catch (error) {
+      // Log error login performance
+      logLoginPerformance({
+        username,
+        startTime,
+        endTime: performance.now(),
+        targetUrl: directLoginTargetUrl || callbackUrl || "/dashboard",
+        success: false,
+        error: String(error)
+      });
+
       console.error("Login error:", error);
       setError("An error occurred during login. Please check your network connection and try again.");
       logger.error("[AUTH] Login error", { error });
@@ -202,81 +179,66 @@ export function LoginForm({ callbackUrl }: LoginFormProps) {
     setPassword("Password123!");
     setIsLoading(true);
 
+    const startTime = performance.now();
+
     try {
       // Prepare the target URL with institution context
       let targetUrl = directLoginTargetUrl || callbackUrl;
 
       // If no targetUrl is provided, determine the appropriate dashboard URL
       if (!targetUrl) {
-        // Map usernames to their role-specific dashboards
-        // IMPORTANT: Always use role-specific URLs to avoid the /dashboard redirect
-        if (username === "sys_admin") {
-          targetUrl = "/admin/system";
-        } else if (username === "michael_smith" || username === "sarah_williams") {
-          targetUrl = "/admin/campus";
-        } else if (username === "alex_johnson") {
-          targetUrl = "/admin/coordinator";
-        } else if (username.includes("teacher") || username === "robert_brown" ||
-                  username === "jennifer_davis" || username === "james_anderson") {
-          targetUrl = "/teacher/dashboard";
-        } else if (username.includes("student") || username === "john_smith" ||
-                  username === "emily_johnson") {
-          targetUrl = "/student/classes";
-        } else {
-          // Even for unknown users, try to use a more specific URL than /dashboard
-          // to avoid the redirect flicker
-          targetUrl = "/user/profile"; // This will be handled by the redirect callback
-        }
+        // Map demo usernames directly to role-specific URLs
+        const roleUrls: Record<string, string> = {
+          "sys_admin": "/admin/system",
+          "michael_smith": "/admin/campus",
+          "sarah_williams": "/admin/campus",
+          "alex_johnson": "/admin/coordinator",
+          "robert_brown": "/teacher/dashboard",
+          "jennifer_davis": "/teacher/dashboard",
+          "james_anderson": "/teacher/dashboard",
+          "john_smith": "/student/classes",
+          "emily_johnson": "/student/classes"
+        };
+
+        targetUrl = roleUrls[username] || "/dashboard";
       }
 
-      // Add institution context to the target URL if available and needed
-      if (institutionId && !targetUrl.includes(`/${institutionId}`) && !targetUrl.startsWith('/admin/system')) {
-        // If targetUrl starts with /, add institution after the first /
-        if (targetUrl.startsWith('/')) {
-          targetUrl = `/${institutionId}${targetUrl}`;
-        } else {
-          // Otherwise, add institution at the beginning
-          targetUrl = `/${institutionId}/${targetUrl}`;
-        }
-      }
+      console.log(`[AUTH] Demo login for ${username}, redirecting to ${targetUrl}`);
 
-      console.log(`[AUTH] Attempting demo login for ${username}, will redirect to ${targetUrl}`);
-
-      // Use NextAuth's signIn directly with the target URL as the callback URL
       const { signIn } = await import('next-auth/react');
 
-      // IMPORTANT: For a frictionless login experience, we need to handle the redirect differently
-      // We'll use the /dashboard URL with the bypassDashboard flag
-      // The NextAuth redirect callback and dashboard page will handle the redirect based on the user role
-
-      // We've tried using role-specific URLs directly, but it doesn't work reliably
-      // because the session might not be available yet when the redirect happens
-
-      // Instead, we'll use the /dashboard URL with the bypassDashboard flag
-      // This approach is more reliable because it doesn't depend on the session being available
-
-      // The dashboard page will handle the redirect based on the user role
-      targetUrl = "/dashboard";
-
-      console.log('[LOGIN-FORM] Demo login using role-specific URL', { targetUrl });
-
-      // Add a special flag to the URL to indicate that we want to bypass the dashboard redirect
-      const finalTargetUrl = targetUrl.includes('?')
-        ? `${targetUrl}&bypassDashboard=true`
-        : `${targetUrl}?bypassDashboard=true`;
-
-      console.log('[LOGIN-FORM] Demo login final target URL with bypass flag', { finalTargetUrl });
-
-      await signIn('credentials', {
+      const result = await signIn('credentials', {
         username,
         password: "Password123!",
         redirect: true,
-        callbackUrl: finalTargetUrl
+        callbackUrl: targetUrl
       });
 
-      // This code will only run if redirect is set to false
+      // Log performance for demo login
+      logLoginPerformance({
+        username,
+        startTime,
+        endTime: performance.now(),
+        targetUrl,
+        success: !result?.error
+      });
+
+      if (result?.error) {
+        setError(result.error || 'Authentication failed');
+      }
+
       setIsLoading(false);
     } catch (error) {
+      // Log error performance
+      logLoginPerformance({
+        username,
+        startTime,
+        endTime: performance.now(),
+        targetUrl: directLoginTargetUrl || callbackUrl || "/dashboard",
+        success: false,
+        error: String(error)
+      });
+
       console.error('[LOGIN-FORM] Demo login error:', error);
       setError('An error occurred during login');
       setIsLoading(false);

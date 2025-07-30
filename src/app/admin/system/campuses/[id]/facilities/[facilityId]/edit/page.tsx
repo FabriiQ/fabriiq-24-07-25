@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
@@ -36,22 +36,19 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-interface EditFacilityPageProps {
-  params: {
-    id: string;
-    facilityId: string;
-  };
-}
-
-export default function EditFacilityPage({ params }: EditFacilityPageProps) {
+export default function EditFacilityPage() {
   const router = useRouter();
+  const params = useParams();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  const campusId = params.id as string;
+  const facilityId = params.facilityId as string;
+
   // Fetch facility details
   const { data: facility, isLoading: isFacilityLoading } = api.facility.getFacility.useQuery({
-    id: params.facilityId,
+    id: facilityId,
   });
 
   const form = useForm<FormValues>({
@@ -73,7 +70,7 @@ export default function EditFacilityPage({ params }: EditFacilityPageProps) {
         title: "Success",
         description: "Facility updated successfully",
       });
-      router.push(`/admin/system/campuses/${params.id}/facilities`);
+      router.push(`/admin/system/campuses/${campusId}/facilities`);
     },
     onError: (error: TRPCClientErrorLike<any>) => {
       toast({
@@ -88,7 +85,7 @@ export default function EditFacilityPage({ params }: EditFacilityPageProps) {
     setIsSubmitting(true);
     try {
       await updateFacility.mutateAsync({
-        id: params.facilityId,
+        id: facilityId,
         ...data,
       });
     } finally {
@@ -110,7 +107,7 @@ export default function EditFacilityPage({ params }: EditFacilityPageProps) {
         title="Edit Facility"
         description="Update facility details"
         action={
-          <Link href={`/admin/system/campuses/${params.id}/facilities`}>
+          <Link href={`/admin/system/campuses/${campusId}/facilities`}>
             <Button variant="outline">
               <ArrowLeftIcon className="mr-2 h-4 w-4" />
               Back

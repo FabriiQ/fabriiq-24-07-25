@@ -1,6 +1,41 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  webpack: (config, { isServer }) => {
+  // Memory optimization settings
+  experimental: {
+    // Reduce memory usage during build
+    workerThreads: false,
+    // Enable SWC minification for better performance
+    swcMinify: true,
+    // Optimize package imports to reduce bundle size
+    optimizePackageImports: ['@prisma/client', 'socket.io', 'socket.io-client'],
+  },
+
+  // Compiler optimizations
+  compiler: {
+    // Remove console logs in production
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+
+  webpack: (config, { isServer, dev }) => {
+    // Memory optimization for webpack
+    if (!dev) {
+      config.optimization = {
+        ...config.optimization,
+        // Reduce memory usage during build
+        splitChunks: {
+          chunks: 'all',
+          cacheGroups: {
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name: 'vendors',
+              chunks: 'all',
+              maxSize: 244000, // 244KB chunks to reduce memory usage
+            },
+          },
+        },
+      };
+    }
+
     // Handle binary modules used by H5P
     if (isServer) {
       // Add all @node-rs/crc32 platform-specific binaries to externals

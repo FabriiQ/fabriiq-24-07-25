@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
@@ -54,20 +54,16 @@ interface FieldProps {
   };
 }
 
-interface NewFacilityPageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default function NewFacilityPage({ params }: NewFacilityPageProps) {
+export default function NewFacilityPage() {
   const router = useRouter();
+  const params = useParams();
   const { toast } = useToast();
+  const campusId = params.id as string;
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Fetch campus details
   const { data: campus, isLoading: campusLoading } = api.campus.getById.useQuery({
-    id: params.id,
+    id: campusId,
   });
 
   // Initialize form with default values
@@ -90,7 +86,7 @@ export default function NewFacilityPage({ params }: NewFacilityPageProps) {
         title: 'Facility created',
         description: 'The facility has been successfully created',
       });
-      router.push(`/admin/system/campuses/${params.id}/facilities`);
+      router.push(`/admin/system/campuses/${campusId}/facilities`);
       router.refresh();
     },
     onError: (error) => {
@@ -107,7 +103,7 @@ export default function NewFacilityPage({ params }: NewFacilityPageProps) {
     setIsSubmitting(true);
     createFacility.mutate({
       ...values,
-      campusId: params.id,
+      campusId: campusId,
       resources: values.resources || {},
     });
   };
@@ -167,7 +163,7 @@ export default function NewFacilityPage({ params }: NewFacilityPageProps) {
   return (
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex items-center space-x-4">
-        <Link href={`/admin/system/campuses/${params.id}/facilities`}>
+        <Link href={`/admin/system/campuses/${campusId}/facilities`}>
           <Button variant="outline" size="icon">
             <ArrowLeftIcon className="h-4 w-4" />
           </Button>

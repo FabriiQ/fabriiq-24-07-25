@@ -10,9 +10,9 @@ import { Edit } from "lucide-react";
 import { ClassViewClient } from "./components/ClassViewClient";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 // Define the type for assigned teachers
@@ -25,7 +25,7 @@ type AssignedTeacher = {
 
 export default async function CampusClassPage({ params }: PageProps) {
   // Get the ID from params - ensure it's properly typed
-  const { id } = params;
+  const { id } = await params;
 
   const session = await getSessionCache();
 
@@ -166,10 +166,7 @@ export default async function CampusClassPage({ params }: PageProps) {
 
     // Schedule details will be loaded separately
 
-    // Get assignments count for this class
-    const assessmentsCount = await prisma.assessment.count({
-      where: { classId: classData.id }
-    });
+
 
     // Get attendance records count
     const attendanceRecordsCount = await prisma.attendance.count({
@@ -206,7 +203,6 @@ export default async function CampusClassPage({ params }: PageProps) {
           courseCampus={courseCampus}
           primaryTeacherName={primaryTeacherName}
           assignedTeachers={assignedTeachers}
-          assessmentsCount={assessmentsCount}
           attendanceRecordsCount={attendanceRecordsCount}
           gradebook={gradebook}
           className={classData.name}

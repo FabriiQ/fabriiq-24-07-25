@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default async function CreateActivityPage({
   params,
 }: {
-  params: { classId: string };
+  params: Promise<{ classId: string  }>;
 }) {
   const { classId } = await params;
   const session = await getSessionCache();

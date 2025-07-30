@@ -43,16 +43,13 @@ export const createInnerTRPCContext = (opts: CreateContextOptions) => {
 /**
  * Gets the user session from the request
  * This is now replaced by the session-cache utility for server components
+ * @deprecated Use getSessionCache() from @/utils/session-cache instead
  */
 export const getUserSession = async (req?: Request): Promise<Session | null> => {
   try {
-    // Use Auth.js getServerSession to get the session
-    // No need to check for req parameter as getServerSession can work without it
-    const session = await getServerSession(authOptions);
-
-    // IMPORTANT: Access user properties via session.user.id, not session.userId
-    // The Session type is defined in src/types/next-auth.d.ts
-    return session;
+    // Import the cached session utility
+    const { getSessionCache } = await import('@/utils/session-cache');
+    return await getSessionCache();
   } catch (error) {
     logger.error('Error getting user session', { error });
     return null;
@@ -97,7 +94,7 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
       code: error.code,
       message: error.message,
       path: shape.data?.path,
-      input: shape.data?.inputValidation ? 'Invalid input' : shape.data?.httpStatus ? 'HTTP error' : 'Unknown error',
+      input: error.code === 'BAD_REQUEST' ? 'Invalid input' : error.code === 'INTERNAL_SERVER_ERROR' ? 'Server error' : 'Unknown error',
       stack: error.stack,
     });
 

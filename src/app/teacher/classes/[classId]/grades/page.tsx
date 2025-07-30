@@ -14,9 +14,9 @@ import { Download, Plus } from "lucide-react";
 export default async function ClassGradesPage({
   params,
 }: {
-  params: { classId: string };
+  params: Promise<{ classId: string  }>;
 }) {
-  const { classId } = params;
+  const { classId  } = await params;
   try {
     const session = await getSessionCache();
 

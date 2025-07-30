@@ -11,16 +11,16 @@ import { prisma } from "@/server/db";
 import { formatDate } from "@/utils/format";
 
 interface FacilityDetailPageProps {
-  params: {
+  params: Promise<{
     id: string;
     facilityId: string;
-  };
+  
+  }>;
 }
 
 export default async function FacilityDetailPage({ params }: FacilityDetailPageProps) {
-  // Ensure params is fully resolved
-  const resolvedParams = await Promise.resolve(params);
-  const { id, facilityId } = resolvedParams;
+  const { id: campusId, facilityId } = await params;
+
   const session = await getSessionCache();
 
   if (!session?.user?.id) {
@@ -43,7 +43,7 @@ export default async function FacilityDetailPage({ params }: FacilityDetailPageP
 
   // Get campus details
   const campus = await prisma.campus.findUnique({
-    where: { id },
+    where: { id: campusId },
     include: {
       institution: {
         select: {
@@ -73,7 +73,7 @@ export default async function FacilityDetailPage({ params }: FacilityDetailPageP
     },
   });
 
-  if (!facility || facility.campusId !== id) {
+  if (!facility || facility.campusId !== campusId) {
     notFound();
   }
 
@@ -143,7 +143,7 @@ export default async function FacilityDetailPage({ params }: FacilityDetailPageP
   return (
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex items-center space-x-4">
-        <Link href={`/admin/system/campuses/${params.id}/facilities`}>
+        <Link href={`/admin/system/campuses/${id}/facilities`}>
           <Button variant="outline" size="icon">
             <ArrowLeftIcon className="h-4 w-4" />
           </Button>
@@ -209,7 +209,7 @@ export default async function FacilityDetailPage({ params }: FacilityDetailPageP
           </div>
         </CardContent>
         <CardFooter className="flex justify-end">
-          <Link href={`/admin/system/campuses/${params.id}/facilities/${params.facilityId}/edit`}>
+          <Link href={`/admin/system/campuses/${id}/facilities/${facilityId}/edit`}>
             <Button>
               <PencilIcon className="mr-2 h-4 w-4" />
               Edit Facility
@@ -221,7 +221,7 @@ export default async function FacilityDetailPage({ params }: FacilityDetailPageP
       {/* Classes Section */}
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Classes Using This Facility</h2>
-        <Link href={`/admin/system/campuses/${params.id}/classes?facilityId=${params.facilityId}`}>
+        <Link href={`/admin/system/campuses/${id}/classes?facilityId=${facilityId}`}>
           <Button variant="outline">
             View All Classes
           </Button>

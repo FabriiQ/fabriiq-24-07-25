@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default async function StudentActivityDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string  }>;
 }) {
   // Get the activity ID from params - make sure to await params in NextJS dynamic routes
   const id = params.id;

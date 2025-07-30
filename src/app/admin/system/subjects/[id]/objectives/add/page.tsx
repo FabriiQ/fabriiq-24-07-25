@@ -1,4 +1,5 @@
 "use client";
+import { useParams } from 'next/navigation';
 
 import { useRouter } from "next/navigation";
 import { Card } from "~/components/ui/atoms/card";
@@ -31,14 +32,11 @@ const objectiveFormSchema = z.object({
 
 type FormValues = z.infer<typeof objectiveFormSchema>;
 
-export default function AddObjectivePage({
-  params,
-}: {
-  params: { id: string };
-}) {
+export default function AddObjectivePage() {
+  const params = useParams();
   const router = useRouter();
   const { toast } = useToast();
-  const subjectId = params.id;
+  const subjectId = (params.id as string);
   
   // Fetch subject details for breadcrumb
   const { data: subject } = api.subject.getById.useQuery({

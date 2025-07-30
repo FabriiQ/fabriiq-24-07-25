@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default async function AdminLessonPlanReviewPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string  }>;
 }) {
   const session = await getSessionCache();
 

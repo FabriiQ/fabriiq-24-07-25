@@ -1,12 +1,27 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { prisma } from "@/server/db";
+import { prisma, cachedQueries } from "@/server/db";
 import { compare } from "bcryptjs";
 import { UserType } from "@prisma/client";
 import { logger } from "@/server/api/utils/logger";
 import { JWT } from "next-auth/jwt";
 import { Session } from "next-auth";
 import { ensureUserPrimaryCampus } from "@/server/api/utils/user-helpers";
+
+// Advanced session caching with LRU
+import { LRUCache } from 'lru-cache';
+
+// Session cache with 10-minute TTL for production performance
+const sessionCache = new LRUCache<string, any>({
+  max: 5000, // Support 5000 concurrent sessions
+  ttl: 10 * 60 * 1000, // 10 minutes
+});
+
+// JWT token cache to avoid repeated database lookups
+const jwtCache = new LRUCache<string, any>({
+  max: 10000,
+  ttl: 15 * 60 * 1000, // 15 minutes
+});
 
 /**
  * NextAuth configuration
@@ -83,11 +98,23 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user }: { token: JWT; user: any }) {
+      // Use JWT cache to avoid repeated processing
+      const cacheKey = `jwt:${token.sub}:${Date.now() - (Date.now() % (5 * 60 * 1000))}`;
+      const cached = jwtCache.get(cacheKey);
+      if (cached && !user) {
+        return cached;
+      }
+
       // Add user type to JWT token
       if (user) {
         token.userType = user.userType;
         token.username = user.username;
         token.primaryCampusId = user.primaryCampusId;
+        token.name = user.name;
+        token.email = user.email;
+        token.status = user.status;
+        token.institutionId = user.institutionId;
+
         logger.debug("[AUTH] JWT token created", { userId: user.id, userType: user.userType });
 
         // If this is a new sign-in, ensure the user has a primary campus ID
@@ -108,65 +135,72 @@ export const authOptions: NextAuthOptions = {
           logger.error("[AUTH] Error ensuring primary campus ID for JWT", { error, userId: user.id });
         }
       }
+
+      // Cache the token for 5 minutes
+      jwtCache.set(cacheKey, token);
       return token;
     },
     async session({ session, token }: { session: Session; token: JWT }) {
-      // Add user type to session
-      if (session.user) {
-        session.user.id = token.sub as string;
-        session.user.userType = token.userType as UserType;
-        session.user.username = token.username as string;
+      if (!token || !session.user) return session;
 
-        // Add primaryCampusId from token if available
-        if (token.primaryCampusId) {
-          (session.user as any).primaryCampusId = token.primaryCampusId;
-        }
+      // Use session cache to avoid repeated processing
+      const sessionCacheKey = `session:${token.sub}:${Date.now() - (Date.now() % (2 * 60 * 1000))}`;
+      const cachedSession = sessionCache.get(sessionCacheKey);
+      if (cachedSession) {
+        return cachedSession;
+      }
 
-        logger.debug("[AUTH] Session created", {
-          userId: session.user.id,
-          userType: session.user.userType,
-          hasPrimaryCampus: !!token.primaryCampusId
-        });
+      // Build session from JWT token data (no DB calls needed for most data)
+      session.user.id = token.sub as string;
+      session.user.userType = token.userType as UserType;
+      session.user.username = token.username as string;
+      session.user.name = token.name as string;
+      session.user.email = token.email as string;
+      (session.user as any).primaryCampusId = token.primaryCampusId as string;
+      (session.user as any).status = token.status as string;
+      (session.user as any).institutionId = token.institutionId as string;
 
-        // Add additional session data if needed
+      logger.debug("[AUTH] Session created", {
+        userId: session.user.id,
+        userType: session.user.userType,
+        hasPrimaryCampus: !!session.user.primaryCampusId
+      });
+
+      // Only fetch fresh user data if token is older than 10 minutes (reduce DB calls)
+      const tokenAge = Date.now() - ((token.iat as number) || 0) * 1000;
+      if (tokenAge > 10 * 60 * 1000) {
         try {
-          const user = await prisma.user.findUnique({
-            where: { id: session.user.id },
-            select: {
-              primaryCampusId: true,
-              status: true
-            }
-          });
+          const userData = await cachedQueries.getUserWithCache(token.sub as string);
+          if (userData && userData.status !== token.status) {
+            // Update session with fresh status only if changed
+            (session.user as any).status = userData.status;
+            (session.user as any).primaryCampusId = userData.primaryCampusId;
+            (session.user as any).institutionId = userData.institutionId;
 
-          if (user) {
-            // Add primaryCampusId to session user if not already set from token
-            if (!token.primaryCampusId && user.primaryCampusId) {
-              (session.user as any).primaryCampusId = user.primaryCampusId;
-            }
-
-            // If user is inactive, log warning but don't invalidate session here
-            // Session invalidation should be handled in middleware or API routes
-            if (user.status !== "ACTIVE") {
+            if (userData.status !== "ACTIVE") {
               logger.warn("[AUTH] Inactive user accessed session", {
                 userId: session.user.id,
                 userType: session.user.userType,
-                status: user.status
+                status: userData.status
               });
             }
           }
         } catch (error) {
-          logger.error("[AUTH] Error fetching additional session data", { error });
+          logger.error("[AUTH] Error fetching cached session data", { error });
         }
       }
+
+      // Cache the session for 2 minutes
+      sessionCache.set(sessionCacheKey, session);
       return session;
     },
     /**
-     * Custom redirect callback for NextAuth
+     * Optimized redirect callback for NextAuth
      *
-     * This function handles redirects after authentication. It's designed to:
-     * 1. Directly use role-specific URLs without intermediate redirects
-     * 2. Handle the /dashboard URL by redirecting to the appropriate role-specific dashboard
-     * 3. Support a special bypassDashboard flag to avoid intermediate redirects
+     * This simplified function handles redirects after authentication:
+     * 1. Uses role-specific URLs directly when provided
+     * 2. Redirects to /dashboard for role determination when needed
+     * 3. Eliminates complex session checking that causes delays
      *
      * @param params The redirect parameters from NextAuth
      * @returns The URL to redirect to
@@ -174,227 +208,36 @@ export const authOptions: NextAuthOptions = {
     async redirect(params: { url: string; baseUrl: string }) {
       const { url, baseUrl } = params;
 
+      logger.debug("[AUTH] Redirect callback", { url, baseUrl });
+
       // If the URL is already absolute, return it as is
       if (url.startsWith("http")) return url;
 
-      // Log the redirect attempt for debugging
-      logger.debug("[AUTH] Redirect callback called", { url, baseUrl });
-
-      // If the URL is a relative path, process it
+      // For relative URLs starting with /
       if (url.startsWith("/")) {
-        // DIRECT ROLE URL CHECK: Check if this is already a role-specific URL
+        // If it's already a role-specific URL, use it directly
         const isRoleSpecificUrl =
           url.startsWith("/teacher/") ||
           url.startsWith("/student/") ||
           url.startsWith("/admin/") ||
           url.startsWith("/parent/");
 
-        // BYPASS FLAG CHECK: Check if the URL has the bypass flag
-        const hasBypassFlag = url.includes("bypassDashboard=true");
-
-        logger.debug("[AUTH] URL analysis", { url, isRoleSpecificUrl, hasBypassFlag });
-
-        // CASE 1: If it's a role-specific URL or has the bypass flag, use it directly
-        if (isRoleSpecificUrl || hasBypassFlag) {
-          // Clean up the URL by removing the bypass flag if present
-          let cleanUrl = url;
-          if (hasBypassFlag) {
-            // Remove the bypass flag
-            cleanUrl = url.replace(/[?&]bypassDashboard=true/, '');
-
-            // Fix the URL if we removed a query parameter
-            if (cleanUrl.includes('?') && cleanUrl.includes('&') && !cleanUrl.includes('?&')) {
-              cleanUrl = cleanUrl.replace('&', '?');
-            }
-
-            // If we removed the only query parameter, remove the trailing question mark
-            if (cleanUrl.endsWith('?')) {
-              cleanUrl = cleanUrl.substring(0, cleanUrl.length - 1);
-            }
-
-            logger.debug("[AUTH] Cleaned URL by removing bypass flag", {
-              originalUrl: url,
-              cleanUrl
-            });
-          }
-
-          // If the URL is /dashboard with bypass flag, we need to get the user role
-          if (cleanUrl === "/dashboard") {
-            // We'll handle this in the next case
-            logger.debug("[AUTH] Dashboard with bypass flag, will determine role-specific URL");
-          } else {
-            // For all other role-specific URLs, use them directly
-            logger.debug("[AUTH] Using role-specific URL directly", { cleanUrl });
-            return `${baseUrl}${cleanUrl}`;
-          }
+        if (isRoleSpecificUrl) {
+          logger.debug("[AUTH] Using role-specific URL directly", { url });
+          return `${baseUrl}${url}`;
         }
 
-        // CASE 2: Handle /dashboard or / URLs by redirecting to role-specific dashboard
-        if (url === "/dashboard" || url === "/" || (url.includes("/dashboard") && hasBypassFlag)) {
-          try {
-            // IMPORTANT: For login redirects, we need to use a different approach
-            // The session might not be available yet, so we need to check the credentials
-
-            // If this is a login redirect with bypassDashboard flag, we need to extract the username
-            // from the request and determine the role-specific URL based on that
-            if (hasBypassFlag) {
-              // Get the username from the request cookies or headers
-              // This is a workaround since we can't access the credentials directly
-
-              // For now, let's use a hardcoded mapping for demo accounts
-              // In a production environment, you would need to implement a more robust solution
-
-              // Extract username from cookies if available
-              const cookies = await import('next/headers').then(mod => mod.cookies());
-              const sessionToken = cookies.get('next-auth.session-token')?.value;
-
-              if (sessionToken) {
-                logger.debug("[AUTH] Found session token in cookies", { hasToken: !!sessionToken });
-
-                try {
-                  // Try to get the user from the database using the session token
-                  // This is a workaround since we can't directly access the user from the session token
-                  const { PrismaClient } = await import("@prisma/client");
-                  const prisma = new PrismaClient();
-
-                  try {
-                    // First, find the session by token
-                    // In our schema, the session token is stored in the 'id' field
-                    const dbSession = await prisma.session.findUnique({
-                      where: {
-                        id: sessionToken
-                      }
-                    });
-
-                    if (dbSession?.userId) {
-                      // Now get the user with the userId from the session
-                      const user = await prisma.user.findUnique({
-                        where: { id: dbSession.userId }
-                      });
-
-                      if (user?.userType) {
-                        const userType = user.userType;
-                        logger.debug("[AUTH] Got user type from database user", { userType });
-
-                      // Determine the correct dashboard URL based on user role
-                      let redirectUrl: string;
-                      switch (userType) {
-                        case 'SYSTEM_ADMIN':
-                          redirectUrl = "/admin/system";
-                          break;
-                        case 'CAMPUS_ADMIN':
-                          redirectUrl = "/admin/campus";
-                          break;
-                        case 'CAMPUS_COORDINATOR':
-                        case 'COORDINATOR':
-                          redirectUrl = "/admin/coordinator";
-                          break;
-                        case 'CAMPUS_TEACHER':
-                        case 'TEACHER':
-                          redirectUrl = "/teacher/dashboard";
-                          break;
-                        case 'CAMPUS_STUDENT':
-                        case 'STUDENT':
-                          redirectUrl = "/student/classes";
-                          break;
-                        case 'CAMPUS_PARENT':
-                          redirectUrl = "/parent/dashboard";
-                          break;
-                        default:
-                          // For unknown user types, use the dashboard page
-                          // The dashboard page will handle the redirect based on the user role
-                          redirectUrl = "/dashboard";
-                      }
-
-                      logger.debug("[AUTH] Redirecting to role-specific dashboard from database user", {
-                        userType,
-                        redirectUrl: `${baseUrl}${redirectUrl}`
-                      });
-
-                      // Close the Prisma client before returning
-                      await prisma.$disconnect();
-                      return `${baseUrl}${redirectUrl}`;
-                    }
-                  }
-                  } finally {
-                    // Make sure to disconnect the Prisma client even if there's an error
-                    await prisma.$disconnect();
-                  }
-                } catch (dbError) {
-                  logger.error("[AUTH] Error getting user from database", { dbError });
-                }
-              }
-
-              // If we couldn't get the user type from the database, redirect to the dashboard page
-              // The dashboard page will handle the redirect based on the user role
-              logger.debug("[AUTH] Redirecting to dashboard page for role-based redirect");
-              return `${baseUrl}/dashboard`;
-            }
-
-            // If this is not a login redirect with bypassDashboard flag, try to get the session from the API
-            const session = await fetch(`${baseUrl}/api/auth/session`).then(res => res.json());
-
-            if (session?.user?.userType) {
-              const userType = session.user.userType;
-              logger.debug("[AUTH] Got user type from session API", { userType });
-
-              // Determine the correct dashboard URL based on user role
-              let redirectUrl: string;
-              switch (userType) {
-                case 'SYSTEM_ADMIN':
-                  redirectUrl = "/admin/system";
-                  break;
-                case 'CAMPUS_ADMIN':
-                  redirectUrl = "/admin/campus";
-                  break;
-                case 'CAMPUS_COORDINATOR':
-                case 'COORDINATOR':
-                  redirectUrl = "/admin/coordinator";
-                  break;
-                case 'CAMPUS_TEACHER':
-                case 'TEACHER':
-                  redirectUrl = "/teacher/dashboard";
-                  break;
-                case 'CAMPUS_STUDENT':
-                case 'STUDENT':
-                  redirectUrl = "/student/classes";
-                  break;
-                case 'CAMPUS_PARENT':
-                  redirectUrl = "/parent/dashboard";
-                  break;
-                default:
-                  // For unknown user types, use the dashboard page
-                  // The dashboard page will handle the redirect based on the user role
-                  redirectUrl = "/dashboard";
-              }
-
-              logger.debug("[AUTH] Redirecting to role-specific dashboard from session API", {
-                userType,
-                redirectUrl: `${baseUrl}${redirectUrl}`
-              });
-
-              return `${baseUrl}${redirectUrl}`;
-            } else {
-              // If we don't have a user type, redirect to the dashboard page
-              // The dashboard page will handle the redirect based on the user role
-              logger.debug("[AUTH] No user type in session API, redirecting to dashboard page");
-              return `${baseUrl}/dashboard`;
-            }
-          } catch (error) {
-            logger.error("[AUTH] Error in redirect callback", { error });
-            // If there's an error, redirect to the dashboard page
-            // The dashboard page will handle the redirect based on the user role
-            return `${baseUrl}/dashboard`;
-          }
+        // For /dashboard or root, always redirect to /dashboard
+        // Let the dashboard page handle the role-based redirect
+        if (url === "/" || url.startsWith("/dashboard")) {
+          logger.debug("[AUTH] Redirecting to dashboard for role determination");
+          return `${baseUrl}/dashboard`;
         }
-
-        // CASE 3: For all other URLs, just append to the base URL
-        logger.debug("[AUTH] Using default URL", { url });
-        return `${baseUrl}${url}`;
       }
 
-      // Default to the base URL
-      return baseUrl;
+      // Default fallback
+      return `${baseUrl}/dashboard`;
+
     }
   },
   pages: {

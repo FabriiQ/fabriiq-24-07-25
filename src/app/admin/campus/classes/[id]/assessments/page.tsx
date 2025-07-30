@@ -9,8 +9,8 @@ export const metadata: Metadata = {
   description: 'Manage assessments for this class',
 };
 
-export default async function ClassAssessmentsPage({ params }: { params: { id: string } }) {
-  const classId = params.id;
+export default async function ClassAssessmentsPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id: classId } = await params;
 
   try {
     // Fetch class details directly from the database

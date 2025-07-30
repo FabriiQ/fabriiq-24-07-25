@@ -1,7 +1,7 @@
 'use client';
 
 import { use } from 'react';
-import { useRouter } from 'next/navigation';
+import {  useRouter , useParams } from 'next/navigation';
 import { api } from '@/trpc/react';
 import { PageHeader } from '@/components/ui/layout/page-header';
 import { Card } from '@/components/ui/data-display/card';

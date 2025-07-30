@@ -53,11 +53,11 @@ export function getOfflineData(
   try {
     switch (storeName) {
       case 'courseAnalytics':
-        return db.getAnalytics(id, cacheKey);
+        return db.getAnalytics('course', id, cacheKey);
       case 'programAnalytics':
-        return db.getAnalytics(id, cacheKey);
+        return db.getAnalytics('program', id, cacheKey);
       case 'classAnalytics':
-        return db.getAnalytics(id, cacheKey);
+        return db.getAnalytics('class', id, cacheKey);
       case 'teachers':
         return db.getTeacher(id);
       case 'students':
@@ -88,11 +88,11 @@ export async function deleteOfflineData(
   try {
     switch (storeName) {
       case 'courseAnalytics':
-        return await db.deleteAnalytics(id, cacheKey);
+        return await db.deleteAnalytics('course', id, cacheKey);
       case 'programAnalytics':
-        return await db.deleteAnalytics(id, cacheKey);
+        return await db.deleteAnalytics('program', id, cacheKey);
       case 'classAnalytics':
-        return await db.deleteAnalytics(id, cacheKey);
+        return await db.deleteAnalytics('class', id, cacheKey);
       case 'teachers':
         return await db.deleteTeacher(id);
       case 'students':

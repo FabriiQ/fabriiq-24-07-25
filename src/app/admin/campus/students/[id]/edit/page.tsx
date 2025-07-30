@@ -29,7 +29,7 @@ const ArrowLeft = (props: React.SVGProps<SVGSVGElement>) => (
 // Verify that the edit-student-form.tsx file exists in the same directory
 // If the file exists but TypeScript can't find it, this might be a path issue or casing issue
 
-export default async function EditStudentPage(props: { params: { id: string } | Promise<{ id: string }> }) {
+export default async function EditStudentPage(props: { params: Promise<{ id: string  }> | Promise<{ id: string }> }) {
   // Await params to ensure it's properly resolved
   const resolvedParams = await props.params;
   const studentId: string = resolvedParams.id;

@@ -159,7 +159,7 @@ export const getContentHistory = (): any[] => {
 export const clearAllStoredContent = (): void => {
   try {
     // Get all keys in localStorage
-    const keys = [];
+    const keys: string[] = [];
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
       if (key && (

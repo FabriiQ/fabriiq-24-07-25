@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import {  useRouter , useParams } from 'next/navigation';
 import { PageLayout } from '@/components/layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/data-display/card';
@@ -13,7 +13,8 @@ import { formatDate } from '@/lib/utils';
 import { EditIcon, CalendarIcon, TrashIcon, ClockIcon, CheckCircleIcon, XCircleIcon, ArrowLeftIcon, BookIcon, UsersIcon } from 'lucide-react';
 import { Dialog } from '@/components/ui/custom-dialog';
 
-export default function TermDetailPage({ params }: { params: { id: string; termId: string } }) {
+export default function TermDetailPage() {
+  const params = useParams();
   const router = useRouter();
   const { toast } = useToast();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -22,7 +23,7 @@ export default function TermDetailPage({ params }: { params: { id: string; termI
   
   // Mock data for academic cycle
   const academicCycle = {
-    id: params.id,
+    id: (params.id as string),
     code: 'AY-2023-24',
     name: 'Academic Year 2023-2024',
     type: 'ANNUAL',
@@ -40,7 +41,7 @@ export default function TermDetailPage({ params }: { params: { id: string; termI
   
   // Mock data for term
   const term = {
-    id: params.termId,
+    id: (params.termId as string),
     code: 'FALL-2023',
     name: 'Fall Semester 2023',
     termType: 'SEMESTER',
@@ -49,7 +50,7 @@ export default function TermDetailPage({ params }: { params: { id: string; termI
     endDate: new Date('2023-12-15'),
     status: 'ACTIVE',
     description: 'Fall semester for the 2023-2024 academic year',
-    academicCycleId: params.id,
+    academicCycleId: (params.id as string),
     courseId: '1',
     course: {
       id: '1',
@@ -57,7 +58,7 @@ export default function TermDetailPage({ params }: { params: { id: string; termI
       code: 'CS-101',
     },
     academicCycle: {
-      id: params.id,
+      id: (params.id as string),
       name: 'Academic Year 2023-2024',
     },
     _count: {
@@ -77,7 +78,7 @@ export default function TermDetailPage({ params }: { params: { id: string; termI
         description: 'Term deleted successfully',
         variant: 'success',
       });
-      router.push(`/admin/system/academic-cycles/${params.id}/terms`);
+      router.push(`/admin/system/academic-cycles/${(params.id as string)}/terms`);
     },
     isLoading: false,
   };
@@ -96,7 +97,7 @@ export default function TermDetailPage({ params }: { params: { id: string; termI
   };
   
   const handleDelete = () => {
-    deleteTerm.mutate({ id: params.termId });
+    deleteTerm.mutate({ id: (params.termId as string) });
   };
   
   const handleStatusChange = (status: string) => {
@@ -107,7 +108,7 @@ export default function TermDetailPage({ params }: { params: { id: string; termI
   const confirmStatusChange = () => {
     if (newStatus) {
       updateTermStatus.mutate({
-        id: params.termId,
+        id: (params.termId as string),
         status: newStatus,
       });
     }
@@ -120,8 +121,8 @@ export default function TermDetailPage({ params }: { params: { id: string; termI
         description="Loading..."
         breadcrumbs={[
           { label: 'Academic Cycles', href: '/admin/system/academic-cycles' },
-          { label: 'Academic Cycle', href: `/admin/system/academic-cycles/${params.id}` },
-          { label: 'Terms', href: `/admin/system/academic-cycles/${params.id}/terms` },
+          { label: 'Academic Cycle', href: `/admin/system/academic-cycles/${(params.id as string)}` },
+          { label: 'Terms', href: `/admin/system/academic-cycles/${(params.id as string)}/terms` },
           { label: 'Details', href: '#' },
         ]}
       >
@@ -139,8 +140,8 @@ export default function TermDetailPage({ params }: { params: { id: string; termI
         description="Failed to load term details"
         breadcrumbs={[
           { label: 'Academic Cycles', href: '/admin/system/academic-cycles' },
-          { label: 'Academic Cycle', href: `/admin/system/academic-cycles/${params.id}` },
-          { label: 'Terms', href: `/admin/system/academic-cycles/${params.id}/terms` },
+          { label: 'Academic Cycle', href: `/admin/system/academic-cycles/${(params.id as string)}` },
+          { label: 'Terms', href: `/admin/system/academic-cycles/${(params.id as string)}/terms` },
           { label: 'Error', href: '#' },
         ]}
       >
@@ -157,22 +158,22 @@ export default function TermDetailPage({ params }: { params: { id: string; termI
       description={`Term: ${term.code}`}
       breadcrumbs={[
         { label: 'Academic Cycles', href: '/admin/system/academic-cycles' },
-        { label: academicCycle?.name || 'Academic Cycle', href: `/admin/system/academic-cycles/${params.id}` },
-        { label: 'Terms', href: `/admin/system/academic-cycles/${params.id}/terms` },
+        { label: academicCycle?.name || 'Academic Cycle', href: `/admin/system/academic-cycles/${(params.id as string)}` },
+        { label: 'Terms', href: `/admin/system/academic-cycles/${(params.id as string)}/terms` },
         { label: term.name, href: '#' },
       ]}
       actions={
         <div className="flex space-x-2">
           <Button
             variant="outline"
-            onClick={() => router.push(`/admin/system/academic-cycles/${params.id}/terms`)}
+            onClick={() => router.push(`/admin/system/academic-cycles/${(params.id as string)}/terms`)}
           >
             <ArrowLeftIcon className="mr-2 h-4 w-4" />
             Back to Terms
           </Button>
           <Button
             variant="outline"
-            onClick={() => router.push(`/admin/system/academic-cycles/${params.id}/terms/${params.termId}/edit`)}
+            onClick={() => router.push(`/admin/system/academic-cycles/${(params.id as string)}/terms/${(params.termId as string)}/edit`)}
           >
             <EditIcon className="mr-2 h-4 w-4" />
             Edit
@@ -306,7 +307,7 @@ export default function TermDetailPage({ params }: { params: { id: string; termI
                 <p className="mt-2 text-gray-500">No classes have been assigned to this term yet.</p>
                 <Button 
                   className="mt-4"
-                  onClick={() => router.push(`/admin/system/classes/create?termId=${params.termId}`)}
+                  onClick={() => router.push(`/admin/system/classes/create?termId=${(params.termId as string)}`)}
                 >
                   <BookIcon className="mr-2 h-4 w-4" />
                   Add Class
@@ -321,7 +322,7 @@ export default function TermDetailPage({ params }: { params: { id: string; termI
               <p className="mt-2 text-gray-500">Manage assessments for this term.</p>
               <Button 
                 className="mt-4"
-                onClick={() => router.push(`/admin/system/assessments?termId=${params.termId}`)}
+                onClick={() => router.push(`/admin/system/assessments?termId=${(params.termId as string)}`)}
               >
                 <BookIcon className="mr-2 h-4 w-4" />
                 Manage Assessments
@@ -335,7 +336,7 @@ export default function TermDetailPage({ params }: { params: { id: string; termI
               <p className="mt-2 text-gray-500">Manage schedule for this term.</p>
               <Button 
                 className="mt-4"
-                onClick={() => router.push(`/admin/system/schedule?termId=${params.termId}`)}
+                onClick={() => router.push(`/admin/system/schedule?termId=${(params.termId as string)}`)}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 Manage Schedule

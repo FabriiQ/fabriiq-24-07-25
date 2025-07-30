@@ -58,7 +58,7 @@ export function LessonPlanCreationPage() {
       toast({
         title: "Error",
         description: "Failed to create lesson plan",
-        variant: "destructive",
+        variant: "error",
       });
     } finally {
       setIsLoading(false);

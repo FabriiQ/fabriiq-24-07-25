@@ -8,7 +8,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { EnrollmentForm } from "./enrollment-form";
 
-export default async function EnrollStudentPage(props: { params: { id: string } | Promise<{ id: string }> }) {
+export default async function EnrollStudentPage(props: { params: Promise<{ id: string  }> | Promise<{ id: string }> }) {
   // Await params to ensure it's properly resolved
   const resolvedParams = await props.params;
   const studentId: string = resolvedParams.id;

@@ -11,13 +11,16 @@ import { prisma } from "@/server/db";
 import { formatDate } from "@/utils/format";
 
 interface StudentManagePageProps {
-  params: {
+  params: Promise<{
     id: string;
     accessId: string;
-  };
+  
+  }>;
 }
 
 export default async function StudentManagePage({ params }: StudentManagePageProps) {
+  const { id, accessId } = await params;
+
   const session = await getSessionCache();
 
   if (!session?.user?.id) {
@@ -40,7 +43,7 @@ export default async function StudentManagePage({ params }: StudentManagePagePro
 
   // Get campus details
   const campus = await prisma.campus.findUnique({
-    where: { id: params.id },
+    where: { id: id },
     include: {
       institution: {
         select: {
@@ -58,7 +61,7 @@ export default async function StudentManagePage({ params }: StudentManagePagePro
 
   // Get student access details
   const studentAccess = await prisma.userCampusAccess.findUnique({
-    where: { id: params.accessId },
+    where: { id: accessId },
     include: {
       user: {
         select: {
@@ -81,7 +84,7 @@ export default async function StudentManagePage({ params }: StudentManagePagePro
     },
   });
 
-  if (!studentAccess || studentAccess.campusId !== params.id) {
+  if (!studentAccess || studentAccess.campusId !== id) {
     notFound();
   }
 
@@ -91,7 +94,7 @@ export default async function StudentManagePage({ params }: StudentManagePagePro
       studentId: studentAccess.user.studentProfile?.id,
       class: {
         courseCampus: {
-          campusId: params.id,
+          campusId: id,
         },
       },
     },
@@ -129,7 +132,7 @@ export default async function StudentManagePage({ params }: StudentManagePagePro
   // Get available programs for this campus
   const programCampuses = await prisma.programCampus.findMany({
     where: {
-      campusId: params.id,
+      campusId: id,
       status: 'ACTIVE',
     },
     include: {
@@ -160,7 +163,7 @@ export default async function StudentManagePage({ params }: StudentManagePagePro
   // Get user campus access details
   const userAccess = await prisma.userCampusAccess.findUnique({
     where: {
-      id: params.accessId,
+      id: accessId,
     },
     include: {
       user: true,
@@ -180,7 +183,7 @@ export default async function StudentManagePage({ params }: StudentManagePagePro
   return (
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex items-center space-x-4">
-        <Link href={`/admin/system/campuses/${params.id}/students`}>
+        <Link href={`/admin/system/campuses/${id}/students`}>
           <Button variant="outline" size="icon">
             <ArrowLeftIcon className="h-4 w-4" />
           </Button>
@@ -231,7 +234,7 @@ export default async function StudentManagePage({ params }: StudentManagePagePro
           <Link href={`/admin/system/users/${studentAccess.user.id}`}>
             <Button variant="outline">View Full Profile</Button>
           </Link>
-          <Link href={`/admin/system/campuses/${params.id}/students/${params.accessId}/remove`}>
+          <Link href={`/admin/system/campuses/${id}/students/${accessId}/remove`}>
             <Button variant="destructive">Remove from Campus</Button>
           </Link>
         </CardFooter>
@@ -240,7 +243,7 @@ export default async function StudentManagePage({ params }: StudentManagePagePro
       {/* Enrollments Section */}
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Enrollments</h2>
-        <Link href={`/admin/system/campuses/${params.id}/students/${params.accessId}/enroll-class`}>
+        <Link href={`/admin/system/campuses/${id}/students/${accessId}/enroll-class`}>
           <Button>
             <PlusIcon className="mr-2 h-4 w-4" />
             Add Enrollment
@@ -311,7 +314,7 @@ export default async function StudentManagePage({ params }: StudentManagePagePro
           <p className="text-sm text-gray-500 mt-1">
             This student is not enrolled in any classes at this campus.
           </p>
-          <Link href={`/admin/system/campuses/${params.id}/students/${params.accessId}/enroll-class`} className="mt-4">
+          <Link href={`/admin/system/campuses/${id}/students/${accessId}/enroll-class`} className="mt-4">
             <Button>Add Enrollment</Button>
           </Link>
         </div>
@@ -342,7 +345,7 @@ export default async function StudentManagePage({ params }: StudentManagePagePro
                 </CardContent>
                 <CardFooter className="pt-2">
                   <Link 
-                    href={`/admin/system/campuses/${params.id}/students/${params.accessId}/enroll-program?programId=${pc.id}`}
+                    href={`/admin/system/campuses/${id}/students/${accessId}/enroll-program?programId=${pc.id}`}
                     className="w-full"
                   >
                     <Button className="w-full">Enroll in Program</Button>

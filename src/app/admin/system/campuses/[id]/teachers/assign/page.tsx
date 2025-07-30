@@ -1,38 +1,34 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { PageHeader } from '@/components/ui/page-header';
 import { ArrowLeftIcon } from 'lucide-react';
 import { AssignTeacherDialog } from '@/components/campus/AssignTeacherDialog';
 import { api } from '@/trpc/react';
 
-interface AssignTeacherPageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default function AssignTeacherPage({ params }: AssignTeacherPageProps) {
+export default function AssignTeacherPage() {
   const router = useRouter();
+  const params = useParams();
+  const campusId = params.id as string;
   const [dialogOpen, setDialogOpen] = useState(true);
   
   // Fetch campus details
   const { data: campus, isLoading: campusLoading } = api.campus.getById.useQuery({
-    id: params.id,
+    id: campusId,
   });
 
   // Fetch available teachers
   const { data: availableTeachers, isLoading: teachersLoading } = api.user.getAvailableTeachers.useQuery({
-    campusId: params.id,
+    campusId: campusId,
   });
 
   // Handle dialog close
   const handleDialogOpenChange = (open: boolean) => {
     setDialogOpen(open);
     if (!open) {
-      router.push(`/admin/system/campuses/${params.id}/teachers`);
+      router.push(`/admin/system/campuses/${campusId}/teachers`);
     }
   };
 
@@ -93,9 +89,9 @@ export default function AssignTeacherPage({ params }: AssignTeacherPageProps) {
       <AssignTeacherDialog
         open={dialogOpen}
         onOpenChange={handleDialogOpenChange}
-        campusId={params.id}
+        campusId={campusId}
         availableTeachers={availableTeachers?.teachers || []}
-        returnUrl={`/admin/system/campuses/${params.id}/teachers`}
+        returnUrl={`/admin/system/campuses/${campusId}/teachers`}
       />
     </div>
   );

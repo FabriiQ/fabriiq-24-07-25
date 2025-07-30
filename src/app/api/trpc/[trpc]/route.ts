@@ -59,7 +59,22 @@ const handler = async (req: Request) => {
     });
   } catch (error) {
     logger.error("Error in tRPC handler", { error });
-    throw error;
+
+    // Return JSON error instead of letting it throw (which might return HTML)
+    return new Response(
+      JSON.stringify({
+        error: {
+          message: error instanceof Error ? error.message : 'Internal server error',
+          code: 'INTERNAL_SERVER_ERROR'
+        }
+      }),
+      {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
   }
 };
 

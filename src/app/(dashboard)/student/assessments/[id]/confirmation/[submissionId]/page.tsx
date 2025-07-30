@@ -1,7 +1,7 @@
 'use client';
 
 import React, { use } from 'react';
-import { useRouter } from 'next/navigation';
+import {  useRouter , useParams } from 'next/navigation';
 import { useToast } from '@/components/ui/use-toast';
 import { api } from '@/trpc/react';
 import { SubmissionConfirmationPage } from '@/features/assessments/components/online';

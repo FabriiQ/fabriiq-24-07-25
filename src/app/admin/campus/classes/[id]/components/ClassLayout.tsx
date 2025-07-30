@@ -44,12 +44,7 @@ export function ClassLayout({ children, classId, className, activeTab }: ClassLa
       href: `/admin/campus/classes/${classId}/schedule`,
       icon: Calendar,
     },
-    {
-      id: 'assessments',
-      name: 'Assessments',
-      href: `/admin/campus/classes/${classId}/assessments`,
-      icon: ClipboardList,
-    },
+
     {
       id: 'activities',
       name: 'Activities',

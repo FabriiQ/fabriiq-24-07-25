@@ -13,14 +13,14 @@ import LessonPlanForm from '@/components/teacher/lesson-plans/LessonPlanForm';
 export default async function EditLessonPlanPage({
   params,
 }: {
-  params: { classId: string; id: string };
+  params: Promise<{ classId: string; id: string  }>;
 }) {
   // First await something to ensure params are resolved
   const session = await getSessionCache();
   await Promise.resolve();
 
   // Now it's safe to use params
-  const { classId, id: lessonPlanId } = params;
+  const { classId, id: lessonPlanId  } = await params;
 
   // Redirect if not authenticated or not a teacher
   if (!session?.user || session.user.userType !== UserType.CAMPUS_TEACHER) {

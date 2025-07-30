@@ -12,9 +12,9 @@ export const metadata: Metadata = {
 export default async function ClassActivitiesPage({
   params,
 }: {
-  params: { classId: string };
+  params: Promise<{ classId: string  }>;
 }) {
-  const { classId } = params;
+  const { classId  } = await params;
   const session = await getSessionCache();
 
   if (!session?.user?.id) {

@@ -129,28 +129,28 @@ export class NotificationService extends ServiceBase {
         isRead: false,
       };
 
-      // Store notification for each recipient in their user metadata
+      // Store notification for each recipient in their user profileData
       for (const recipientId of data.recipientIds) {
         const user = await this.prisma.user.findUnique({
           where: { id: recipientId },
-          select: { metadata: true }
+          select: { profileData: true }
         });
 
-        const currentMetadata = (user?.metadata as any) || {};
-        const notifications = currentMetadata.notifications || [];
+        const currentProfileData = (user?.profileData as any) || {};
+        const notifications = currentProfileData.notifications || [];
 
         // Add new notification
         notifications.unshift(notification);
 
-        // Keep only last 50 notifications to prevent metadata from growing too large
+        // Keep only last 50 notifications to prevent profileData from growing too large
         const trimmedNotifications = notifications.slice(0, 50);
 
-        // Update user metadata with new notification
+        // Update user profileData with new notification
         await this.prisma.user.update({
           where: { id: recipientId },
           data: {
-            metadata: {
-              ...currentMetadata,
+            profileData: {
+              ...currentProfileData,
               notifications: trimmedNotifications,
             }
           }
@@ -320,10 +320,10 @@ export class NotificationService extends ServiceBase {
    */
   async getUserNotifications(query: z.infer<typeof notificationQuerySchema>) {
     try {
-      // Get user metadata containing notifications
+      // Get user profileData containing notifications
       const user = await this.prisma.user.findUnique({
         where: { id: query.userId },
-        select: { metadata: true }
+        select: { profileData: true }
       });
 
       if (!user) {
@@ -334,8 +334,8 @@ export class NotificationService extends ServiceBase {
       }
 
       const limit = query.limit || 20;
-      const currentMetadata = (user.metadata as any) || {};
-      const notifications = Array.isArray(currentMetadata.notifications) ? currentMetadata.notifications : [];
+      const currentProfileData = (user.profileData as any) || {};
+      const notifications = Array.isArray(currentProfileData.notifications) ? currentProfileData.notifications : [];
 
       // Filter by read status if specified
       let filteredNotifications = notifications;
@@ -405,10 +405,10 @@ export class NotificationService extends ServiceBase {
         });
       }
 
-      // Get user metadata containing notifications
+      // Get user profileData containing notifications
       const user = await this.prisma.user.findUnique({
         where: { id: userId },
-        select: { metadata: true }
+        select: { profileData: true }
       });
 
       if (!user) {
@@ -418,8 +418,8 @@ export class NotificationService extends ServiceBase {
         });
       }
 
-      const currentMetadata = (user.metadata as any) || {};
-      const notifications = currentMetadata.notifications || [];
+      const currentProfileData = (user.profileData as any) || {};
+      const notifications = currentProfileData.notifications || [];
 
       // Find and update the notification
       const updatedNotifications = notifications.map((notification: any) => {
@@ -429,12 +429,12 @@ export class NotificationService extends ServiceBase {
         return notification;
       });
 
-      // Update user metadata
+      // Update user profileData
       await this.prisma.user.update({
         where: { id: userId },
         data: {
-          metadata: {
-            ...currentMetadata,
+          profileData: {
+            ...currentProfileData,
             notifications: updatedNotifications,
           }
         }
@@ -464,10 +464,10 @@ export class NotificationService extends ServiceBase {
       // Since there's no Notification model in the schema yet, we'll return a simulated response
       // In a real implementation, this would use the Prisma client to mark all notifications as read
 
-      // Get user metadata containing notifications
+      // Get user profileData containing notifications
       const user = await this.prisma.user.findUnique({
         where: { id: userId },
-        select: { metadata: true }
+        select: { profileData: true }
       });
 
       if (!user) {
@@ -477,8 +477,8 @@ export class NotificationService extends ServiceBase {
         });
       }
 
-      const currentMetadata = (user.metadata as any) || {};
-      const notifications = currentMetadata.notifications || [];
+      const currentProfileData = (user.profileData as any) || {};
+      const notifications = currentProfileData.notifications || [];
 
       // Mark all notifications as read
       const updatedNotifications = notifications.map((notification: any) => ({
@@ -486,12 +486,12 @@ export class NotificationService extends ServiceBase {
         isRead: true
       }));
 
-      // Update user metadata
+      // Update user profileData
       await this.prisma.user.update({
         where: { id: userId },
         data: {
-          metadata: {
-            ...currentMetadata,
+          profileData: {
+            ...currentProfileData,
             notifications: updatedNotifications,
           }
         }
@@ -520,10 +520,10 @@ export class NotificationService extends ServiceBase {
       // Since there's no Notification model in the schema yet, we'll return a simulated response
       // In a real implementation, this would use the Prisma client to count unread notifications
 
-      // Get user metadata containing notifications
+      // Get user profileData containing notifications
       const user = await this.prisma.user.findUnique({
         where: { id: userId },
-        select: { metadata: true }
+        select: { profileData: true }
       });
 
       if (!user) {
@@ -533,8 +533,8 @@ export class NotificationService extends ServiceBase {
         };
       }
 
-      const currentMetadata = (user.metadata as any) || {};
-      const notifications = currentMetadata.notifications || [];
+      const currentProfileData = (user.profileData as any) || {};
+      const notifications = currentProfileData.notifications || [];
 
       // Count unread notifications
       const unreadCount = notifications.filter((notification: any) => !notification.isRead).length;

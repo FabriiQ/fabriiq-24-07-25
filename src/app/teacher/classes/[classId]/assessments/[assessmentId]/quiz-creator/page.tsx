@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/components/ui/use-toast';
 import { api } from '@/utils/api';
 import { EnhancedQuizCreator } from '@/features/assessments/components/quiz/EnhancedQuizCreator';
 import { EnhancedAssessmentInput } from '@/features/assessments/types/enhanced-assessment';

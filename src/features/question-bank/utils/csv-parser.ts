@@ -5,7 +5,6 @@
  * that can be imported into the question bank.
  */
 
-// @ts-ignore - papaparse types will be installed later
 import { parse } from 'papaparse';
 import {
   CreateQuestionInput,

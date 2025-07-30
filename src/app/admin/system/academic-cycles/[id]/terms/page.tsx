@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import {  useRouter , useParams } from 'next/navigation';
 import { PageLayout } from '@/components/layout';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-display/data-table';
@@ -26,7 +26,8 @@ type Term = {
   status: string;
 };
 
-export default function TermsPage({ params }: { params: { id: string } }) {
+export default function TermsPage() {
+  const params = useParams();
   const router = useRouter();
   
   // Define filters state with proper typing
@@ -44,12 +45,12 @@ export default function TermsPage({ params }: { params: { id: string } }) {
   
   // Fetch academic cycle details
   const { data: academicCycle, isLoading: isLoadingCycle } = api.academicCycle.getById.useQuery({
-    id: params.id,
+    id: (params.id as string),
   });
   
   // Fetch terms for this academic cycle
   const { data: termsData, isLoading: isLoadingTerms } = api.term.list.useQuery({
-    academicCycleId: params.id,
+    academicCycleId: (params.id as string),
     termType: filters.termType,
     termPeriod: filters.termPeriod,
     status: filters.status,
@@ -120,7 +121,7 @@ export default function TermsPage({ params }: { params: { id: string } }) {
         return (
           <Button
             variant="ghost"
-            onClick={() => router.push(`/admin/system/academic-cycles/${params.id}/terms/${row.original.id}`)}
+            onClick={() => router.push(`/admin/system/academic-cycles/${(params.id as string)}/terms/${row.original.id}`)}
           >
             View
           </Button>
@@ -137,16 +138,16 @@ export default function TermsPage({ params }: { params: { id: string } }) {
       description={`Manage terms for the academic cycle ${academicCycle?.code || ''}`}
       breadcrumbs={[
         { label: 'Academic Cycles', href: '/admin/system/academic-cycles' },
-        { label: academicCycle?.name || 'Academic Cycle', href: `/admin/system/academic-cycles/${params.id}` },
-        { label: 'Terms', href: `/admin/system/academic-cycles/${params.id}/terms` },
+        { label: academicCycle?.name || 'Academic Cycle', href: `/admin/system/academic-cycles/${(params.id as string)}` },
+        { label: 'Terms', href: `/admin/system/academic-cycles/${(params.id as string)}/terms` },
       ]}
       actions={
         <div className="flex space-x-2">
-          <Button variant="outline" onClick={() => router.push(`/admin/system/academic-cycles/${params.id}`)}>
+          <Button variant="outline" onClick={() => router.push(`/admin/system/academic-cycles/${(params.id as string)}`)}>
             <ArrowLeftIcon className="mr-2 h-4 w-4" />
             Back to Cycle
           </Button>
-          <Button onClick={() => router.push(`/admin/system/academic-cycles/${params.id}/terms/create`)}>
+          <Button onClick={() => router.push(`/admin/system/academic-cycles/${(params.id as string)}/terms/create`)}>
             <PlusIcon className="mr-2 h-4 w-4" />
             Create Term
           </Button>

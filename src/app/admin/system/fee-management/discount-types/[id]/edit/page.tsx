@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import {  useRouter , useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/data-display/card';
 import { Separator } from '@/components/ui/separator';
@@ -11,8 +11,9 @@ import { DiscountTypeForm, DiscountTypeFormValues } from '@/components/shared/en
 import { useToast } from '@/components/ui/use-toast';
 import { LoadingSpinner } from '@/components/ui/loading';
 
-export default function EditDiscountTypePage({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default function EditDiscountTypePage() {
+  const params = useParams();
+  const id = params.id as string;
   const router = useRouter();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);

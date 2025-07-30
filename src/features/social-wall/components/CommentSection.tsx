@@ -374,6 +374,14 @@ function CommentCard({ comment, postId, classId, isReply = false, depth = 0, sho
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [replyContent, setReplyContent] = useState('');
   const [isSubmittingReply, setIsSubmittingReply] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
+
+  // Handle window resize for responsive behavior
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   const [showReportDialog, setShowReportDialog] = useState(false);
 
   const isAuthor = session?.user?.id === comment.authorId;
@@ -490,10 +498,21 @@ function CommentCard({ comment, postId, classId, isReply = false, depth = 0, sho
   const effectiveDepth = Math.min(depth, maxDepth);
 
   // Responsive indent size - much smaller on mobile and cap the maximum indent
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-  const baseIndentSize = isMobile ? 8 : 16; // Much smaller indent
-  const maxIndentSize = isMobile ? 40 : 80; // Cap maximum indent
-  const indentSize = Math.min(effectiveDepth * baseIndentSize, maxIndentSize);
+  const isMobile = windowWidth < 768;
+  const isVerySmall = windowWidth < 480;
+
+  // Dynamic indent calculation based on screen size and depth
+  const baseIndentSize = isVerySmall ? 4 : isMobile ? 8 : 16;
+  const maxIndentSize = isVerySmall ? 20 : isMobile ? 40 : 80;
+
+  // For very deep nesting, use a logarithmic scale instead of linear
+  const calculateIndent = (depth: number) => {
+    if (depth <= 3) return depth * baseIndentSize;
+    // After depth 3, use slower growth
+    return 3 * baseIndentSize + Math.log(depth - 2) * baseIndentSize;
+  };
+
+  const indentSize = Math.min(calculateIndent(effectiveDepth), maxIndentSize);
 
   return (
     <div className={cn(

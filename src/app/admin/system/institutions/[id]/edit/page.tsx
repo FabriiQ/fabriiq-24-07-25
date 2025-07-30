@@ -16,12 +16,15 @@ export const metadata: Metadata = {
 };
 
 interface EditInstitutionPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  
+  }>;
 }
 
 export default async function EditInstitutionPage({ params }: EditInstitutionPageProps) {
+  const { id } = await params;
+
   const session = await getSessionCache();
 
   if (!session?.user?.id) {
@@ -44,7 +47,7 @@ export default async function EditInstitutionPage({ params }: EditInstitutionPag
 
   // Get institution details
   const institution = await prisma.institution.findUnique({
-    where: { id: params.id },
+    where: { id: id },
   });
 
   if (!institution) {
@@ -54,7 +57,7 @@ export default async function EditInstitutionPage({ params }: EditInstitutionPag
   return (
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex items-center space-x-4">
-        <Link href={`/admin/system/institutions/${params.id}`}>
+        <Link href={`/admin/system/institutions/${id}`}>
           <Button variant="outline" size="icon">
             <ArrowLeftIcon className="h-4 w-4" />
           </Button>

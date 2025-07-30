@@ -10,13 +10,13 @@ import { ArrowLeft } from "lucide-react";
 import { CampusAdminClassLeaderboardClient } from "./client";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default async function ClassLeaderboardPage({ params }: PageProps) {
-  const id = params.id;
+  const { id } = await params;
   const session = await getSessionCache();
 
   if (!session?.user?.id) {

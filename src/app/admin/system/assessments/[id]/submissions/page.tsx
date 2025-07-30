@@ -8,19 +8,22 @@ export const metadata: Metadata = {
 };
 
 interface SubmissionsPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  
+  }>;
 }
 
-export default function SubmissionsPage({ params }: SubmissionsPageProps) {
+export default async function SubmissionsPage({ params }: SubmissionsPageProps) {
+  const { id } = await params;
+
   return (
     <div className="space-y-6">
       <PageHeader
         title="Assessment Submissions"
         description="View and manage submissions for this assessment"
       />
-      <SubmissionsList assessmentId={params.id} />
+      <SubmissionsList assessmentId={id} />
     </div>
   );
-} 
+}

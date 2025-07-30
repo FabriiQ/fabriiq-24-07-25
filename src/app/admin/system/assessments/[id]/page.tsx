@@ -7,11 +7,13 @@ export const metadata: Metadata = {
 };
 
 interface AssessmentDetailPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  
+  }>;
 }
 
-export default function AssessmentDetailPage({ params }: AssessmentDetailPageProps) {
-  return <AssessmentDetail assessmentId={params.id} />;
-} 
+export default async function AssessmentDetailPage({ params }: AssessmentDetailPageProps) {
+  const { id } = await params;
+  return <AssessmentDetail assessmentId={id} />;
+}

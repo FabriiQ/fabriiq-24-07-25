@@ -14,12 +14,15 @@ export const metadata: Metadata = {
 };
 
 interface PageProps {
-  params: {
+  params: Promise<{
     courseId: string;
-  };
+  
+  }>;
 }
 
 export default async function CourseLeaderboardPage({ params }: PageProps) {
+  const { courseId } = await params;
+
   try {
     const session = await getSessionCache();
 
@@ -44,7 +47,7 @@ export default async function CourseLeaderboardPage({ params }: PageProps) {
 
     // Get course details
     const course = await prisma.course.findUnique({
-      where: { id: params.courseId },
+      where: { id: courseId },
       include: {
         courseCampuses: {
           take: 1,
@@ -56,7 +59,7 @@ export default async function CourseLeaderboardPage({ params }: PageProps) {
     });
 
     if (!course) {
-      logger.error("Course not found", { courseId: params.courseId });
+      logger.error("Course not found", { courseId: courseId });
       return redirect("/teacher/courses");
     }
 
@@ -77,7 +80,7 @@ export default async function CourseLeaderboardPage({ params }: PageProps) {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href={`/teacher/courses/${params.courseId}`}>
+              <BreadcrumbLink href={`/teacher/courses/${courseId}`}>
                 {course.name}
               </BreadcrumbLink>
             </BreadcrumbItem>
@@ -94,7 +97,7 @@ export default async function CourseLeaderboardPage({ params }: PageProps) {
         />
 
         <TeacherCourseLeaderboardClient
-          courseId={params.courseId}
+          courseId={courseId}
           campusId={campusId}
           courseName={course.name}
           campusName={campusName}

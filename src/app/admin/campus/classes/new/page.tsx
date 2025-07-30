@@ -13,11 +13,11 @@ import { CampusService } from "@/server/api/services/campus.service";
 export default async function NewClassPage({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  // Convert searchParams to a Promise to handle it asynchronously
-  const params = await Promise.resolve(searchParams);
-  
+  // Await searchParams to handle it properly in Next.js 15
+  const params = await searchParams;
+
   // Now safely destructure the params
   const programId = typeof params?.programId === 'string' ? params.programId : undefined;
   const courseId = typeof params?.courseId === 'string' ? params.courseId : undefined;

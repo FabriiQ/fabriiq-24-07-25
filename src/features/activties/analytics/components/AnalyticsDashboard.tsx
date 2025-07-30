@@ -43,14 +43,30 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
   const [selectedReport, setSelectedReport] = useState<AnalyticsReport | null>(null);
   const [overviewMetrics, setOverviewMetrics] = useState<AnalyticsMetric[]>([]);
   
-
-  // Fetch class performance summary metrics
+  // Hooks
+  const { 
+    activityUsage,
+    userEngagement,
+    loading: analyticsLoading,
+    error: analyticsError,
+    loadActivityUsage,
+    loadUserEngagement,
+    loadActivityAnalytics,
+    loadUserAnalytics,
+    loadClassAnalytics
+  } = useAnalytics();
+  
   const {
-    data: classPerformance,
-    isLoading: isLoadingClassPerformance
-  } = classId
-    ? api.classPerformance.getClassPerformance.useQuery({ classId })
-    : { data: null, isLoading: false };
+    reports,
+    currentReport,
+    loading: reportsLoading,
+    error: reportsError,
+    loadReports,
+    generateActivityReport,
+    generateUserReport,
+    generateClassReport,
+    exportReport
+  } = useReports();
   
   // Load initial data
   useEffect(() => {
@@ -83,54 +99,81 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
     loadUserEngagement(filters);
   }, [filters]);
   
-
-  // Generate overview metrics from class performance table
+  // Generate overview metrics
   useEffect(() => {
-    if (!classPerformance) return;
-    const metrics: AnalyticsMetric[] = [
-      {
-        id: 'average_score',
-        label: 'Average Score',
-        value: classPerformance.averageGrade,
+    const metrics: AnalyticsMetric[] = [];
+    
+    // Total activities
+    if (activityUsage.length > 0) {
+      metrics.push({
+        id: 'total_activities',
+        label: 'Total Activities',
+        value: activityUsage.length,
         format: 'number',
         icon: 'activity',
         color: '#4caf50',
-      },
-      {
-        id: 'attendance_rate',
-        label: 'Attendance Rate',
-        value: classPerformance.attendanceRate,
-        format: 'percentage',
+      });
+      
+      // Total views
+      const totalViews = activityUsage.reduce((sum, activity) => sum + activity.views, 0);
+      metrics.push({
+        id: 'total_views',
+        label: 'Total Views',
+        value: totalViews,
+        format: 'number',
         icon: 'eye',
         color: '#2196f3',
-      },
-      {
-        id: 'completion_rate',
-        label: 'Completion Rate',
-        value: classPerformance.completionRate,
-        format: 'percentage',
+      });
+      
+      // Total completions
+      const totalCompletions = activityUsage.reduce((sum, activity) => sum + activity.completions, 0);
+      metrics.push({
+        id: 'total_completions',
+        label: 'Total Completions',
+        value: totalCompletions,
+        format: 'number',
         icon: 'check-circle',
         color: '#ff9800',
-      },
-      {
-        id: 'activity_count',
-        label: 'Activity Count',
-        value: classPerformance.activitiesCreated,
-        format: 'number',
+      });
+      
+      // Completion rate
+      const totalAttempts = activityUsage.reduce((sum, activity) => sum + activity.attempts, 0);
+      const completionRate = totalAttempts > 0 ? (totalCompletions / totalAttempts) * 100 : 0;
+      metrics.push({
+        id: 'completion_rate',
+        label: 'Completion Rate',
+        value: completionRate,
+        format: 'percentage',
         icon: 'percent',
         color: '#f44336',
-      },
-      {
-        id: 'assessment_count',
-        label: 'Assessment Count',
-        value: classPerformance.activitiesGraded,
+      });
+    }
+    
+    // Total users
+    if (userEngagement.length > 0) {
+      metrics.push({
+        id: 'total_users',
+        label: 'Active Users',
+        value: userEngagement.length,
         format: 'number',
         icon: 'users',
         color: '#9c27b0',
-      }
-    ];
+      });
+      
+      // Average engagement score
+      const avgEngagement = userEngagement.reduce((sum, user) => sum + user.engagementScore, 0) / userEngagement.length;
+      metrics.push({
+        id: 'avg_engagement',
+        label: 'Avg. Engagement',
+        value: avgEngagement,
+        format: 'percentage',
+        icon: 'trending-up',
+        color: '#00bcd4',
+      });
+    }
+    
     setOverviewMetrics(metrics);
-  }, [classPerformance]);
+  }, [activityUsage, userEngagement]);
   
   // Handle filter change
   const handleFilterChange = (newFilters: AnalyticsDashboardFilters) => {

@@ -13,7 +13,7 @@ import { ClassLessonPlanDashboard } from '@/components/teacher/lesson-plans/Clas
 export default async function ClassLessonPlansPage({
   params,
 }: {
-  params: { classId: string };
+  params: Promise<{ classId: string  }>;
 }) {
   // First await something to ensure params are resolved
   const session = await getSessionCache();

@@ -20,6 +20,49 @@
   .xs\:gap-0 { gap: 0; }
 }
 
+/* Social Wall Mobile Fixes */
+@media (max-width: 780px) {
+  .social-wall-container {
+    min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
+    padding: 0.5rem;
+  }
+
+  .comment-card {
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+
+  .post-card {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* Prevent deep nesting from breaking layout */
+  .comment-card[style*="marginLeft"] {
+    max-width: calc(100vw - 2rem) !important;
+  }
+}
+
+/* Ensure minimum viable layout on very small screens */
+@media (max-width: 480px) {
+  .social-wall-container {
+    padding: 0.25rem;
+  }
+
+  .comment-card {
+    font-size: 0.875rem;
+  }
+
+  /* Force maximum indent on very small screens */
+  .comment-card[style*="marginLeft"] {
+    margin-left: 1rem !important;
+    max-width: calc(100vw - 1.5rem) !important;
+  }
+}
+
 /* TipTap Editor Fixes */
 .ProseMirror {
   outline: none !important;

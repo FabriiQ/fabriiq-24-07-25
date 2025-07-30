@@ -12,12 +12,9 @@ import { UserType } from "@prisma/client";
 import { TeacherSearchForm } from "./TeacherSearchForm";
 
 interface CampusTeachersPageProps {
-  params: {
-    id: string;
-  };
-  searchParams: {
-    search?: string;
-  };
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ search?: string;
+   }>;
 }
 
 export default async function CampusTeachersPage({ params, searchParams }: CampusTeachersPageProps) {

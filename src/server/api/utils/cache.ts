@@ -148,10 +148,54 @@ class MemoryCache {
   }
 }
 
-// Create cache instances for different parts of the application
-export const appCache = new MemoryCache("app", 300000); // 5 minutes
-export const userCache = new MemoryCache("user", 60000); // 1 minute
-export const dataCache = new MemoryCache("data", 600000); // 10 minutes
+// Singleton cache instances to prevent memory leaks
+let appCacheInstance: MemoryCache | null = null;
+let userCacheInstance: MemoryCache | null = null;
+let dataCacheInstance: MemoryCache | null = null;
+
+// Getter functions to ensure singleton pattern
+export function getAppCache(): MemoryCache {
+  if (!appCacheInstance) {
+    appCacheInstance = new MemoryCache("app", 300000);
+  }
+  return appCacheInstance;
+}
+
+export function getUserCache(): MemoryCache {
+  if (!userCacheInstance) {
+    userCacheInstance = new MemoryCache("user", 60000);
+  }
+  return userCacheInstance;
+}
+
+export function getDataCache(): MemoryCache {
+  if (!dataCacheInstance) {
+    dataCacheInstance = new MemoryCache("data", 600000);
+  }
+  return dataCacheInstance;
+}
+
+// Legacy exports for backward compatibility - now lazy-loaded
+export const appCache = {
+  get: (key: string) => getAppCache().get(key),
+  set: (key: string, value: unknown, ttl?: number) => getAppCache().set(key, value, { ttl }),
+  delete: (key: string) => getAppCache().delete(key),
+  clear: () => getAppCache().clear(),
+};
+
+export const userCache = {
+  get: (key: string) => getUserCache().get(key),
+  set: (key: string, value: unknown, ttl?: number) => getUserCache().set(key, value, { ttl }),
+  delete: (key: string) => getUserCache().delete(key),
+  clear: () => getUserCache().clear(),
+};
+
+export const dataCache = {
+  get: (key: string) => getDataCache().get(key),
+  set: (key: string, value: unknown, ttl?: number) => getDataCache().set(key, value, { ttl }),
+  delete: (key: string) => getDataCache().delete(key),
+  clear: () => getDataCache().clear(),
+};
 
 /**
  * Creates a new cache instance with the specified namespace and TTL

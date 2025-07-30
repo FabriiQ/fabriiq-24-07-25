@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { NotificationService, NotificationStatus as ServiceNotificationStatus, NotificationDeliveryType } from "../services/notification.service";
+import { ProcedureCacheHelpers } from "@/server/api/cache/advanced-procedure-cache";
 import { SystemStatus } from "../types/user";
 import {
   NotificationChannel,
@@ -341,23 +342,31 @@ export const notificationRouter = createTRPCRouter({
           });
         }
 
-        const service = new NotificationService({ prisma: ctx.prisma });
+        // Use advanced caching system
+        return await ProcedureCacheHelpers.cacheUserNotifications(
+          ctx.session.user.id,
+          input.limit,
+          input.includeRead,
+          async () => {
+            const service = new NotificationService({ prisma: ctx.prisma });
 
-        const query = {
-          userId: ctx.session.user.id,
-          isRead: input.includeRead ? undefined : false,
-          limit: input.limit,
-          cursor: undefined,
-        };
+            const query = {
+              userId: ctx.session.user.id,
+              isRead: input.includeRead ? undefined : false,
+              limit: input.limit,
+              cursor: undefined,
+            };
 
-        const result = await service.getUserNotifications(query);
-        const notifications = result.notifications || [];
+            const result = await service.getUserNotifications(query);
+            const notifications = result.notifications || [];
 
-        return notifications.map(notification => ({
-          ...notification,
+            return notifications.map(notification => ({
+              ...notification,
           isRead: notification.isRead || notification.status === 'READ',
-          message: notification.content,
-        }));
+              message: notification.content,
+            }));
+          }
+        );
       } catch (error) {
         console.error('Error in getUserNotifications router:', error);
 

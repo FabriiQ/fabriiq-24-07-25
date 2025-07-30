@@ -1,7 +1,7 @@
 'use client';
 
-import React, { use } from 'react';
-import { useRouter } from 'next/navigation';
+import React from 'react';
+import { useRouter, useParams } from 'next/navigation';
 import { PageLayout } from '@/components/layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/data-display/card';
@@ -18,18 +18,11 @@ interface TermWithRelations extends Term {
   academicCycle?: AcademicCycle;
 }
 
-interface PageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default function AcademicCycleDetailPage({ params }: PageProps) {
+export default function AcademicCycleDetailPage() {
   const router = useRouter();
+  const params = useParams();
   const { toast } = useToast();
-  // Unwrap params properly using React.use() for future compatibility
-  const unwrappedParams = params instanceof Promise ? use(params) : params;
-  const id = unwrappedParams.id;
+  const id = params.id as string;
 
   const {
     data: academicCycle,

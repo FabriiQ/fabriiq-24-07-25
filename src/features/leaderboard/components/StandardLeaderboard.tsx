@@ -32,7 +32,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertCircle, RefreshCw, Wifi, WifiOff } from 'lucide-react';
+import { AlertCircle, RefreshCw } from 'lucide-react';
+// Import custom icons
+import { Wifi, WifiOff } from '@/components/ui/icons/custom-icons';
 import { Button } from '@/components/ui/button';
 
 export interface StandardLeaderboardProps {
@@ -172,7 +174,7 @@ export function StandardLeaderboard({
 
       <CardContent>
         {error ? (
-          <Alert variant="destructive">
+          <Alert className="border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive">
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>Error</AlertTitle>
             <AlertDescription>
@@ -191,8 +193,8 @@ export function StandardLeaderboard({
             showRewardPoints={showRewardPoints}
             showLevel={showLevel}
             showAchievements={showAchievements}
-            lastUpdated={data?.lastUpdated ? new Date(data.lastUpdated) : undefined}
-            hasNewData={data?.hasNewData}
+            lastUpdated={data?.metadata?.generatedAt ? new Date(data.metadata.generatedAt) : undefined}
+            hasNewData={false}
             onRefresh={refetch}
             enableAnimations={enableAnimations}
             enableHapticFeedback={enableHapticFeedback}

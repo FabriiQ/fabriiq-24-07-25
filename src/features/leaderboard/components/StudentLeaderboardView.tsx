@@ -7,7 +7,11 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { ChevronRight, ChevronUp, ChevronDown, Search, Trophy, Award, Star } from 'lucide-react';
+import { ChevronRight, ChevronUp, ChevronDown, Search, Award } from 'lucide-react';
+// Import custom icons
+import { Star } from '@/components/ui/icons/star';
+// Use Award as Trophy since Trophy doesn't exist in lucide-react
+const Trophy = Award;
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { LeaderboardEntityType, TimeGranularity } from '../types/standard-leaderboard';
@@ -67,15 +71,14 @@ export function StudentLeaderboardView({
   });
 
   // Fetch student goals and milestones
-  const { 
-    personalBests, 
-    milestones, 
-    isLoadingGoals 
+  const {
+    milestones,
+    isLoading: isLoadingGoals
   } = useLeaderboardGoals({
     entityType,
     entityId,
     studentId: currentStudentId,
-    timeGranularity: selectedTimeframe
+    currentStudentPosition: data?.currentStudentPosition
   });
 
   // Find current student in leaderboard
@@ -119,14 +122,9 @@ export function StudentLeaderboardView({
                       />
                     </div>
                     
+                    {/* Personal bests section - temporarily removed until personal bests data is available */}
                     <div className="flex flex-wrap gap-2">
-                      {Object.entries(personalBests).map(([type, value]) => (
-                        <LeaderboardPersonalBestIndicator
-                          key={type}
-                          personalBests={[type as any]}
-                          isNewBest={false}
-                        />
-                      ))}
+                      {/* TODO: Add personal bests indicators when data is available */}
                     </div>
                   </div>
                 </div>
@@ -228,6 +226,8 @@ export function StudentLeaderboardView({
             <VirtualizedLeaderboardTable
               leaderboard={data?.leaderboard || []}
               currentStudentId={currentStudentId}
+              totalStudents={data?.totalStudents || 0}
+              currentPeriod={selectedTimeframe}
               isLoading={isLoading && !isUsingCachedData}
               showRankChange={true}
               showAcademicScore={true}

@@ -9,9 +9,10 @@ import { prisma } from "@/server/db";
 import { AddStudentForm } from "./AddStudentForm";
 
 interface AddStudentPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  
+  }>;
 }
 
 // This function fetches the data needed for the page
@@ -73,9 +74,9 @@ async function getPageData(campusId: string) {
   return { campus, programCampuses };
 }
 
-// This is the actual page component (not async)
-export default function AddStudentPage({ params }: AddStudentPageProps) {
-  const campusId = params.id;
+// This is the actual page component (async)
+export default async function AddStudentPage({ params }: AddStudentPageProps) {
+  const { id: campusId } = await params;
   
   // Use React's suspense boundary to handle async data fetching
   const dataPromise = getPageData(campusId);

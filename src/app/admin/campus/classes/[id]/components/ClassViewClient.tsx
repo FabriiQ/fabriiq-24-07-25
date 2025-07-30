@@ -25,7 +25,6 @@ interface ClassViewClientProps {
   courseCampus: any;
   primaryTeacherName: string;
   assignedTeachers: any[];
-  assessmentsCount: number;
   attendanceRecordsCount: number;
   gradebook: any;
   className: string;
@@ -37,7 +36,6 @@ export function ClassViewClient({
   courseCampus,
   primaryTeacherName,
   assignedTeachers,
-  assessmentsCount,
   attendanceRecordsCount,
   gradebook,
   className
@@ -56,7 +54,6 @@ export function ClassViewClient({
         className={className}
         initialData={{
           studentsCount: classData.students.length,
-          assessmentsCount: assessmentsCount,
           activitiesCount: 0, // We'll need to fetch this from the API
           attendanceRecordsCount: attendanceRecordsCount
         }}
@@ -102,10 +99,7 @@ export function ClassViewClient({
                   <CalendarIcon className="h-4 w-4 mr-2" />
                   Schedule
                 </Button>
-                <Button variant="outline" className="justify-start" onClick={() => handleNavigation(`/admin/campus/classes/${id}/assessments`)}>
-                  <FileText className="h-4 w-4 mr-2" />
-                  Assessments
-                </Button>
+
                 <Button variant="outline" className="justify-start" onClick={() => handleNavigation(`/admin/campus/classes/${id}/attendance`)}>
                   <Calendar className="h-4 w-4 mr-2" />
                   Attendance

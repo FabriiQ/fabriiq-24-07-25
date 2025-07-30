@@ -7,17 +7,20 @@ export const metadata: Metadata = {
 };
 
 interface SubmissionPageProps {
-  params: {
+  params: Promise<{
     id: string;
     submissionId: string;
-  };
+  
+  }>;
 }
 
-export default function SubmissionPage({ params }: SubmissionPageProps) {
+export default async function SubmissionPage({ params }: SubmissionPageProps) {
+  const { id, submissionId } = await params;
+
   return (
-    <AssessmentSubmission 
-      assessmentId={params.id} 
-      submissionId={params.submissionId} 
+    <AssessmentSubmission
+      assessmentId={id}
+      submissionId={submissionId}
     />
   );
-} 
+}

@@ -15,11 +15,9 @@ export const metadata: Metadata = {
  * This page displays the performance metrics for a specific course.
  * It includes accumulated analytics for all classes within the course.
  */
-export default async function CoursePerformancePage({
-  params
-}: {
-  params: { id: string }
-}) {
+export default async function CoursePerformancePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+
   // Check authentication
   const session = await getServerSession(authOptions);
 
@@ -36,7 +34,7 @@ export default async function CoursePerformancePage({
     // redirect('/dashboard');
   }
 
-  const courseId = params.id;
+  const courseId = id;
 
   return (
     <div className="space-y-4">

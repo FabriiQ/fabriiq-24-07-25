@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import {  useRouter , useParams } from 'next/navigation';
 import { PageLayout } from '@/components/layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/data-display/card';
@@ -48,14 +48,15 @@ const academicCycleSchema = z.object({
 
 type AcademicCycleFormValues = z.infer<typeof academicCycleSchema>;
 
-export default function EditAcademicCyclePage({ params }: { params: { id: string } }) {
+export default function EditAcademicCyclePage() {
+  const params = useParams();
   const router = useRouter();
   const { toast } = useToast();
   const [isLoaded, setIsLoaded] = useState(false);
   
   // Fetch academic cycle details
   const { data: academicCycle, isLoading } = api.academicCycle.getById.useQuery({
-    id: params.id,
+    id: (params.id as string),
   });
   
   // Initialize form with react-hook-form and zod validation
@@ -116,7 +117,7 @@ export default function EditAcademicCyclePage({ params }: { params: { id: string
     }
     
     updateAcademicCycleMutation.mutate({
-      id: params.id,
+      id: (params.id as string),
       ...data,
     });
   };
@@ -127,13 +128,13 @@ export default function EditAcademicCyclePage({ params }: { params: { id: string
       description="Update academic cycle details"
       breadcrumbs={[
         { label: 'Academic Cycles', href: '/admin/system/academic-cycles' },
-        { label: academicCycle?.name || 'Edit', href: `/admin/system/academic-cycles/${params.id}` },
+        { label: academicCycle?.name || 'Edit', href: `/admin/system/academic-cycles/${(params.id as string)}` },
         { label: 'Edit', href: '#' },
       ]}
       actions={
         <Button
           variant="outline"
-          onClick={() => router.push(`/admin/system/academic-cycles/${params.id}`)}
+          onClick={() => router.push(`/admin/system/academic-cycles/${(params.id as string)}`)}
         >
           <ArrowLeftIcon className="mr-2 h-4 w-4" />
           Back to Details
@@ -264,7 +265,7 @@ export default function EditAcademicCyclePage({ params }: { params: { id: string
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => router.push(`/admin/system/academic-cycles/${params.id}`)}
+                    onClick={() => router.push(`/admin/system/academic-cycles/${(params.id as string)}`)}
                   >
                     Cancel
                   </Button>

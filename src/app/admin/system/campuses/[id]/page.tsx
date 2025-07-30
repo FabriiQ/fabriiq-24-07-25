@@ -16,12 +16,15 @@ export const metadata: Metadata = {
 };
 
 interface CampusDetailPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  
+  }>;
 }
 
 export default async function CampusDetailPage({ params }: CampusDetailPageProps) {
+  const { id } = await params;
+
   const session = await getSessionCache();
 
   if (!session?.user?.id) {
@@ -44,7 +47,7 @@ export default async function CampusDetailPage({ params }: CampusDetailPageProps
 
   // Get campus details
   const campus = await prisma.campus.findUnique({
-    where: { id: params.id },
+    where: { id: id },
     include: {
       institution: {
         select: {

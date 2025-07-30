@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default async function ClassStudentsPage({
   params,
 }: {
-  params: { classId: string };
+  params: Promise<{ classId: string  }>;
 }) {
   // Await params to fix the error
   const { classId } = await Promise.resolve(params);

@@ -18,8 +18,11 @@ export const metadata: Metadata = {
 export default async function StudentsPage({
   searchParams
 }: {
-  searchParams: { search?: string; programId?: string }
+  searchParams: Promise<{ search?: string; programId?: string }>
 }) {
+  // Await searchParams for Next.js 15 compatibility
+  const params = await searchParams;
+
   // Check authentication
   const session = await getServerSession(authOptions);
 
@@ -78,8 +81,8 @@ export default async function StudentsPage({
         Student Management
       </h1>
       <CoordinatorStudentsClient
-        initialSearch={searchParams.search || ""}
-        initialProgramId={searchParams.programId || ""}
+        initialSearch={params.search || ""}
+        initialProgramId={params.programId || ""}
         campus={mockCampus}
         programCampuses={mockProgramCampuses}
       />

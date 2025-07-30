@@ -67,7 +67,7 @@ export function useLeaderboard({
     refetch
   } = api.unifiedLeaderboard.getLeaderboard.useQuery(
     {
-      type: entityType,
+      type: entityType as LeaderboardEntityType,
       referenceId: entityId,
       timeGranularity,
       ...filterOptions

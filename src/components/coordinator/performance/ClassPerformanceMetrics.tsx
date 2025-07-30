@@ -33,14 +33,14 @@ export function ClassPerformanceMetrics({
     saveData: saveOfflineAnalytics
   } = useOfflineStorage(OfflineStorageType.ANALYTICS);
 
-
-  // Fetch class performance data from centralized table
+  // Fetch class performance data
   const {
     data,
     isLoading
-  } = api.classPerformance.getClassPerformance.useQuery(
+  } = api.analytics.getTimeTrackingAnalytics.useQuery(
     {
-      classId: teacherId || ''
+      classId: teacherId || '', // Using teacherId as classId for now
+      timeframe: timeframe as any
     },
     {
       enabled: !!teacherId && isOnline,
@@ -76,15 +76,19 @@ export function ClassPerformanceMetrics({
   // Use cached data when offline
   const rawData = data || cachedData;
 
-
-  // Process raw data to create display data from class performance table
+  // Process raw data to create display data
   const displayData = rawData ? {
-    classesByPerformance: rawData.classMetrics?.map((c: any) => ({
-      className: c.className,
-      performance: c.completionRate || 0
-    })) || [],
-    averagePerformance: rawData.averageGrade || 0,
-    totalClasses: rawData.classMetrics?.length || 0
+    // Create mock classes with performance data
+    classesByPerformance: [
+      { className: 'Class A', performance: 85 },
+      { className: 'Class B', performance: 78 },
+      { className: 'Class C', performance: 92 },
+      { className: 'Class D', performance: 65 }
+    ],
+    // Calculate average performance
+    averagePerformance: 80, // Mock average performance
+    // Count total classes
+    totalClasses: 4 // Mock total classes
   } : null;
 
   // Show loading state

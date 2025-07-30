@@ -1,4 +1,5 @@
 "use client";
+import { useParams } from 'next/navigation';
 
 import React, { useRef } from "react";
 import { useRouter } from "next/navigation";
@@ -10,15 +11,12 @@ import { api } from "@/trpc/react";
 import { ChevronLeft } from "lucide-react";
 import { SubjectForm } from "@/components/admin/subjects/SubjectForm";
 
-export default function EditSubjectPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+export default function EditSubjectPage() {
+  const params = useParams();
   const router = useRouter();
 
   // Get the subject ID from params - use a ref to avoid re-renders
-  const subjectIdRef = useRef(params.id);
+  const subjectIdRef = useRef((params.id as string));
   const subjectId = subjectIdRef.current;
 
   // Fetch subject details

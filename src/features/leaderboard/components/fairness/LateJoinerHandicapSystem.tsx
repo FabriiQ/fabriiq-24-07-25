@@ -21,9 +21,10 @@ import {
   ArrowRight,
   Save,
   Settings,
-  Star,
   User
 } from 'lucide-react';
+// Import Star from our custom icons
+import { Star } from '@/components/ui/icons/star';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 

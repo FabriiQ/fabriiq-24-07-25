@@ -11,12 +11,15 @@ import { prisma } from "@/server/db";
 import { FacilityType } from "@prisma/client";
 
 interface CampusFacilitiesPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  
+  }>;
 }
 
 export default async function CampusFacilitiesPage({ params }: CampusFacilitiesPageProps) {
+  const { id } = await params;
+
   const session = await getSessionCache();
 
   if (!session?.user?.id) {
@@ -39,7 +42,7 @@ export default async function CampusFacilitiesPage({ params }: CampusFacilitiesP
 
   // Get campus details
   const campus = await prisma.campus.findUnique({
-    where: { id: params.id },
+    where: { id: id },
     include: {
       institution: {
         select: {
@@ -58,7 +61,7 @@ export default async function CampusFacilitiesPage({ params }: CampusFacilitiesP
   // Get facilities for this campus
   const facilities = await prisma.facility.findMany({
     where: {
-      campusId: params.id,
+      campusId: id,
       status: 'ACTIVE',
     },
     include: {
@@ -98,7 +101,7 @@ export default async function CampusFacilitiesPage({ params }: CampusFacilitiesP
   return (
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex items-center space-x-4">
-        <Link href={`/admin/system/campuses/${params.id}`}>
+        <Link href={`/admin/system/campuses/${id}`}>
           <Button variant="outline" size="icon">
             <ArrowLeftIcon className="h-4 w-4" />
           </Button>
@@ -111,7 +114,7 @@ export default async function CampusFacilitiesPage({ params }: CampusFacilitiesP
       
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Campus Facilities</h2>
-        <Link href={`/admin/system/campuses/${params.id}/facilities/new`}>
+        <Link href={`/admin/system/campuses/${id}/facilities/new`}>
           <Button>
             <PlusIcon className="mr-2 h-4 w-4" />
             Add Facility
@@ -147,10 +150,10 @@ export default async function CampusFacilitiesPage({ params }: CampusFacilitiesP
                       </div>
                     </CardContent>
                     <CardFooter className="pt-2 flex justify-between">
-                      <Link href={`/admin/system/campuses/${params.id}/facilities/${facility.id}`}>
+                      <Link href={`/admin/system/campuses/${id}/facilities/${facility.id}`}>
                         <Button variant="outline" size="sm">View Details</Button>
                       </Link>
-                      <Link href={`/admin/system/campuses/${params.id}/facilities/${facility.id}/edit`}>
+                      <Link href={`/admin/system/campuses/${id}/facilities/${facility.id}/edit`}>
                         <Button variant="secondary" size="sm">Edit</Button>
                       </Link>
                     </CardFooter>
@@ -165,7 +168,7 @@ export default async function CampusFacilitiesPage({ params }: CampusFacilitiesP
           <BuildingIcon className="h-12 w-12 text-gray-400 mb-4" />
           <h3 className="text-lg font-medium text-gray-900">No facilities added</h3>
           <p className="text-sm text-gray-500 mt-1">Add facilities to this campus to get started.</p>
-          <Link href={`/admin/system/campuses/${params.id}/facilities/new`} className="mt-4">
+          <Link href={`/admin/system/campuses/${id}/facilities/new`} className="mt-4">
             <Button>Add Facility</Button>
           </Link>
         </div>

@@ -4,6 +4,7 @@ import { TRPCError } from "@trpc/server";
 import { SystemStatus } from "@prisma/client";
 import { UserType } from "../constants";
 import bcryptjs from "bcryptjs";
+import { ProcedureCacheHelpers } from "@/server/api/cache/advanced-procedure-cache";
 
 const createTeacherSchema = z.object({
   firstName: z.string().min(2),
@@ -1376,36 +1377,40 @@ export const teacherRouter = createTRPCRouter({
     }))
     .query(async ({ ctx, input }) => {
       try {
-        // Test database connection first
-        await ctx.prisma.$queryRaw`SELECT 1`;
+        // Use advanced caching system for teacher classes
+        return await ProcedureCacheHelpers.cacheTeacherClasses(
+          input.teacherId,
+          async () => {
+            // Test database connection first
+            await ctx.prisma.$queryRaw`SELECT 1`;
 
-        // First, determine if the teacherId is a user ID or teacher profile ID
-        // Try to find teacher profile by ID first
-        let teacherProfileId = input.teacherId;
+            // First, determine if the teacherId is a user ID or teacher profile ID
+            // Try to find teacher profile by ID first
+            let teacherProfileId = input.teacherId;
 
-        const teacherProfile = await ctx.prisma.teacherProfile.findFirst({
-          where: {
-            OR: [
-              { id: input.teacherId }, // Direct teacher profile ID
-              { userId: input.teacherId } // User ID
-            ]
-          }
-        });
+            const teacherProfile = await ctx.prisma.teacherProfile.findFirst({
+              where: {
+                OR: [
+                  { id: input.teacherId }, // Direct teacher profile ID
+                  { userId: input.teacherId } // User ID
+                ]
+              }
+            });
 
-        if (!teacherProfile) {
-          console.log("No teacher profile found for ID:", input.teacherId);
-          return [];
-        }
+            if (!teacherProfile) {
+              console.log("No teacher profile found for ID:", input.teacherId);
+              return [];
+            }
 
-        // Use the teacher profile ID for the assignment lookup
-        teacherProfileId = teacherProfile.id;
+            // Use the teacher profile ID for the assignment lookup
+            teacherProfileId = teacherProfile.id;
 
-        const teacherAssignments = await ctx.prisma.teacherAssignment.findMany({
-          where: {
-            teacherId: teacherProfileId,
-            status: 'ACTIVE' as SystemStatus,
-          },
-          include: {
+            const teacherAssignments = await ctx.prisma.teacherAssignment.findMany({
+              where: {
+                teacherId: teacherProfileId,
+                status: 'ACTIVE' as SystemStatus,
+              },
+              include: {
             class: {
               include: {
                 campus: true,
@@ -1429,7 +1434,9 @@ export const teacherRouter = createTRPCRouter({
           return [];
         }
 
-        return teacherAssignments.map(assignment => assignment.class);
+            return teacherAssignments.map(assignment => assignment.class);
+          }
+        );
       } catch (error) {
         console.error("Error fetching teacher classes:", error);
 

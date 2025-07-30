@@ -15,13 +15,14 @@ export const metadata: Metadata = {
 };
 
 interface PageProps {
-  params: {
+  params: Promise<{
     classId: string;
-  };
+  
+  }>;
 }
 
 export default async function ClassLeaderboardPage({ params }: PageProps) {
-  const { classId } = params;
+  const { classId  } = await params;
   try {
     const session = await getSessionCache();
 

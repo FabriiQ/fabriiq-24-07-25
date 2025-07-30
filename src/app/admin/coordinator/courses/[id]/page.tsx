@@ -12,13 +12,15 @@ export const metadata: Metadata = {
  * This page displays detailed information about a specific course.
  * It uses a client component for interactive elements.
  */
-export default function CourseDetailPage({ params }: { params: { id: string } }) {
+export default async function CourseDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
         Course Details
       </h1>
-      <CoordinatorCourseDetail courseId={params.id} />
+      <CoordinatorCourseDetail courseId={id} />
     </div>
   );
 }

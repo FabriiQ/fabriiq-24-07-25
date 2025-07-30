@@ -7,18 +7,21 @@ export const metadata: Metadata = {
 };
 
 interface GradeSubmissionPageProps {
-  params: {
+  params: Promise<{
     id: string;
     submissionId: string;
-  };
+  
+  }>;
 }
 
-export default function GradeSubmissionPage({ params }: GradeSubmissionPageProps) {
+export default async function GradeSubmissionPage({ params }: GradeSubmissionPageProps) {
+  const { id, submissionId } = await params;
+
   return (
-    <AssessmentSubmission 
-      assessmentId={params.id} 
-      submissionId={params.submissionId} 
+    <AssessmentSubmission
+      assessmentId={id}
+      submissionId={submissionId}
       isGrading={true}
     />
   );
-} 
+}

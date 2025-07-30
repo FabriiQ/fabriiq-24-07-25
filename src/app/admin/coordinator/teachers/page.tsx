@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 export default async function TeachersPage({
   searchParams
 }: {
-  searchParams: { search?: string }
+  searchParams: Promise<{ search?: string  }>
 }) {
   // Check authentication
   const session = await getServerSession(authOptions);

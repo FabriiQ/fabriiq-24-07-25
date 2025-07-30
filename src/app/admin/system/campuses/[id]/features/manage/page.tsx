@@ -10,12 +10,15 @@ import { prisma } from "@/server/db";
 import { CampusFeaturesForm } from "./CampusFeaturesForm";
 
 interface CampusFeaturesPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  
+  }>;
 }
 
 export default async function CampusFeaturesPage({ params }: CampusFeaturesPageProps) {
+  const { id } = await params;
+
   const session = await getSessionCache();
 
   if (!session?.user?.id) {
@@ -38,7 +41,7 @@ export default async function CampusFeaturesPage({ params }: CampusFeaturesPageP
 
   // Get campus details
   const campus = await prisma.campus.findUnique({
-    where: { id: params.id },
+    where: { id: id },
     include: {
       institution: {
         select: {
@@ -71,7 +74,7 @@ export default async function CampusFeaturesPage({ params }: CampusFeaturesPageP
   return (
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex items-center space-x-4">
-        <Link href={`/admin/system/campuses/${params.id}`}>
+        <Link href={`/admin/system/campuses/${id}`}>
           <Button variant="outline" size="icon">
             <ArrowLeftIcon className="h-4 w-4" />
           </Button>
@@ -91,7 +94,7 @@ export default async function CampusFeaturesPage({ params }: CampusFeaturesPageP
         </CardHeader>
         <CardContent>
           <CampusFeaturesForm 
-            campusId={params.id}
+            campusId={id}
             features={features}
           />
         </CardContent>

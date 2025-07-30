@@ -19,8 +19,11 @@ export const metadata: Metadata = {
 export default async function CoursesPage({
   searchParams
 }: {
-  searchParams: { search?: string; programId?: string }
+  searchParams: Promise<{ search?: string; programId?: string }>
 }) {
+  // Await searchParams for Next.js 15 compatibility
+  const params = await searchParams;
+
   // Check authentication
   const session = await getServerSession(authOptions);
 
@@ -79,8 +82,8 @@ export default async function CoursesPage({
         Course Management
       </h1>
       <CoordinatorCoursesClient
-        initialSearch={searchParams.search || ""}
-        initialProgramId={searchParams.programId || ""}
+        initialSearch={params.search || ""}
+        initialProgramId={params.programId || ""}
         campus={mockCampus}
         programCampuses={mockProgramCampuses}
       />

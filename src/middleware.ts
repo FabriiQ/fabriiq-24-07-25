@@ -1,118 +1,58 @@
 import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
 import type { NextRequest } from 'next/server';
-import * as path from 'path';
-import * as fs from 'fs';
 
-// Create a separate middleware for H5P files
-function h5pMiddleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+// Enhanced caching for production performance
+const institutionCache = new Map<string, { valid: boolean; timestamp: number }>();
+const routeCache = new Map<string, { response: NextResponse; timestamp: number }>();
+const INSTITUTION_CACHE_TTL = 10 * 60 * 1000; // 10 minutes for production
+const ROUTE_CACHE_TTL = 2 * 60 * 1000; // 2 minutes for route decisions
 
-  // Handle H5P static files
-  if (pathname.startsWith('/h5p/')) {
-    // Extract the file path from the URL
-    const filePath = pathname.replace('/h5p/', '');
-    const fullPath = path.join(process.cwd(), 'h5p', filePath);
+// Precompiled regex patterns for better performance
+const SKIP_PATTERNS = /^\/(api|_next|static|favicon\.ico|h5p|login|unauthorized|admin\/system)/;
+const PUBLIC_PATTERNS = /^\/(login|api\/auth|unauthorized|h5p-test)/;
+const TEACHER_PATTERNS = /^\/(teacher|worksheets)/;
+const STUDENT_PATTERNS = /^\/student/;
 
-    // Check if the file exists
-    if (fs.existsSync(fullPath)) {
-      // Determine the content type based on file extension
-      const ext = path.extname(fullPath).toLowerCase();
-      let contentType = 'application/octet-stream';
+function isValidInstitution(institutionId: string): boolean {
+  const cached = institutionCache.get(institutionId);
+  if (cached && Date.now() - cached.timestamp < INSTITUTION_CACHE_TTL) {
+    return cached.valid;
+  }
 
-      switch (ext) {
-        case '.js':
-          contentType = 'application/javascript';
-          break;
-        case '.css':
-          contentType = 'text/css';
-          break;
-        case '.json':
-          contentType = 'application/json';
-          break;
-        case '.png':
-          contentType = 'image/png';
-          break;
-        case '.jpg':
-        case '.jpeg':
-          contentType = 'image/jpeg';
-          break;
-        case '.gif':
-          contentType = 'image/gif';
-          break;
-        case '.svg':
-          contentType = 'image/svg+xml';
-          break;
-        case '.mp4':
-          contentType = 'video/mp4';
-          break;
-        case '.webm':
-          contentType = 'video/webm';
-          break;
-        case '.mp3':
-          contentType = 'audio/mpeg';
-          break;
-        case '.wav':
-          contentType = 'audio/wav';
-          break;
-        case '.ogg':
-          contentType = 'audio/ogg';
-          break;
-        case '.woff':
-          contentType = 'font/woff';
-          break;
-        case '.woff2':
-          contentType = 'font/woff2';
-          break;
-        case '.ttf':
-          contentType = 'font/ttf';
-          break;
-        case '.html':
-          contentType = 'text/html';
-          break;
+  // Optimized validation with precompiled regex
+  const isValid = /^[a-zA-Z0-9-_]{1,50}$/.test(institutionId);
+
+  // Cleanup old cache entries periodically
+  if (institutionCache.size > 1000) {
+    const now = Date.now();
+    for (const [key, value] of institutionCache.entries()) {
+      if (now - value.timestamp > INSTITUTION_CACHE_TTL) {
+        institutionCache.delete(key);
       }
-
-      // Read the file and return it with the appropriate content type
-      const fileContent = fs.readFileSync(fullPath);
-      return new NextResponse(fileContent, {
-        headers: {
-          'Content-Type': contentType,
-          'Cache-Control': 'public, max-age=31536000',
-        },
-      });
     }
   }
 
-  return null;
+  institutionCache.set(institutionId, { valid: isValid, timestamp: Date.now() });
+  return isValid;
 }
 
 /**
- * Handle institution-based URLs
- *
- * This function:
- * 1. Extracts the institution ID from the URL path
- * 2. Redirects to the default institution if no institution ID is provided
- * 3. Adds the institution ID to the request headers for use in API routes
+ * Optimized institution middleware with enhanced caching
  */
 function institutionMiddleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
 
-  // Skip for API routes, public assets, etc.
-  if (
-    pathname.startsWith('/_next') ||
-    pathname.startsWith('/api') ||
-    pathname.startsWith('/static') ||
-    pathname.startsWith('/favicon.ico') ||
-    pathname.startsWith('/h5p') ||
-    pathname.startsWith('/login') ||
-    pathname.startsWith('/unauthorized')
-  ) {
+  // Skip for API routes, public assets, etc. - using precompiled regex
+  if (SKIP_PATTERNS.test(pathname)) {
     return null;
   }
 
-  // Skip for system admin routes
-  if (pathname.startsWith('/admin/system')) {
-    return null;
+  // Check route cache for repeated requests
+  const routeCacheKey = `route:${pathname}`;
+  const cachedRoute = routeCache.get(routeCacheKey);
+  if (cachedRoute && Date.now() - cachedRoute.timestamp < ROUTE_CACHE_TTL) {
+    return cachedRoute.response;
   }
 
   // Extract the institution ID from the URL path
@@ -127,33 +67,40 @@ function institutionMiddleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  // Validate institution ID using cache
+  if (!isValidInstitution(potentialInstitutionId)) {
+    return NextResponse.redirect(new URL('/unauthorized', req.url));
+  }
+
   // Add the institution ID to the request headers for use in API routes
   const response = NextResponse.next();
   response.headers.set('x-institution-id', potentialInstitutionId);
 
+  // Cache successful route decisions
+  routeCache.set(routeCacheKey, { response, timestamp: Date.now() });
+
   return response;
 }
 
-// Combined middleware
+// Production-optimized combined middleware
 export default withAuth(
-  function middleware(req) {
+  function middleware(req: NextRequest & { nextauth: { token: any } }) {
     const token = req.nextauth.token;
     const pathname = req.nextUrl.pathname;
 
-    // First try the H5P middleware
-    const h5pResponse = h5pMiddleware(req);
-    if (h5pResponse) {
-      return h5pResponse;
+    // Skip middleware for static assets and API routes - using precompiled regex
+    if (SKIP_PATTERNS.test(pathname)) {
+      return NextResponse.next();
     }
 
-    // Then try the institution middleware
+    // Handle institution middleware
     const institutionResponse = institutionMiddleware(req);
     if (institutionResponse) {
       return institutionResponse;
     }
 
-    // Allow public paths
-    if (['/login', '/api/auth', '/unauthorized', '/h5p-test'].some(p => pathname.startsWith(p))) {
+    // Allow public paths - using precompiled regex
+    if (PUBLIC_PATTERNS.test(pathname)) {
       return NextResponse.next();
     }
 
@@ -161,34 +108,22 @@ export default withAuth(
       return NextResponse.redirect(new URL('/login', req.url));
     }
 
-    // Check user type and redirect accordingly
-    if (token.userType === 'CAMPUS_TEACHER' || token.userType === 'TEACHER') {
-      // Allow access to teacher routes and worksheets routes
-      if (pathname.startsWith('/teacher') || pathname.startsWith('/worksheets')) {
-        return NextResponse.next();
+    // Optimized role-based routing without additional DB queries
+    const userType = token.userType as string;
+
+    if (userType === 'CAMPUS_TEACHER' || userType === 'TEACHER') {
+      if (!TEACHER_PATTERNS.test(pathname)) {
+        return NextResponse.redirect(new URL('/teacher/dashboard', req.url));
       }
-      // Redirect to teacher dashboard if trying to access other routes
-      return NextResponse.redirect(new URL('/teacher/dashboard', req.url));
-    }
-
-    // Handle student user types
-    if (token.userType === 'CAMPUS_STUDENT' || token.userType === 'STUDENT') {
-      // Allow access to student routes
-      if (pathname.startsWith('/student')) {
-        return NextResponse.next();
+    } else if (userType === 'CAMPUS_STUDENT' || userType === 'STUDENT') {
+      if (!STUDENT_PATTERNS.test(pathname)) {
+        return NextResponse.redirect(new URL('/student/classes', req.url));
       }
-      // Redirect to student classes page if trying to access other routes
-      return NextResponse.redirect(new URL('/student/classes', req.url));
-    }
-
-    // If not a teacher trying to access teacher routes or worksheets routes, redirect to unauthorized
-    if (pathname.startsWith('/teacher') || pathname.startsWith('/worksheets')) {
-      return NextResponse.redirect(new URL('/unauthorized', req.url));
-    }
-
-    // If not a student trying to access student routes, redirect to unauthorized
-    if (pathname.startsWith('/student')) {
-      return NextResponse.redirect(new URL('/unauthorized', req.url));
+    } else {
+      // Handle other user types or unauthorized access
+      if (TEACHER_PATTERNS.test(pathname) || STUDENT_PATTERNS.test(pathname)) {
+        return NextResponse.redirect(new URL('/unauthorized', req.url));
+      }
     }
 
     return NextResponse.next();
@@ -206,7 +141,14 @@ export default withAuth(
 
 export const config = {
   matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
-    '/h5p/:path*',
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - h5p (H5P static files - now handled by Next.js static serving)
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico|h5p).*)',
   ]
 };

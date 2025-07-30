@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import {  useRouter , useParams } from 'next/navigation';
 import { PageLayout } from '@/components/layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/data-display/card';
@@ -53,7 +53,8 @@ const termSchema = z.object({
 
 type TermFormValues = z.infer<typeof termSchema>;
 
-export default function EditTermPage({ params }: { params: { id: string; termId: string } }) {
+export default function EditTermPage() {
+  const params = useParams();
   const router = useRouter();
   const { toast } = useToast();
   const [validPeriods, setValidPeriods] = useState<{ label: string; value: string }[]>([]);
@@ -61,12 +62,12 @@ export default function EditTermPage({ params }: { params: { id: string; termId:
   
   // Fetch academic cycle details
   const { data: academicCycle, isLoading: isLoadingCycle } = api.academicCycle.getById.useQuery({
-    id: params.id,
+    id: (params.id as string),
   });
   
   // Fetch term details
   const { data: term, isLoading: isLoadingTerm } = api.term.getById.useQuery({
-    id: params.termId,
+    id: (params.termId as string),
   });
   
   // Fetch courses for dropdown
@@ -160,7 +161,7 @@ export default function EditTermPage({ params }: { params: { id: string; termId:
         description: 'Term updated successfully',
         variant: 'success',
       });
-      router.push(`/admin/system/academic-cycles/${params.id}/terms`);
+      router.push(`/admin/system/academic-cycles/${(params.id as string)}/terms`);
     },
     onError: (error) => {
       toast({
@@ -196,7 +197,7 @@ export default function EditTermPage({ params }: { params: { id: string; termId:
     }
     
     updateTermMutation.mutate({
-      id: params.termId,
+      id: (params.termId as string),
       code: data.code,
       name: data.name,
       description: data.description,
@@ -217,9 +218,9 @@ export default function EditTermPage({ params }: { params: { id: string; termId:
         description="Loading..."
         breadcrumbs={[
           { label: 'Academic Cycles', href: '/admin/system/academic-cycles' },
-          { label: 'Academic Cycle', href: `/admin/system/academic-cycles/${params.id}` },
-          { label: 'Terms', href: `/admin/system/academic-cycles/${params.id}/terms` },
-          { label: 'Term', href: `/admin/system/academic-cycles/${params.id}/terms/${params.termId}` },
+          { label: 'Academic Cycle', href: `/admin/system/academic-cycles/${(params.id as string)}` },
+          { label: 'Terms', href: `/admin/system/academic-cycles/${(params.id as string)}/terms` },
+          { label: 'Term', href: `/admin/system/academic-cycles/${(params.id as string)}/terms/${(params.termId as string)}` },
           { label: 'Edit', href: '#' },
         ]}
       >
@@ -236,14 +237,14 @@ export default function EditTermPage({ params }: { params: { id: string; termId:
       description={`Edit term details for ${academicCycle?.name || ''}`}
       breadcrumbs={[
         { label: 'Academic Cycles', href: '/admin/system/academic-cycles' },
-        { label: academicCycle?.name || 'Academic Cycle', href: `/admin/system/academic-cycles/${params.id}` },
-        { label: 'Terms', href: `/admin/system/academic-cycles/${params.id}/terms` },
+        { label: academicCycle?.name || 'Academic Cycle', href: `/admin/system/academic-cycles/${(params.id as string)}` },
+        { label: 'Terms', href: `/admin/system/academic-cycles/${(params.id as string)}/terms` },
         { label: term?.name || 'Edit Term', href: '#' },
       ]}
       actions={
         <Button
           variant="outline"
-          onClick={() => router.push(`/admin/system/academic-cycles/${params.id}/terms`)}
+          onClick={() => router.push(`/admin/system/academic-cycles/${(params.id as string)}/terms`)}
         >
           <ArrowLeftIcon className="mr-2 h-4 w-4" />
           Back to Terms
@@ -433,7 +434,7 @@ export default function EditTermPage({ params }: { params: { id: string; termId:
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => router.push(`/admin/system/academic-cycles/${params.id}/terms`)}
+                    onClick={() => router.push(`/admin/system/academic-cycles/${(params.id as string)}/terms`)}
                   >
                     Cancel
                   </Button>

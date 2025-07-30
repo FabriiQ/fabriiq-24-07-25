@@ -64,7 +64,7 @@ export const rewardsRouter = createTRPCRouter({
 
       // Initialize services
       const pointsService = new PointsService({ prisma: ctx.prisma });
-      const leaderboardService = new OptimizedLeaderboardService(ctx.prisma);
+      const leaderboardService = new OptimizedLeaderboardService({ prisma: ctx.prisma });
 
       // Prepare result object
       const result: any = {
@@ -119,7 +119,7 @@ export const rewardsRouter = createTRPCRouter({
 
         // Get points data for all students in one batch
         const studentIds = studentsWithEnrollments.map(enrollment => enrollment.student.id);
-        let pointsData = [];
+        let pointsData: any[] = [];
 
         try {
           pointsData = await pointsService.getAllStudentsPointsSummary(classId) || [];
@@ -136,6 +136,7 @@ export const rewardsRouter = createTRPCRouter({
             weeklyPoints: 0,
             monthlyPoints: 0,
             level: 1,
+            lastAward: null,
           };
 
           return {

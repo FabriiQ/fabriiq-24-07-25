@@ -69,6 +69,7 @@ export class BackgroundJobSystem {
   private runningJobs: Map<string, Promise<any>>;
   private jobHistory: JobHistory;
   private maxHistoryPerJob: number;
+  private lastDebugLog: Map<string, number>;
 
   constructor(prisma: PrismaClient, options?: { maxHistoryPerJob?: number }) {
     this.prisma = prisma;
@@ -77,6 +78,7 @@ export class BackgroundJobSystem {
     this.runningJobs = new Map();
     this.jobHistory = {};
     this.maxHistoryPerJob = options?.maxHistoryPerJob || 10;
+    this.lastDebugLog = new Map();
   }
 
   /**
@@ -163,11 +165,28 @@ export class BackgroundJobSystem {
         interval = 60 * 60 * 1000; // Default to 1 hour
     }
 
-    // Schedule the job
-    const timer = setInterval(() => {
-      this.executeJob(job.id).catch(error => {
+    // Schedule the job with intelligent execution and reduced logging
+    const timer = setInterval(async () => {
+      // Skip if job is already running
+      if (this.runningJobs.has(job.id)) {
+        // Only log occasionally to reduce spam (every 10 minutes for monthly jobs)
+        const now = Date.now();
+        const lastLogKey = `${job.id}_skip_log`;
+        const lastLog = this.lastDebugLog?.get(lastLogKey) || 0;
+        const logInterval = job.frequency === JobFrequency.MONTHLY ? 10 * 60 * 1000 : 60 * 1000; // 10 min for monthly, 1 min for others
+
+        if (now - lastLog > logInterval) {
+          logger.debug(`Job ${job.id} is already running, skipping execution`);
+          this.lastDebugLog?.set(lastLogKey, now);
+        }
+        return;
+      }
+
+      try {
+        await this.executeJob(job.id);
+      } catch (error) {
         logger.error(`Error executing scheduled job ${job.id}`, { error });
-      });
+      }
     }, interval);
 
     this.timers.set(job.id, timer);
@@ -194,7 +213,7 @@ export class BackgroundJobSystem {
 
     // Check if job is already running
     if (this.runningJobs.has(jobId)) {
-      logger.warn(`Job ${jobId} is already running. Skipping execution.`);
+      logger.debug(`Job ${jobId} is already running. Skipping execution.`);
       return {
         jobId,
         status: JobStatus.PENDING,
@@ -363,10 +382,10 @@ export class BackgroundJobSystem {
   }
 
   /**
-   * Get running jobs
-   * @returns Map of running jobs
+   * Get running job IDs
+   * @returns Array of running job IDs
    */
-  getRunningJobs(): string[] {
+  getRunningJobIds(): string[] {
     return Array.from(this.runningJobs.keys());
   }
 
@@ -440,6 +459,69 @@ export class BackgroundJobSystem {
         this.scheduleJob(job);
       }
     }
+  }
+
+  /**
+   * Get job statistics
+   */
+  getJobStats(): {
+    totalJobs: number;
+    runningJobs: number;
+    completedJobs: number;
+    failedJobs: number;
+  } {
+    const totalJobs = this.jobs.size;
+    const runningJobs = this.runningJobs.size;
+
+    let completedJobs = 0;
+    let failedJobs = 0;
+
+    for (const jobId of this.jobs.keys()) {
+      const history = this.jobHistory[jobId] || [];
+      const lastResult = history[history.length - 1];
+      if (lastResult) {
+        if (lastResult.status === JobStatus.COMPLETED) {
+          completedJobs++;
+        } else if (lastResult.status === JobStatus.FAILED) {
+          failedJobs++;
+        }
+      }
+    }
+
+    return {
+      totalJobs,
+      runningJobs,
+      completedJobs,
+      failedJobs
+    };
+  }
+
+  /**
+   * Clear all running job locks (for emergency cleanup)
+   */
+  clearRunningJobs(): void {
+    logger.warn('Clearing all running job locks');
+    this.runningJobs.clear();
+  }
+
+  /**
+   * Get currently running jobs with details
+   */
+  getRunningJobs(): Array<{ id: string; name: string; startTime: number }> {
+    const runningJobs: Array<{ id: string; name: string; startTime: number }> = [];
+
+    for (const jobId of this.runningJobs.keys()) {
+      const job = this.jobs.get(jobId);
+      if (job) {
+        runningJobs.push({
+          id: jobId,
+          name: job.name,
+          startTime: Date.now() // Approximate, would need to track actual start time
+        });
+      }
+    }
+
+    return runningJobs;
   }
 
   /**

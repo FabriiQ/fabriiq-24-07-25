@@ -5,7 +5,6 @@
  * that can be imported into the question bank.
  */
 
-// @ts-ignore - xlsx types will be installed later
 import * as XLSX from 'xlsx';
 import {
   CreateQuestionInput,

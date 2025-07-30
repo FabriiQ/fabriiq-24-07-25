@@ -63,7 +63,7 @@ export function useOptimisticUpdate<TData = any>(queryKey: string[]) {
       }
       
       // Invalidate the query to refetch fresh data
-      await utils.invalidate(queryKey);
+      await queryClient.invalidateQueries({ queryKey });
       
       return result;
     } catch (error) {
@@ -75,7 +75,7 @@ export function useOptimisticUpdate<TData = any>(queryKey: string[]) {
         toast({
           title: 'Error',
           description: options.errorMessage,
-          variant: 'destructive',
+          variant: 'error',
         });
       }
       

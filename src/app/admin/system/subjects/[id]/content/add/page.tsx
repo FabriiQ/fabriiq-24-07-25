@@ -1,4 +1,5 @@
 "use client";
+import { useParams } from 'next/navigation';
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -47,15 +48,12 @@ const contentFormSchema = z.object({
 
 type FormValues = z.infer<typeof contentFormSchema>;
 
-export default function AddContentPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+export default function AddContentPage() {
+  const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
-  const subjectId = params.id;
+  const subjectId = (params.id as string);
   const parentId = searchParams.get("parentId");
   
   // Fetch subject details for breadcrumb

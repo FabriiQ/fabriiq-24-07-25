@@ -18,8 +18,10 @@ export const metadata: Metadata = {
   description: "View and manage enrollment details",
 };
 
-export default async function EnrollmentDetailPage({ params }: { params: { id: string } }) {
-  const enrollmentId = params.id;
+export default async function EnrollmentDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+
+  const enrollmentId = id;
   const session = await getSessionCache();
 
   if (!session?.user?.id) {

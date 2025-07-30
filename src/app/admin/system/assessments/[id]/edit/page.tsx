@@ -8,19 +8,22 @@ export const metadata: Metadata = {
 };
 
 interface EditAssessmentPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  
+  }>;
 }
 
-export default function EditAssessmentPage({ params }: EditAssessmentPageProps) {
+export default async function EditAssessmentPage({ params }: EditAssessmentPageProps) {
+  const { id } = await params;
+
   return (
     <div className="space-y-6">
       <PageHeader
         title="Edit Assessment"
         description="Modify an existing assessment"
       />
-      <AssessmentForm assessmentId={params.id} />
+      <AssessmentForm assessmentId={id} />
     </div>
   );
-} 
+}

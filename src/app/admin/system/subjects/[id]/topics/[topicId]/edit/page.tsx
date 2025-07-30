@@ -1,4 +1,5 @@
 'use client';
+import { useParams } from 'next/navigation';
 
 
 import { useRouter } from "next/navigation";
@@ -6,12 +7,13 @@ import { TopicForm } from "~/components/admin/subjects/TopicForm";
 import { Button } from "~/components/ui";
 import { ChevronLeft } from "lucide-react";
 
-export default function EditTopicPage({ params }: { params: { id: string; topicId: string } }) {
+export default function EditTopicPage() {
+  const params = useParams();
   const router = useRouter();
 
   // Use params directly
-  const subjectId = params.id;
-  const topicId = params.topicId;
+  const subjectId = (params.id as string);
+  const topicId = (params.topicId as string);
 
   return (
     <div className="container mx-auto py-8 px-4">

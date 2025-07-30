@@ -29,48 +29,62 @@ app.prepare().then(() => {
     }
   });
 
-  // Initialize Socket.IO
-  const io = new Server(server, {
-    path: '/api/socket/social-wall',
-    cors: {
-      origin: process.env.NEXTAUTH_URL || `http://localhost:${port}`,
-      methods: ['GET', 'POST'],
-      credentials: true,
-    },
-    transports: ['websocket', 'polling'],
-    pingTimeout: 60000,
-    pingInterval: 25000,
-  });
+  // Initialize Socket.IO with error handling and timeout protection
+  console.log('Initializing Socket.IO server...');
 
-  // Store Socket.IO instance globally for access in API routes
-  global.__socialWallSocketIO = io;
-
-  // Initialize the Social Wall Socket Server
   try {
-    const { socialWallSocketServer } = require('./src/features/social-wall/services/socket-server.ts');
-    socialWallSocketServer.initialize(io);
-    console.log('Social Wall Socket.IO server initialized successfully');
-  } catch (error) {
-    console.error('Failed to initialize Social Wall Socket.IO server:', error);
-
-    // Fallback basic setup
-    io.on('connection', (socket) => {
-      console.log('Socket connected (fallback):', socket.id);
-
-      socket.on('disconnect', (reason) => {
-        console.log('Socket disconnected (fallback):', socket.id, reason);
-      });
+    const io = new Server(server, {
+      path: '/api/socket/social-wall',
+      cors: {
+        origin: process.env.NEXTAUTH_URL || `http://localhost:${port}`,
+        methods: ['GET', 'POST'],
+        credentials: true,
+      },
+      transports: ['websocket', 'polling'],
+      pingTimeout: 60000,
+      pingInterval: 25000,
     });
 
-    // Dynamic namespace handling for classes (fallback)
-    io.of(/^\/class-[\w]+$/).on('connection', (socket) => {
-      const classId = socket.nsp.name.replace('/class-', '');
-      console.log(`User connected to class ${classId} (fallback):`, socket.id);
+    // Store Socket.IO instance globally for access in API routes
+    global.__socialWallSocketIO = io;
+    console.log('Socket.IO server created successfully');
+
+    // Basic social wall socket handling (simplified for stability)
+    io.on('connection', (socket) => {
+      console.log('User connected to social wall:', socket.id);
+
+      // Join class room
+      socket.on('join-class', (classId) => {
+        socket.join(`class-${classId}`);
+        console.log(`User joined class ${classId}:`, socket.id);
+      });
+
+      // Leave class room
+      socket.on('leave-class', (classId) => {
+        socket.leave(`class-${classId}`);
+        console.log(`User left class ${classId}:`, socket.id);
+      });
+
+      // Handle social wall posts
+      socket.on('new-post', (data) => {
+        socket.to(`class-${data.classId}`).emit('post-created', data);
+      });
 
       socket.on('disconnect', () => {
-        console.log(`User disconnected from class ${classId} (fallback):`, socket.id);
+        console.log('User disconnected from social wall:', socket.id);
       });
     });
+
+    console.log('Socket.IO event handlers set up successfully');
+
+  } catch (error) {
+    console.error('Failed to initialize Socket.IO:', error);
+    // Store a dummy Socket.IO instance to prevent crashes
+    global.__socialWallSocketIO = {
+      emit: () => {},
+      to: () => ({ emit: () => {} }),
+      on: () => {},
+    };
   }
 
   // Start the server
@@ -83,39 +97,84 @@ app.prepare().then(() => {
       console.log(`> Ready on http://${hostname}:${port}`);
       console.log(`> Socket.IO server running on path: /api/socket/social-wall`);
 
-      // Memory monitoring
-      setInterval(() => {
-        const memUsage = process.memoryUsage();
-        const memUsageMB = {
-          rss: Math.round(memUsage.rss / 1024 / 1024),
-          heapTotal: Math.round(memUsage.heapTotal / 1024 / 1024),
-          heapUsed: Math.round(memUsage.heapUsed / 1024 / 1024),
-          external: Math.round(memUsage.external / 1024 / 1024),
-        };
+      // Initialize optimized server components
+      if (process.env.FAST_STARTUP !== 'true') {
+        console.log('Starting server initialization...');
+      }
 
-        // Log memory usage every 5 minutes
-        console.log('Memory usage (MB):', memUsageMB);
+      // Only enable memory monitoring in production or when explicitly enabled
+      const enableMemoryMonitoring = process.env.NODE_ENV === 'production' ||
+                                    process.env.ENABLE_MEMORY_MONITORING === 'true';
 
-        // Warning if memory usage is high
-        if (memUsageMB.heapUsed > 1000) {
-          console.warn('High memory usage detected:', memUsageMB);
+      if (enableMemoryMonitoring) {
+        // Use setTimeout to avoid blocking the main thread
+        setTimeout(() => {
+          try {
+            console.log('Initializing memory monitoring...');
 
-          // Force garbage collection if available
-          if (global.gc) {
-            global.gc();
-            console.log('Forced garbage collection');
+            // Basic memory monitoring with longer intervals for better performance
+            setInterval(() => {
+              const memUsage = process.memoryUsage();
+              const memUsageMB = {
+                rss: Math.round(memUsage.rss / 1024 / 1024),
+                heapTotal: Math.round(memUsage.heapTotal / 1024 / 1024),
+                heapUsed: Math.round(memUsage.heapUsed / 1024 / 1024),
+                external: Math.round(memUsage.external / 1024 / 1024),
+              };
+
+              // Only log if memory usage is concerning
+              if (memUsageMB.heapUsed > 512) {
+                console.log('Memory usage (MB):', memUsageMB);
+              }
+
+              // Trigger GC if memory usage is high
+              if (memUsageMB.heapUsed > 1000) {
+                console.warn('High memory usage detected:', memUsageMB);
+                if (global.gc) {
+                  global.gc();
+                  console.log('Forced garbage collection');
+                }
+              }
+            }, 600000); // 10 minutes interval for better performance
+
+          } catch (error) {
+            console.error('Memory monitoring initialization failed:', error);
           }
+        }, 2000); // 2 second delay
+      } else {
+        // In development, just log initial memory usage and set up basic monitoring
+        const memUsage = process.memoryUsage();
+        const memUsageMB = Math.round(memUsage.heapUsed / 1024 / 1024);
+        console.log(`Initial memory usage: ${memUsageMB}MB (monitoring disabled)`);
+
+        // Set up basic memory monitoring in development to catch memory leaks
+        if (memUsageMB > 200) {
+          console.warn('High initial memory usage detected. Consider restarting the development server.');
         }
-      }, 300000); // Every 5 minutes
+
+        // Force garbage collection if available and memory is high
+        if (global.gc && memUsageMB > 300) {
+          global.gc();
+          console.log('Forced garbage collection due to high memory usage');
+        }
+
+        console.log('Server startup completed successfully');
+      }
+
+      console.log('Exiting server listen callback...');
     });
+
+  console.log('Setting up graceful shutdown handlers...');
 
   // Graceful shutdown
   const gracefulShutdown = (signal) => {
     console.log(`${signal} received, shutting down gracefully`);
 
     try {
-      const { socialWallSocketServer } = require('./src/features/social-wall/services/socket-server.ts');
-      socialWallSocketServer.shutdown();
+      // Try to gracefully shutdown socket server if it exists
+      if (global.socialWallSocketServer && typeof global.socialWallSocketServer.shutdown === 'function') {
+        global.socialWallSocketServer.shutdown();
+      }
     } catch (error) {
       console.error('Error during socket server shutdown:', error);
     }
@@ -145,4 +204,8 @@ app.prepare().then(() => {
     console.error('Unhandled Rejection at:', promise, 'reason:', reason);
     gracefulShutdown('UNHANDLED_REJECTION');
   });
+
+  console.log('All event handlers set up. Server initialization complete.');
 });
+
+console.log('Server setup complete, waiting for app.prepare()...');

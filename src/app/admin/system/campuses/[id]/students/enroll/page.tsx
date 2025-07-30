@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { PageHeader } from '@/components/ui/page-header';
 import { ArrowLeftIcon } from 'lucide-react';
@@ -9,12 +9,12 @@ import { EnrollStudentDialog } from '@/components/campus/EnrollStudentDialog';
 import { api } from '~/trpc/react';
 import { SystemStatus } from '@prisma/client';
 
-// Define ProgramChangeType if it doesn't exist
-export enum ProgramChangeType {
-  NEW_ENROLLMENT = "NEW_ENROLLMENT",
-  PROGRAM_TRANSFER = "PROGRAM_TRANSFER",
-  PROGRAM_UPGRADE = "PROGRAM_UPGRADE",
-}
+// Define ProgramChangeType as const (not exported from page component)
+const ProgramChangeType = {
+  NEW_ENROLLMENT: "NEW_ENROLLMENT",
+  PROGRAM_TRANSFER: "PROGRAM_TRANSFER",
+  PROGRAM_UPGRADE: "PROGRAM_UPGRADE",
+} as const;
 
 // Define the type for program campus
 interface ProgramCampus {
@@ -27,30 +27,26 @@ interface ProgramCampus {
   };
 }
 
-interface EnrollStudentPageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default function EnrollStudentPage({ params }: EnrollStudentPageProps) {
+export default function EnrollStudentPage() {
   const router = useRouter();
+  const params = useParams();
+  const campusId = params.id as string;
   const [dialogOpen, setDialogOpen] = useState(true);
   
   // Fetch campus details
   const { data: campus, isLoading: campusLoading } = api.campus.getCampus.useQuery({
-    id: params.id,
+    id: campusId,
   });
 
   // Fetch available students
   const { data: availableStudents, isLoading: studentsLoading } = api.user.getAvailableStudents.useQuery({
-    campusId: params.id,
+    campusId: campusId,
   });
 
   // Fetch available programs
-  const { data: programCampuses, isLoading: programsLoading } = 
+  const { data: programCampuses, isLoading: programsLoading } =
     api.program.getProgramCampusesByCampus.useQuery({
-      campusId: params.id,
+      campusId: campusId,
       status: SystemStatus.ACTIVE,
     });
 
@@ -58,7 +54,7 @@ export default function EnrollStudentPage({ params }: EnrollStudentPageProps) {
   const handleDialogOpenChange = (open: boolean) => {
     setDialogOpen(open);
     if (!open) {
-      router.push(`/admin/system/campuses/${params.id}/students`);
+      router.push(`/admin/system/campuses/${campusId}/students`);
     }
   };
 
@@ -130,10 +126,10 @@ export default function EnrollStudentPage({ params }: EnrollStudentPageProps) {
       <EnrollStudentDialog
         open={dialogOpen}
         onOpenChange={handleDialogOpenChange}
-        campusId={params.id}
+        campusId={campusId}
         availableStudents={availableStudents?.students || []}
         availablePrograms={programOptions}
-        returnUrl={`/admin/system/campuses/${params.id}/students`}
+        returnUrl={`/admin/system/campuses/${campusId}/students`}
       />
     </div>
   );

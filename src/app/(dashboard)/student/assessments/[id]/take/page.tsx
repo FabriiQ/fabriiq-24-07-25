@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import {  useRouter , useParams } from 'next/navigation';
 import { useToast } from '@/components/ui/use-toast';
 import { api } from '@/trpc/react';
 import { AssessmentTaker } from '@/features/assessments/components/online';
@@ -10,7 +10,8 @@ import { Button } from '@/components/ui/button';
 import { ChevronLeft } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 
-export default function TakeAssessmentPage({ params }: { params: Promise<{ id: string }> }) {
+export default function TakeAssessmentPage() {
+  const params = useParams();
   const router = useRouter();
   const { toast } = useToast();
   const { data: session } = useSession();
@@ -19,7 +20,7 @@ export default function TakeAssessmentPage({ params }: { params: Promise<{ id: s
 
   // Resolve params
   useEffect(() => {
-    params.then((resolvedParams) => {
+    (params.then as string)((resolvedParams) => {
       setAssessmentId(resolvedParams.id);
     });
   }, [params]);

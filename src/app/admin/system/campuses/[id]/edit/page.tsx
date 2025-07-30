@@ -16,12 +16,15 @@ export const metadata: Metadata = {
 };
 
 interface EditCampusPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  
+  }>;
 }
 
 export default async function EditCampusPage({ params }: EditCampusPageProps) {
+  const { id } = await params;
+
   const session = await getSessionCache();
 
   if (!session?.user?.id) {
@@ -44,7 +47,7 @@ export default async function EditCampusPage({ params }: EditCampusPageProps) {
 
   // Get campus details
   const campus = await prisma.campus.findUnique({
-    where: { id: params.id },
+    where: { id: id },
   });
 
   if (!campus) {
@@ -65,7 +68,7 @@ export default async function EditCampusPage({ params }: EditCampusPageProps) {
   return (
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex items-center space-x-4">
-        <Link href={`/admin/system/campuses/${params.id}`}>
+        <Link href={`/admin/system/campuses/${id}`}>
           <Button variant="outline" size="icon">
             <ArrowLeftIcon className="h-4 w-4" />
           </Button>

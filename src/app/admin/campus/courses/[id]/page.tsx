@@ -7,15 +7,14 @@ import { ArrowLeft } from "lucide-react";
 import { CourseDetailsContent } from "@/app/admin/campus/courses/[id]/CourseDetailsContent";
 
 interface CourseDetailsPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default async function CourseDetailsPage({ params }: CourseDetailsPageProps) {
-  // Ensure params is fully resolved
-  const resolvedParams = await Promise.resolve(params);
-  const { id } = resolvedParams;
+  // Await params properly for Next.js 15
+  const { id } = await params;
   const session = await getSessionCache();
 
   // Only redirect if there's definitely no session

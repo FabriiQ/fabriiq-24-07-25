@@ -10,13 +10,10 @@ import { prisma } from "@/server/db";
 import { NewClassForm } from "./NewClassForm";
 
 interface NewClassPageProps {
-  params: {
-    id: string;
-  };
-  searchParams: {
-    programId?: string;
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ programId?: string;
     courseId?: string;
-  };
+   }>;
 }
 
 export default async function NewClassPage({ params, searchParams }: NewClassPageProps) {

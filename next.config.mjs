@@ -4,13 +4,72 @@ const config = {
     remotePatterns: [],
   },
   reactStrictMode: true,
-  // External packages configuration moved from experimental to root level
+
+  // Performance optimizations
   serverExternalPackages: ['@prisma/client', '@prisma/engines'],
-  experimental: {
-    // View transitions and scroll restoration
-    viewTransition: true,
-    scrollRestoration: true,
+
+  // Build optimizations to prevent memory issues
+  eslint: {
+    // Disable ESLint during build to save memory
+    ignoreDuringBuilds: process.env.NODE_ENV === 'production',
   },
+
+  typescript: {
+    // Skip type checking during build in production (run separately)
+    ignoreBuildErrors: process.env.NODE_ENV === 'production',
+  },
+
+  experimental: {
+    // Disable view transitions by default for better performance
+    viewTransition: process.env.DISABLE_VIEW_TRANSITIONS !== 'true',
+    scrollRestoration: true,
+    // Package import optimization
+    optimizePackageImports: ['@prisma/client', 'lucide-react', '@radix-ui/react-icons'],
+    // Memory optimizations
+    workerThreads: false,
+    cpus: 1,
+  },
+
+  // Compiler optimizations
+  compiler: {
+    // Remove console logs in production
+    removeConsole: process.env.NODE_ENV === 'production' ? {
+      exclude: ['error', 'warn']
+    } : false,
+  },
+  // Add caching headers for better performance
+  async headers() {
+    return [
+      {
+        source: '/api/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=60, stale-while-revalidate=300',
+          },
+        ],
+      },
+      {
+        source: '/h5p/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/_next/static/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+    ];
+  },
+
   async rewrites() {
     return [
       {

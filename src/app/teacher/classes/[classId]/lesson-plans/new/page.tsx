@@ -13,13 +13,12 @@ import LessonPlanForm from '@/components/teacher/lesson-plans/LessonPlanForm';
 export default async function NewLessonPlanPage({
   params,
 }: {
-  params: { classId: string };
+  params: Promise<{ classId: string }>;
 }) {
+  const { classId } = await params;
+
   // In Next.js 15+, we need to properly handle dynamic params
   const session = await getSessionCache();
-
-  // Await params to ensure it's fully resolved
-  const classId = (await params).classId;
 
   // Redirect if not authenticated or not a teacher
   if (!session?.user || session.user.userType !== UserType.CAMPUS_TEACHER) {

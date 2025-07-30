@@ -16,10 +16,9 @@ export const metadata: Metadata = {
 export default async function ClassAttendancePage({
   params,
 }: {
-  params: { classId: string };
+  params: Promise<{ classId: string }>;
 }) {
-  // Await params to ensure it's fully resolved
-  const classId = (await params).classId;
+  const { classId } = await params;
 
   const session = await getSessionCache();
 

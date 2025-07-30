@@ -2,9 +2,8 @@ import { ResetPasswordForm } from "@/components/ui/organisms/reset-password-form
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/atoms/card";
 
 interface ResetPasswordPageProps {
-  searchParams: {
-    token?: string;
-  };
+  searchParams: Promise<{ token?: string;
+   }>;
 }
 
 export default function ResetPasswordPage({ searchParams }: ResetPasswordPageProps) {

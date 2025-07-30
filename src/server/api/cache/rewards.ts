@@ -186,10 +186,95 @@ export class RewardsCache {
   }
 }
 
-// Create cache instances for different reward data types
-export const leaderboardCache = new RewardsCache(5000); // Larger cache for leaderboards
-export const studentCache = new RewardsCache(10000); // Larger cache for student data
-export const aggregateCache = new RewardsCache(1000); // Smaller cache for aggregates
+// Singleton cache instances to prevent memory leaks
+let leaderboardCacheInstance: RewardsCache | null = null;
+let studentCacheInstance: RewardsCache | null = null;
+let aggregateCacheInstance: RewardsCache | null = null;
+
+// Getter functions to ensure singleton pattern
+export function getLeaderboardCache(): RewardsCache {
+  if (!leaderboardCacheInstance) {
+    leaderboardCacheInstance = new RewardsCache(5000);
+    logger.debug('Initialized rewards cache with max size: 5000');
+  }
+  return leaderboardCacheInstance;
+}
+
+export function getStudentCache(): RewardsCache {
+  if (!studentCacheInstance) {
+    studentCacheInstance = new RewardsCache(10000);
+    logger.debug('Initialized rewards cache with max size: 10000');
+  }
+  return studentCacheInstance;
+}
+
+export function getAggregateCache(): RewardsCache {
+  if (!aggregateCacheInstance) {
+    aggregateCacheInstance = new RewardsCache(1000);
+    logger.debug('Initialized rewards cache with max size: 1000');
+  }
+  return aggregateCacheInstance;
+}
+
+// Lazy-loaded cache instances to prevent immediate initialization
+let _leaderboardCache: RewardsCache | null = null;
+let _studentCache: RewardsCache | null = null;
+let _aggregateCache: RewardsCache | null = null;
+
+// Legacy exports for backward compatibility - now lazy-loaded
+export const leaderboardCache = {
+  get cache() { return (getLeaderboardCache() as any).cache; },
+  getOrSet: <T>(namespace: string, key: string, fetchFn: () => Promise<T>, ttl: number) =>
+    getLeaderboardCache().getOrSet(namespace, key, fetchFn, ttl),
+  delete: (namespace: string, key: string) => getLeaderboardCache().delete(namespace, key),
+  destroy: () => getLeaderboardCache().destroy(),
+};
+
+export const studentCache = {
+  getOrSet: <T>(namespace: string, key: string, fetchFn: () => Promise<T>, ttl: number) =>
+    getStudentCache().getOrSet(namespace, key, fetchFn, ttl),
+  delete: (namespace: string, key: string) => getStudentCache().delete(namespace, key),
+  destroy: () => getStudentCache().destroy(),
+};
+
+export const aggregateCache = {
+  getOrSet: <T>(namespace: string, key: string, fetchFn: () => Promise<T>, ttl: number) =>
+    getAggregateCache().getOrSet(namespace, key, fetchFn, ttl),
+  delete: (namespace: string, key: string) => getAggregateCache().delete(namespace, key),
+  destroy: () => getAggregateCache().destroy(),
+};
+
+/**
+ * Cleanup function to destroy all cache instances
+ * Should be called when the application shuts down
+ */
+export function destroyAllCaches(): void {
+  if (leaderboardCacheInstance) {
+    leaderboardCacheInstance.destroy();
+    leaderboardCacheInstance = null;
+  }
+  if (studentCacheInstance) {
+    studentCacheInstance.destroy();
+    studentCacheInstance = null;
+  }
+  if (aggregateCacheInstance) {
+    aggregateCacheInstance.destroy();
+    aggregateCacheInstance = null;
+  }
+  logger.debug('All rewards caches destroyed');
+}
+
+// Set up process exit handlers to clean up caches using centralized manager
+if (typeof process !== 'undefined') {
+  import('@/utils/process-event-manager').then(({ addProcessHandler }) => {
+    addProcessHandler('exit', destroyAllCaches);
+    addProcessHandler('SIGINT', destroyAllCaches);
+    addProcessHandler('SIGTERM', destroyAllCaches);
+  }).catch(() => {
+    // Fallback to direct process listeners if import fails
+    process.on('exit', destroyAllCaches);
+  });
+}
 
 /**
  * Cache a leaderboard query
@@ -231,7 +316,7 @@ export async function cacheLeaderboard<T>(
       break;
   }
   
-  return leaderboardCache.getOrSet('leaderboard', key, fetchFn, ttl);
+  return getLeaderboardCache().getOrSet('leaderboard', key, fetchFn, ttl);
 }
 
 /**
@@ -244,7 +329,7 @@ export async function cacheStudentPoints<T>(
   studentId: string,
   fetchFn: () => Promise<T>
 ): Promise<T> {
-  return studentCache.getOrSet('points', studentId, fetchFn, CACHE_TTL.STUDENT_POINTS);
+  return getStudentCache().getOrSet('points', studentId, fetchFn, CACHE_TTL.STUDENT_POINTS);
 }
 
 /**
@@ -292,21 +377,22 @@ export async function cachePointsAggregates<T>(
  * @param referenceId Reference ID (classId, subjectId, etc.)
  */
 export function invalidateLeaderboardCache(type: string, referenceId?: string): void {
+  const cache = getLeaderboardCache();
   if (referenceId) {
     // Invalidate specific leaderboard
     const prefix = `${type}:${referenceId}`;
-    const keys = Array.from(leaderboardCache['cache'].keys())
-      .filter(key => key.startsWith(`leaderboard:${prefix}`));
-    
-    keys.forEach(key => leaderboardCache['cache'].delete(key));
+    const keys = Array.from((cache as any).cache.keys())
+      .filter((key: string) => key.startsWith(`leaderboard:${prefix}`));
+
+    keys.forEach((key: string) => cache.delete('leaderboard', key.replace('leaderboard:', '')));
     logger.debug(`Invalidated leaderboard cache for ${prefix}`);
   } else {
     // Invalidate all leaderboards of this type
     const prefix = `${type}:`;
-    const keys = Array.from(leaderboardCache['cache'].keys())
-      .filter(key => key.startsWith(`leaderboard:${prefix}`));
-    
-    keys.forEach(key => leaderboardCache['cache'].delete(key));
+    const keys = Array.from((cache as any).cache.keys())
+      .filter((key: string) => key.startsWith(`leaderboard:${prefix}`));
+
+    keys.forEach((key: string) => cache.delete('leaderboard', key.replace('leaderboard:', '')));
     logger.debug(`Invalidated all ${type} leaderboard caches`);
   }
 }

@@ -7,13 +7,14 @@ import { redirect } from 'next/navigation';
 import { prisma } from '@/server/db';
 
 interface TeacherClassPerformancePageProps {
-  params: {
+  params: Promise<{
     classId: string;
-  };
+  
+  }>;
 }
 
 export default async function TeacherClassPerformancePage({ params }: TeacherClassPerformancePageProps) {
-  const { classId } = params;
+  const { classId  } = await params;
   const session = await getServerSession(authOptions);
 
   // Redirect if not authenticated

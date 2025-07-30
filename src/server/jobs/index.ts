@@ -15,6 +15,7 @@ import { SystemJobManager } from './system-job-manager';
 let backgroundJobSystem: BackgroundJobSystem | null = null;
 let rewardJobManager: RewardJobManager | null = null;
 let systemJobManager: SystemJobManager | null = null;
+let isInitializing = false;
 
 /**
  * Initialize the background job system
@@ -27,7 +28,7 @@ export function initializeBackgroundJobs(prisma: PrismaClient): {
   systemJobManager: SystemJobManager;
 } {
   if (backgroundJobSystem) {
-    logger.info('Background job system already initialized');
+    logger.debug('Background job system already initialized');
     return {
       jobSystem: backgroundJobSystem,
       rewardJobManager: rewardJobManager!,
@@ -35,18 +36,36 @@ export function initializeBackgroundJobs(prisma: PrismaClient): {
     };
   }
 
+  if (isInitializing) {
+    logger.debug('Background job system is currently initializing, returning existing instance if available');
+    // Don't wait - just return existing instance or create a new one
+    if (backgroundJobSystem) {
+      return {
+        jobSystem: backgroundJobSystem,
+        rewardJobManager: rewardJobManager!,
+        systemJobManager: systemJobManager!
+      };
+    }
+    // If still initializing and no instance, continue with initialization
+  }
+
   logger.info('Initializing background job system');
+  isInitializing = true;
 
-  // Create the background job system
-  backgroundJobSystem = new BackgroundJobSystem(prisma);
+  try {
+    // Create the background job system
+    backgroundJobSystem = new BackgroundJobSystem(prisma);
 
-  // Create job managers
-  rewardJobManager = new RewardJobManager(prisma, backgroundJobSystem);
-  systemJobManager = new SystemJobManager(prisma, backgroundJobSystem);
+    // Create job managers
+    rewardJobManager = new RewardJobManager(prisma, backgroundJobSystem);
+    systemJobManager = new SystemJobManager(prisma, backgroundJobSystem);
 
-  // Register jobs
-  rewardJobManager.registerJobs();
-  systemJobManager.registerJobs();
+    // Register jobs
+    rewardJobManager.registerJobs();
+    systemJobManager.registerJobs();
+  } finally {
+    isInitializing = false;
+  }
 
   logger.info('Background job system initialized');
 
