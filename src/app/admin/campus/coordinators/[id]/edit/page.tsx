@@ -12,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui';
 import { LoadingSpinner } from '@/components/ui/loading';
-import { ArrowLeft, Save } from 'lucide-react';
+import { ChevronLeft, Save } from 'lucide-react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -144,7 +144,7 @@ export default function EditCoordinatorPage() {
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex items-center space-x-4">
         <Button variant="outline" size="icon" onClick={() => router.back()}>
-          <ArrowLeft className="h-4 w-4" />
+          <ChevronLeft className="h-4 w-4" />
         </Button>
         <div>
           <h1 className="text-2xl font-bold">Edit Coordinator</h1>

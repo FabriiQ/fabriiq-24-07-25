@@ -20,7 +20,7 @@ import { useToast } from '@/components/ui/feedback/toast';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ArrowLeftIcon } from 'lucide-react';
+import { ChevronLeftIcon } from 'lucide-react';
 import { TermType, TermPeriod } from '@/server/api/constants';
 import {
   Form,
@@ -246,7 +246,7 @@ export default function EditTermPage() {
           variant="outline"
           onClick={() => router.push(`/admin/system/academic-cycles/${(params.id as string)}/terms`)}
         >
-          <ArrowLeftIcon className="mr-2 h-4 w-4" />
+          <ChevronLeftIcon className="mr-2 h-4 w-4" />
           Back to Terms
         </Button>
       }

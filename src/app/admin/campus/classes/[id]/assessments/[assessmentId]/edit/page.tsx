@@ -11,7 +11,7 @@ import {
   CardTitle
 } from '@/components/ui/data-display/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import dynamic from 'next/dynamic';
 
 // Import the new ClassAssessmentCreator from features/assessments
@@ -71,7 +71,7 @@ export default async function EditAssessmentPage({
               <div className="flex items-center gap-2 mb-1">
                 <Link href={`/admin/campus/classes/${classId}/assessments/${assessmentId}`}>
                   <Button size="sm" variant="ghost">
-                    <ArrowLeft className="h-4 w-4 mr-1" />
+                    <ChevronLeft className="h-4 w-4 mr-1" />
                     Back
                   </Button>
                 </Link>

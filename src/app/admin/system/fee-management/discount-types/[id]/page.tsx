@@ -14,7 +14,7 @@ import {
   Calendar,
   User
 } from 'lucide-react';
-import { ArrowLeft, Percent, DollarSign, Tag } from '@/components/ui/icons/custom-icons';
+import { ChevronLeft, Percent, DollarSign, Tag } from '@/components/ui/icons/custom-icons';
 import { DataTable } from '@/components/ui/data-display/data-table';
 import { ColumnDef } from '@tanstack/react-table';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
@@ -135,7 +135,7 @@ export default function DiscountTypeDetailPage() {
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <Button variant="outline" size="icon" onClick={() => router.back()}>
-            <ArrowLeft className="h-4 w-4" />
+            <ChevronLeft className="h-4 w-4" />
           </Button>
           <div>
             <h1 className="text-3xl font-bold">{mockDiscountType.name}</h1>

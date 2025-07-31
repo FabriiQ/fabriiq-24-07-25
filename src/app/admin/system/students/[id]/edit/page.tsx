@@ -3,7 +3,7 @@
 
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/atoms/button';
 import { PageHeader } from '@/components/ui/atoms/page-header';
 import { api } from '@/utils/api';
@@ -28,7 +28,7 @@ export default function EditStudentPage() {
       <div className="container mx-auto py-8 space-y-6">
         <div className="flex items-center space-x-4">
           <Button variant="outline" size="sm" disabled>
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ChevronLeft className="h-4 w-4 mr-2" />
             Back
           </Button>
           <div>
@@ -109,7 +109,7 @@ export default function EditStudentPage() {
         <div className="flex items-center space-x-2">
           <Button variant="ghost" size="icon" asChild>
             <Link href={`/admin/system/students/${studentId}`}>
-              <ArrowLeft className="h-5 w-5" />
+              <ChevronLeft className="h-5 w-5" />
             </Link>
           </Button>
           <h1 className="text-3xl font-bold tracking-tight">Edit Student Profile</h1>

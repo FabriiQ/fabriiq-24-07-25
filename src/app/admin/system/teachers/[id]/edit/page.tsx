@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/data-display/card';
 import { PageHeader } from '@/components/ui/page-header';
-import { ArrowLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { SystemTeacherForm } from '@/app/admin/system/teachers/SystemTeacherForm';
 import { api } from '@/trpc/react';
 import { useSession } from 'next-auth/react';
@@ -117,7 +117,7 @@ export default function EditSystemTeacherPage() {
         <div className="flex items-center space-x-4">
           <Button variant="outline" size="sm" asChild>
             <Link href={`/admin/system/teachers/${teacherId}`}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
+              <ChevronLeft className="h-4 w-4 mr-2" />
               Back to Teacher Profile
             </Link>
           </Button>

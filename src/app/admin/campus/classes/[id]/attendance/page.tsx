@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { 
-  ArrowLeft, 
+  ChevronLeft, 
   Calendar, 
   CheckCircle, 
   Download, 
@@ -268,7 +268,7 @@ export default function ClassAttendancePage() {
         <div className="flex gap-2">
           <Button asChild variant="outline">
             <Link href={`/admin/campus/classes/${classId}`}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
+              <ChevronLeft className="h-4 w-4 mr-2" />
               Back to Class
             </Link>
           </Button>

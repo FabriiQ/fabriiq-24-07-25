@@ -4,7 +4,7 @@ import { prisma } from "@/server/db";
 import CreateClassForm, { type Term } from "./CreateClassForm";
 import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
-import { ArrowLeftIcon } from "lucide-react";
+import { ChevronLeftIcon } from "lucide-react";
 import Link from "next/link";
 import type { ProgramCampus, CourseCampus } from '@prisma/client';
 import { api } from "@/utils/api";
@@ -272,7 +272,7 @@ export default async function NewClassPage({
         action={
           <Link href={`/admin/campus/${campusId}/classes`}>
             <Button variant="outline" size="sm">
-              <ArrowLeftIcon className="mr-2 h-4 w-4" />
+              <ChevronLeftIcon className="mr-2 h-4 w-4" />
               Back to Classes
             </Button>
           </Link>

@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Separator } from '@/components/ui/separator';
-import { ArrowLeftCircle, Save, Loader2 } from 'lucide-react';
+import { ChevronLeftCircle, Save, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/components/ui/use-toast';
 import { api } from '@/trpc/react';
@@ -199,7 +199,7 @@ export default function RewardPointsConfigPage() {
         />
         <Button variant="outline" size="sm" asChild>
           <Link href="/admin/system/settings">
-            <ArrowLeftCircle className="h-4 w-4 mr-2" />
+            <ChevronLeftCircle className="h-4 w-4 mr-2" />
             Back to Settings
           </Link>
         </Button>

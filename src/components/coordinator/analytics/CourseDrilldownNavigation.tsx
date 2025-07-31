@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import {
   RefreshCw as RotateCw,
-  ArrowLeft as ArrowLeftIcon
+  ChevronLeft as ChevronLeftIcon
 } from '@/components/ui/icons/custom-icons';
 import { useRouter, usePathname } from 'next/navigation';
 
@@ -491,7 +491,7 @@ export function CourseDrilldownNavigation({
             onClick={handleBack}
             disabled={navigationHistory.length <= 1}
           >
-            <ArrowLeftIcon className="h-4 w-4 mr-2" />
+            <ChevronLeftIcon className="h-4 w-4 mr-2" />
             Back
           </Button>
 

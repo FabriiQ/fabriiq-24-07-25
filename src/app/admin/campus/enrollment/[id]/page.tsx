@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, Edit, FileText, Mail, MapPin, Trash, User } from "lucide-react";
-import { ArrowLeft, Phone } from "@/components/shared/entities/students/icons";
+import { ChevronLeft, Phone } from "@/components/shared/entities/students/icons";
 import Link from "next/link";
 import { format } from "date-fns";
 import { Separator } from "@/components/ui/separator";
@@ -139,7 +139,7 @@ export default async function EnrollmentDetailPage({ params }: { params: Promise
         <div className="flex items-center space-x-2">
           <Button variant="ghost" size="icon" asChild>
             <Link href="/admin/campus/enrollment">
-              <ArrowLeft className="h-5 w-5" />
+              <ChevronLeft className="h-5 w-5" />
             </Link>
           </Button>
           <h1 className="text-3xl font-bold tracking-tight">Enrollment Details</h1>

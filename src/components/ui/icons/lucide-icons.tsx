@@ -17,7 +17,7 @@ import {
   Pause,
   Volume as Volume2Icon,
   VolumeX as VolumeXIcon,
-  ArrowLeft as ArrowLeftIcon,
+  ChevronLeft as ChevronLeftIcon,
   Calendar,
   Edit,
   FileText,
@@ -46,10 +46,10 @@ export {
 };
 
 // Export renamed icons
-export const ArrowLeft = ArrowLeftIcon;
+export const ChevronLeft = ChevronLeftIcon;
 
-// Re-export ArrowLeft directly
-export { ArrowLeftIcon };
+// Re-export ChevronLeft directly
+export { ChevronLeftIcon };
 
 // Custom implementations for missing icons
 export const PlusCircle = (props: React.SVGProps<SVGSVGElement>) => (

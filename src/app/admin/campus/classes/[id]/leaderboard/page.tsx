@@ -6,7 +6,7 @@ import { logger } from "@/server/api/utils/logger";
 import { PageLayout } from "@/components/layout/page-layout";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { CampusAdminClassLeaderboardClient } from "./client";
 
 interface PageProps {
@@ -73,7 +73,7 @@ export default async function ClassLeaderboardPage({ params }: PageProps) {
         actions={
           <Button asChild variant="outline">
             <Link href={`/admin/campus/classes/${id}`}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
+              <ChevronLeft className="h-4 w-4 mr-2" />
               Back to Class
             </Link>
           </Button>

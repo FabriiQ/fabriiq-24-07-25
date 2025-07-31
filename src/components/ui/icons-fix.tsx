@@ -5,7 +5,7 @@
 
 import React from 'react';
 import {
-  ArrowLeft,
+  ChevronLeft,
   Pencil,
   Trash2,
   Check,
@@ -23,7 +23,7 @@ import {
 
 // Re-export existing icons with their original names
 export {
-  ArrowLeft,
+  ChevronLeft,
   Pencil,
   Trash2,
   Check,
@@ -35,7 +35,7 @@ export {
 };
 
 // Export renamed icons
-export const ArrowLeftIcon = ArrowLeft;
+export const ChevronLeftIcon = ChevronLeft;
 export const PencilIcon = Pencil;
 export const Trash = Trash2;
 

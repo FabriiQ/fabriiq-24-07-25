@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { PageHeader } from '@/components/ui/page-header';
-import { ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { ChevronLeftIcon } from '@heroicons/react/24/outline';
 import { CalendarIcon, Download } from 'lucide-react';
 import Link from 'next/link';
 import { api } from '@/trpc/react';
@@ -84,7 +84,7 @@ export default function SystemEnrollmentExportPage() {
         <div className="flex items-center space-x-2">
           <Button variant="ghost" size="icon" asChild>
             <Link href="/admin/system/enrollment">
-              <ArrowLeftIcon className="h-5 w-5" />
+              <ChevronLeftIcon className="h-5 w-5" />
             </Link>
           </Button>
           <PageHeader

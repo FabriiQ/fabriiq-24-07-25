@@ -7,7 +7,7 @@ import { PageLayout } from '@/components/layout/page-layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/data-display/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/forms/select';
 import { Input } from '@/components/ui/forms/input';
-import { ArrowLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { useToast } from '@/components/ui/feedback/toast';
 import { api } from '@/trpc/react';
 import { DayOfWeek, PeriodType, RecurrenceType } from '@prisma/client';
@@ -278,7 +278,7 @@ export default function NewPeriodPage() {
       actions={
         <Button asChild variant="outline">
           <Link href={`/admin/campus/classes/${classId}/schedule`}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ChevronLeft className="h-4 w-4 mr-2" />
             Back to Schedule
           </Link>
         </Button>

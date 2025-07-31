@@ -13,7 +13,7 @@ import { useOfflineStorage } from '@/features/coordinator/offline/hooks/use-offl
 // Import the storage functions directly from the index file
 import { saveOfflineData, getOfflineData } from '@/features/coordinator/offline';
 // Import custom icons
-import { RefreshCw, ArrowLeft } from '@/components/ui/icons/custom-icons';
+import { RefreshCw, ChevronLeft } from '@/components/ui/icons/custom-icons';
 // Import date range picker from shared components
 import { DateRangeSelector } from '@/components/teacher/classes/DateRangeSelector';
 import { ColumnDef } from '@tanstack/react-table';
@@ -279,7 +279,7 @@ export function CoordinatorCampusCourseAnalytics({
               onClick={onNavigateToProgram}
               className="flex items-center gap-1"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <ChevronLeft className="h-4 w-4" />
               Back to Program
             </Button>
           )}

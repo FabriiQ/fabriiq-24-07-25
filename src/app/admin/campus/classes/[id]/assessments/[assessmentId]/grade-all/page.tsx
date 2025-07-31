@@ -13,7 +13,7 @@ import {
   CardDescription
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { Separator } from '@/components/ui/atoms/separator';
 import { BulkGradingForm } from './components/BulkGradingForm';
 import { SubmissionStatus } from '@/server/api/constants';
@@ -59,7 +59,7 @@ export default function BulkGradePage() {
         <div className="flex items-center gap-2 mb-6">
           <Link href={`/admin/campus/classes/${classId}/assessments/${assessmentId}/submissions`}>
             <Button size="sm" variant="ghost">
-              <ArrowLeft className="h-4 w-4 mr-1" />
+              <ChevronLeft className="h-4 w-4 mr-1" />
               Back to Submissions
             </Button>
           </Link>

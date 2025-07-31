@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/data-d
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/forms/select';
 import { Input } from '@/components/ui/forms/input';
 import { Switch } from '@/components/ui/forms/switch';
-import { ArrowLeft, AlertCircle, HelpCircle } from 'lucide-react';
+import { ChevronLeft, AlertCircle, HelpCircle } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { api } from '@/trpc/react';
 import { useForm } from 'react-hook-form';
@@ -278,7 +278,7 @@ export default function NewActivityPage() {
       <div className="flex items-center mb-6">
         <Link href={`/admin/campus/classes/${classId}/activities`} className="mr-4">
           <Button variant="ghost" size="sm">
-            <ArrowLeft className="mr-2 h-4 w-4" />
+            <ChevronLeft className="mr-2 h-4 w-4" />
             Back to Activities
           </Button>
         </Link>

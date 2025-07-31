@@ -21,7 +21,7 @@ import {
   TableRow
 } from '@/components/ui/table';
 import {
-  ArrowLeft,
+  ChevronLeft,
   FileText,
   CheckCircle2,
   Clock,
@@ -204,7 +204,7 @@ export default function AssessmentSubmissionsPage() {
           <div className="flex items-center gap-2 mb-1">
             <Link href={`/admin/campus/classes/${classId}/assessments/${assessmentId}`}>
               <Button size="sm" variant="ghost">
-                <ArrowLeft className="h-4 w-4 mr-1" />
+                <ChevronLeft className="h-4 w-4 mr-1" />
                 Back
               </Button>
             </Link>

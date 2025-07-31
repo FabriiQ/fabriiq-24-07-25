@@ -22,7 +22,7 @@ import { Textarea } from '~/components/ui/forms/textarea';
 import { formatDate } from '~/lib/utils';
 import { api } from '~/trpc/react';
 import { useToast } from '~/components/ui/feedback/toast';
-import { ArrowLeft, Save, FileText, User, CheckCircle } from 'lucide-react';
+import { ChevronLeft, Save, FileText, User, CheckCircle } from 'lucide-react';
 import { SubmissionStatus } from '~/server/api/constants';
 
 // Grading form schema
@@ -190,7 +190,7 @@ export function AssessmentSubmission({
           variant="outline"
           onClick={() => router.push(`/admin/system/assessments/${assessmentId}`)}
         >
-          <ArrowLeft className="mr-2 h-4 w-4" />
+          <ChevronLeft className="mr-2 h-4 w-4" />
           Back to Assessment
         </Button>
         {!isGrading && submission.status !== SubmissionStatus.GRADED && (

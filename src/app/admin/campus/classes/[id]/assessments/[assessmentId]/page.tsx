@@ -17,7 +17,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/naviga
 import {
   Edit2,
   FileText,
-  ArrowLeft,
+  ChevronLeft,
   UserCheck,
   BarChart,
   Eye,
@@ -207,7 +207,7 @@ export default function AssessmentDetailPage() {
           <div className="flex items-center gap-2 mb-1">
             <Link href={`/admin/campus/classes/${classId}/assessments`}>
               <Button size="sm" variant="ghost">
-                <ArrowLeft className="h-4 w-4 mr-1" />
+                <ChevronLeft className="h-4 w-4 mr-1" />
                 Back
               </Button>
             </Link>

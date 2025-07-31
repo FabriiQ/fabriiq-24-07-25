@@ -19,7 +19,7 @@ import { LessonPlanCreateActivityButton } from '@/components/lesson-plan/LessonP
 import { LessonPlanCreateAssessmentButton } from '@/components/lesson-plan/LessonPlanCreateAssessmentButton';
 
 // Custom icon components
-const ArrowLeft = (props: React.SVGProps<SVGSVGElement>) => (
+const ChevronLeft = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="24"
@@ -240,7 +240,7 @@ export default function LessonPlanView({ id }: LessonPlanViewProps) {
       <div className="container mx-auto p-4 md:p-6">
         <div className="flex items-center mb-6">
           <Button variant="ghost" size="sm" onClick={handleBack} className="mr-4">
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ChevronLeft className="h-4 w-4 mr-2" />
             Back
           </Button>
           <Skeleton className="h-8 w-64" />
@@ -265,7 +265,7 @@ export default function LessonPlanView({ id }: LessonPlanViewProps) {
         <h1 className="text-2xl font-bold mb-4">Lesson Plan Not Found</h1>
         <p className="mb-6">The requested lesson plan could not be found.</p>
         <Button onClick={handleBack}>
-          <ArrowLeft className="h-4 w-4 mr-2" />
+          <ChevronLeft className="h-4 w-4 mr-2" />
           Back to Lesson Plans
         </Button>
       </div>
@@ -282,7 +282,7 @@ export default function LessonPlanView({ id }: LessonPlanViewProps) {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
         <div className="flex items-center">
           <Button variant="ghost" size="sm" onClick={handleBack} className="mr-4">
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ChevronLeft className="h-4 w-4 mr-2" />
             Back
           </Button>
           <div>

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/data-display/card";
 import { Badge } from "@/components/ui/atoms/badge";
-import { ArrowLeftIcon, PlusIcon, HomeIcon, UsersIcon, CalendarIcon, BookOpenIcon } from "lucide-react";
+import { ChevronLeftIcon, PlusIcon, HomeIcon, UsersIcon, CalendarIcon, BookOpenIcon } from "lucide-react";
 import { ClassFilters } from "@/components/campus/ClassFilters";
 import { Campus, Class, ProgramCampus, Program, Term, SystemStatus } from "@prisma/client";
 import { JsonValue } from "@prisma/client/runtime/library";
@@ -92,7 +92,7 @@ export function CampusClassesContent({
       <div className="flex items-center space-x-4">
         <Link href={`/admin/system/campuses/${campus.id}`}>
           <Button variant="outline" size="icon">
-            <ArrowLeftIcon className="h-4 w-4" />
+            <ChevronLeftIcon className="h-4 w-4" />
           </Button>
         </Link>
         <PageHeader

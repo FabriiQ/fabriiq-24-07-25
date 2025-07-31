@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
-import { ArrowLeftIcon } from "lucide-react";
+import { ChevronLeftIcon } from "lucide-react";
 import { Campus, Program, ProgramCampus } from "@prisma/client";
 import { ProgramAssignmentRevamped } from "@/components/campus/ProgramAssignmentRevamped";
 
@@ -35,7 +35,7 @@ export function CampusProgramsContent({
       <div className="flex items-center space-x-4">
         <Link href={`/admin/system/campuses/${campus.id}`}>
           <Button variant="outline" size="icon">
-            <ArrowLeftIcon className="h-4 w-4" />
+            <ChevronLeftIcon className="h-4 w-4" />
           </Button>
         </Link>
         <PageHeader

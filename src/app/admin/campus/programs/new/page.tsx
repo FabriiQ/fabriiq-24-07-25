@@ -3,7 +3,7 @@ import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
-import { ArrowLeftIcon } from "lucide-react";
+import { ChevronLeftIcon } from "lucide-react";
 import { getUserSession } from "@/server/api/trpc";
 import { prisma } from "@/server/db";
 import { ProgramAssignmentForm } from "@/components/campus/ProgramAssignmentForm";
@@ -72,7 +72,7 @@ export default async function NewCampusProgramPage() {
       <div className="flex items-center space-x-4">
         <Link href="/admin/campus/programs">
           <Button variant="outline" size="icon">
-            <ArrowLeftIcon className="h-4 w-4" />
+            <ChevronLeftIcon className="h-4 w-4" />
           </Button>
         </Link>
         <PageHeader

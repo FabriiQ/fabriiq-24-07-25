@@ -16,7 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/forms/checkbox';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { ArrowLeft, Calendar as CalendarIcon, Save } from 'lucide-react';
+import { ChevronLeft, Calendar as CalendarIcon, Save } from 'lucide-react';
 import { useToast } from '@/components/ui/feedback/toast';
 import { format } from 'date-fns';
 import { api } from '@/trpc/react';
@@ -270,7 +270,7 @@ export default function CreateAssignmentPage() {
       actions={
         <Button asChild variant="outline">
           <Link href={`/admin/campus/classes/${classId}/assignments`}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ChevronLeft className="h-4 w-4 mr-2" />
             Back to Assignments
           </Link>
         </Button>

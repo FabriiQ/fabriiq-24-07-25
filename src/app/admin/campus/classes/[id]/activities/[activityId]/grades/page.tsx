@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { PageLayout } from '@/components/layout/page-layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/data-display/card';
-import { ArrowLeft, Download, Search, Save } from 'lucide-react';
+import { ChevronLeft, Download, Search, Save } from 'lucide-react';
 import { useToast } from '@/components/ui/feedback/toast';
 import { api } from '@/trpc/react';
 import { Input } from '@/components/ui/forms/input';
@@ -172,11 +172,14 @@ export default function ActivityGradesPage() {
     );
   }
 
-  // Prepare students data with grades
-  const studentsWithGrades = classData?.students?.map(student => {
+  // FIXED: Prepare students data with grades - handle correct data structure
+  const studentsWithGrades = classData?.students?.map(enrollment => {
+    // Extract student data from enrollment
+    const student = enrollment.student;
     const existingGrade = activity.grades?.find(g => g.studentId === student.id);
     return {
-      ...student,
+      id: student.id,
+      user: student.user,
       currentGrade: existingGrade?.score || null,
       newGrade: grades[student.id] !== undefined ? grades[student.id] : (existingGrade?.score || null)
     };
@@ -185,8 +188,8 @@ export default function ActivityGradesPage() {
   // Filter students based on search
   const filteredStudents = searchQuery 
     ? studentsWithGrades.filter(student => 
-        student.student?.user?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        student.student?.user?.email?.toLowerCase().includes(searchQuery.toLowerCase())
+        student.user?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        student.user?.email?.toLowerCase().includes(searchQuery.toLowerCase())
       ) 
     : studentsWithGrades;
 
@@ -196,8 +199,8 @@ export default function ActivityGradesPage() {
       accessorKey: 'student',
       cell: ({ row }: any) => (
         <div>
-          <p>{row.original.student?.user?.name}</p>
-          <p className="text-sm text-muted-foreground">{row.original.student?.user?.email}</p>
+          <p>{row.original.user?.name}</p>
+          <p className="text-sm text-muted-foreground">{row.original.user?.email}</p>
         </div>
       ),
     },
@@ -236,7 +239,7 @@ export default function ActivityGradesPage() {
         const newGrade = grades[row.original.id];
         
         if (newGrade !== undefined && newGrade !== currentGrade) {
-          return <Badge>Changed</Badge>;
+          return <Badge variant="default">Changed</Badge>;
         }
         
         if (currentGrade === null) {
@@ -263,7 +266,7 @@ export default function ActivityGradesPage() {
         <div className="flex gap-2">
           <Button asChild variant="outline">
             <Link href={`/admin/campus/classes/${classId}/activities/${activityId}`}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
+              <ChevronLeft className="h-4 w-4 mr-2" />
               Back to Activity
             </Link>
           </Button>
@@ -321,4 +324,4 @@ export default function ActivityGradesPage() {
       </Card>
     </PageLayout>
   );
-} 
+}

@@ -3,7 +3,7 @@
 import { useRouter, useParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { ChevronLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/components/ui/use-toast';
 import { api } from '@/utils/api';
@@ -110,7 +110,7 @@ export default function QuizCreatorPage() {
         <div className="flex items-center gap-2 mb-4">
           <Link href={`/teacher/classes/${classId}/assessments`}>
             <Button size="sm" variant="ghost">
-              <ArrowLeft className="h-4 w-4 mr-1" />
+              <ChevronLeft className="h-4 w-4 mr-1" />
               Back to Assessments
             </Button>
           </Link>
@@ -135,7 +135,7 @@ export default function QuizCreatorPage() {
         <div className="flex items-center gap-2 mb-4">
           <Link href={`/teacher/classes/${classId}/assessments/${assessmentId}`}>
             <Button size="sm" variant="ghost">
-              <ArrowLeft className="h-4 w-4 mr-1" />
+              <ChevronLeft className="h-4 w-4 mr-1" />
               Back to Assessment
             </Button>
           </Link>
@@ -180,7 +180,7 @@ export default function QuizCreatorPage() {
       <div className="flex items-center gap-2 mb-6">
         <Link href={`/teacher/classes/${classId}/assessments/${assessmentId}`}>
           <Button size="sm" variant="ghost">
-            <ArrowLeft className="h-4 w-4 mr-1" />
+            <ChevronLeft className="h-4 w-4 mr-1" />
             Back to Assessment
           </Button>
         </Link>

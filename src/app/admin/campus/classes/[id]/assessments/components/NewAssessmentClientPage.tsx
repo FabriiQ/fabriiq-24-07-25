@@ -4,7 +4,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft as ArrowLeftIcon } from 'lucide-react';
+import { ChevronLeft as ChevronLeftIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/use-toast';
 import dynamic from 'next/dynamic';
@@ -89,7 +89,7 @@ export function NewAssessmentClientPage({
           <div className="flex items-center gap-2 mb-1">
             <Link href={`/admin/campus/classes/${classId}/assessments`}>
               <Button size="sm" variant="ghost">
-                <ArrowLeftIcon className="h-4 w-4 mr-1" />
+                <ChevronLeftIcon className="h-4 w-4 mr-1" />
                 Back
               </Button>
             </Link>

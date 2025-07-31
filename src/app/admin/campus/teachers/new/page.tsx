@@ -6,7 +6,7 @@ import { api } from '@/trpc/react';
 import { PageLayout } from '@/components/layout/page-layout';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { Session } from 'next-auth';
 
@@ -128,7 +128,7 @@ export default function NewTeacherPage() {
           </ul>
           <Button variant="ghost" size="sm" asChild className="mt-4">
             <Link href="/admin/campus/teachers">
-              <ArrowLeft className="mr-2 h-4 w-4" />
+              <ChevronLeft className="mr-2 h-4 w-4" />
               Back to Teachers
             </Link>
           </Button>
@@ -155,7 +155,7 @@ export default function NewTeacherPage() {
           <p className="text-sm mt-2">Campus ID: {campusId}</p>
           <Button variant="ghost" size="sm" asChild className="mt-4">
             <Link href="/admin/campus/teachers">
-              <ArrowLeft className="mr-2 h-4 w-4" />
+              <ChevronLeft className="mr-2 h-4 w-4" />
               Back to Teachers
             </Link>
           </Button>
@@ -195,7 +195,7 @@ export default function NewTeacherPage() {
         <div className="flex items-center justify-between">
           <Button variant="ghost" size="sm" asChild>
             <Link href="/admin/campus/teachers">
-              <ArrowLeft className="mr-2 h-4 w-4" />
+              <ChevronLeft className="mr-2 h-4 w-4" />
               Back to Teachers
             </Link>
           </Button>

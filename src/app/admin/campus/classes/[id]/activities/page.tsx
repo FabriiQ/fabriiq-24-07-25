@@ -8,7 +8,7 @@ import { PageLayout } from '@/components/layout/page-layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/data-display/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/forms/select';
 import { Plus } from 'lucide-react';
-import { ArrowLeft } from '@/components/ui/icons';
+import { ChevronLeft } from '@/components/ui/icons';
 import { useToast } from '@/components/ui/feedback/toast';
 import { api } from '@/trpc/react';
 import { ActivityPurpose, LearningActivityType, AssessmentType, SystemStatus } from '@prisma/client';
@@ -141,7 +141,7 @@ export default function ClassActivitiesPage() {
         <>
           <Button asChild variant="outline" className="mr-2">
             <Link href={`/admin/campus/classes/${classId}`}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
+              <ChevronLeft className="h-4 w-4 mr-2" />
               Back to Class
             </Link>
           </Button>

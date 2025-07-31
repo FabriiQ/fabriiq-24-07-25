@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { PageHeader } from '@/components/ui/page-header';
-import { ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { ChevronLeftIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { api } from '@/trpc/react';
 import { SystemEnrollmentForm } from './enrollment-form';
@@ -49,7 +49,7 @@ export default function SystemCreateEnrollmentPage() {
         <div className="flex items-center space-x-2">
           <Button variant="ghost" size="icon" asChild>
             <Link href="/admin/system/enrollment">
-              <ArrowLeftIcon className="h-5 w-5" />
+              <ChevronLeftIcon className="h-5 w-5" />
             </Link>
           </Button>
           <PageHeader

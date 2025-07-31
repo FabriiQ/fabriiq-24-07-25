@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Edit } from 'lucide-react';
+import { ChevronLeft, Edit } from 'lucide-react';
 import { Button } from '@/components/ui/atoms/button';
 import { PageHeader } from '@/components/ui/atoms/page-header';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/navigation/tabs';
@@ -32,7 +32,7 @@ export default function SystemTeacherDetailPage() {
       <div className="container mx-auto py-8 space-y-6">
         <div className="flex items-center space-x-4">
           <Button variant="outline" size="sm" disabled>
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ChevronLeft className="h-4 w-4 mr-2" />
             Back
           </Button>
           <div>
@@ -99,7 +99,7 @@ export default function SystemTeacherDetailPage() {
         <div className="flex items-center space-x-4">
           <Button variant="outline" size="sm" asChild>
             <Link href="/admin/system/teachers">
-              <ArrowLeft className="h-4 w-4 mr-2" />
+              <ChevronLeft className="h-4 w-4 mr-2" />
               Back to Teachers
             </Link>
           </Button>

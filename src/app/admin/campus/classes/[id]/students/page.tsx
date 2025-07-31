@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { PageLayout } from '@/components/layout/page-layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ArrowLeft, Download, Loader2, Plus, Search, UserPlus, X } from 'lucide-react';
+import { ChevronLeft, Download, Loader2, Plus, Search, UserPlus, X } from 'lucide-react';
 import { useToast } from '@/components/ui/feedback/toast';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -163,7 +163,7 @@ export default function ClassStudentsPage() {
         <div className="flex gap-2">
           <Button asChild variant="outline">
             <Link href={`/admin/campus/classes/${classId}`}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
+              <ChevronLeft className="h-4 w-4 mr-2" />
               Back to Class
             </Link>
           </Button>

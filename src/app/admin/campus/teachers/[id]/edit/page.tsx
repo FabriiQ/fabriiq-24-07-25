@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { api } from '@/trpc/react';
 import { PageLayout } from '@/components/layout/page-layout';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useToast } from '@/components/ui/feedback/toast';
 import { EditTeacherForm } from '../edit-teacher-form';
@@ -188,7 +188,7 @@ export default function EditTeacherPage() {
           </p>
           <Button variant="ghost" size="sm" asChild className="mt-4">
             <Link href={`/admin/campus/teachers/${teacherId}`}>
-              <ArrowLeft className="mr-2 h-4 w-4" />
+              <ChevronLeft className="mr-2 h-4 w-4" />
               Back to Teacher Profile
             </Link>
           </Button>
@@ -211,7 +211,7 @@ export default function EditTeacherPage() {
         <div className="flex items-center justify-between">
           <Button variant="ghost" size="sm" asChild>
             <Link href={`/admin/campus/teachers/${teacherId}`}>
-              <ArrowLeft className="mr-2 h-4 w-4" />
+              <ChevronLeft className="mr-2 h-4 w-4" />
               Back to Teacher Profile
             </Link>
           </Button>

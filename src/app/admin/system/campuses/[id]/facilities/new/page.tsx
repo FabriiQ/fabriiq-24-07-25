@@ -27,7 +27,7 @@ import {
   SelectValue 
 } from '@/components/ui/forms/select';
 import { Textarea } from '@/components/ui/forms/textarea';
-import { ArrowLeftIcon } from 'lucide-react';
+import { ChevronLeftIcon } from 'lucide-react';
 import { useToast } from '@/components/ui/feedback/toast';
 import { api } from '@/trpc/react';
 import { FacilityType } from '@prisma/client';
@@ -114,7 +114,7 @@ export default function NewFacilityPage() {
       <div className="container mx-auto py-6 space-y-6">
         <div className="flex items-center space-x-4">
           <Button variant="outline" size="icon" onClick={() => router.back()}>
-            <ArrowLeftIcon className="h-4 w-4" />
+            <ChevronLeftIcon className="h-4 w-4" />
           </Button>
           <PageHeader
             title="Add Facility"
@@ -134,7 +134,7 @@ export default function NewFacilityPage() {
       <div className="container mx-auto py-6 space-y-6">
         <div className="flex items-center space-x-4">
           <Button variant="outline" size="icon" onClick={() => router.back()}>
-            <ArrowLeftIcon className="h-4 w-4" />
+            <ChevronLeftIcon className="h-4 w-4" />
           </Button>
           <PageHeader
             title="Error"
@@ -165,7 +165,7 @@ export default function NewFacilityPage() {
       <div className="flex items-center space-x-4">
         <Link href={`/admin/system/campuses/${campusId}/facilities`}>
           <Button variant="outline" size="icon">
-            <ArrowLeftIcon className="h-4 w-4" />
+            <ChevronLeftIcon className="h-4 w-4" />
           </Button>
         </Link>
         <PageHeader

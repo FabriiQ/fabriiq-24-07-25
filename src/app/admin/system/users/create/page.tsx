@@ -2,7 +2,7 @@
 
 import { PageHeader } from "~/components/ui/atoms/page-header";
 import { Button } from "~/components/ui/button";
-import { ArrowLeftIcon } from "lucide-react";
+import { ChevronLeftIcon } from "lucide-react";
 import Link from "next/link";
 import { EnhancedUserForm } from "@/components/admin/users/EnhancedUserForm";
 import { Card } from "~/components/ui/atoms/card";
@@ -39,7 +39,7 @@ export default function CreateUserPage() {
         <div className="flex items-center space-x-4">
           <Link href="/admin/system/users">
             <Button variant="outline" size="icon">
-              <ArrowLeftIcon className="h-4 w-4" />
+              <ChevronLeftIcon className="h-4 w-4" />
             </Button>
           </Link>
           <PageHeader

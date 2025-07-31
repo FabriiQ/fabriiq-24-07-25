@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/atoms/page-header";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
-import { ArrowLeft, CheckSquare, FileQuestion, MessageSquare, Briefcase, Award, PenTool, FileText } from "lucide-react";
+import { ChevronLeft, CheckSquare, FileQuestion, MessageSquare, Briefcase, Award, PenTool, FileText } from "lucide-react";
 import Link from "next/link";
 import { AssessmentType } from "@/server/api/constants";
 
@@ -94,7 +94,7 @@ export default function AssessmentTypePage() {
         />
         <Button variant="outline" asChild className="flex items-center">
           <Link href="/teacher/content-studio/create">
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ChevronLeft className="h-4 w-4 mr-2" />
             Back
           </Link>
         </Button>

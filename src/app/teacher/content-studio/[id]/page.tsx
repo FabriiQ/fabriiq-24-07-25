@@ -6,7 +6,7 @@ import { Skeleton } from "@/components/ui/atoms/skeleton";
 import { api } from "@/utils/api";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { ArrowLeft, FileText } from "lucide-react";
+import { ChevronLeft, FileText } from "lucide-react";
 import { PageHeader } from "@/components/ui/atoms/page-header";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 
@@ -58,7 +58,7 @@ export default function ContentDetailPage() {
         <div className="space-x-2">
           <Button variant="outline" asChild>
             <Link href="/teacher/content-studio">
-              <ArrowLeft className="h-4 w-4 mr-2" />
+              <ChevronLeft className="h-4 w-4 mr-2" />
               Back
             </Link>
           </Button>

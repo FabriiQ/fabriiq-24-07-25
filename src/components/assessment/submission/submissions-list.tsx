@@ -9,7 +9,7 @@ import { SearchBar } from '~/components/ui/search-bar';
 import { formatDate } from '~/lib/utils';
 import { api } from '~/trpc/react';
 import { useToast } from '~/components/ui/feedback/toast';
-import { FileText, ArrowLeft, BarChart2, Download } from 'lucide-react';
+import { FileText, ChevronLeft, BarChart2, Download } from 'lucide-react';
 import { SubmissionStatus } from '~/server/api/constants';
 
 interface SubmissionsListProps {
@@ -117,7 +117,7 @@ export function SubmissionsList({ assessmentId }: SubmissionsListProps) {
           variant="outline"
           onClick={() => router.push(`/admin/system/assessments/${assessmentId}`)}
         >
-          <ArrowLeft className="mr-2 h-4 w-4" />
+          <ChevronLeft className="mr-2 h-4 w-4" />
           Back to Assessment
         </Button>
       </div>

@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 // import { api } from '@/trpc/react'; // Will be used when API is implemented
 import {
-  ChevronLeft, // ✅ Fixed import - changed from ArrowLeft
+  ChevronLeft, // ✅ Fixed import - changed from ChevronLeft
   Edit,
   Copy,
   Trash2,
