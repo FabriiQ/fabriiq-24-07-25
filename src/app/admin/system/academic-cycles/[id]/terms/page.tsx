@@ -9,7 +9,7 @@ import { Select } from '@/components/ui/forms/select';
 import { Input } from '@/components/ui/input';
 import { api } from '@/trpc/react';
 import { formatDate } from '@/lib/utils';
-import { PlusIcon, FilterIcon, ArrowLeftIcon } from 'lucide-react';
+import { PlusIcon, FilterIcon, ChevronLeftIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/data-display/badge';
 import { TermType, TermPeriod, SystemStatus } from '@/server/api/constants';
 
@@ -144,7 +144,7 @@ export default function TermsPage() {
       actions={
         <div className="flex space-x-2">
           <Button variant="outline" onClick={() => router.push(`/admin/system/academic-cycles/${(params.id as string)}`)}>
-            <ArrowLeftIcon className="mr-2 h-4 w-4" />
+            <ChevronLeftIcon className="mr-2 h-4 w-4" />
             Back to Cycle
           </Button>
           <Button onClick={() => router.push(`/admin/system/academic-cycles/${(params.id as string)}/terms/create`)}>

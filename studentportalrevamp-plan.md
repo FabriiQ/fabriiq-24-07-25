@@ -632,7 +632,7 @@ import { useParams } from 'next/navigation';
 import { ClassProvider } from '@/contexts/class-context';
 import { StudentBottomNav } from '@/components/student/StudentBottomNav';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { ViewTransitionLink } from '@/components/ui/view-transition-link';
 
 export default function ClassLayout({ children }: { children: ReactNode }) {
@@ -645,7 +645,7 @@ export default function ClassLayout({ children }: { children: ReactNode }) {
         <div className="mb-4">
           <ViewTransitionLink href="/student/classes">
             <Button variant="ghost" size="sm" className="gap-2">
-              <ArrowLeft className="h-4 w-4" />
+              <ChevronLeft className="h-4 w-4" />
               Back to Classes
             </Button>
           </ViewTransitionLink>

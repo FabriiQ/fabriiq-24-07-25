@@ -294,7 +294,7 @@ The student portal will integrate with the following API endpoints:
 1. **Custom Icons**
    ```tsx
    // Example of custom icon implementation
-   export const ArrowLeft: React.FC<IconProps> = ({
+   export const ChevronLeft: React.FC<IconProps> = ({
      size = 24,
      strokeWidth = 2,
      ...props
@@ -505,7 +505,7 @@ During implementation, we encountered several TypeScript-related challenges that
 
 1. **Missing Lucide Icons**
    - **Challenge**: Several Lucide icons used in components were not exported from the library
-   - **Solution**: Created custom icon components in `src/components/shared/entities/students/icons.tsx` for missing icons like `ArrowLeft`, `PieChart`, `BookMarked`, `Share2`, `Send`, and `Info`
+   - **Solution**: Created custom icon components in `src/components/shared/entities/students/icons.tsx` for missing icons like `ChevronLeft`, `PieChart`, `BookMarked`, `Share2`, `Send`, and `Info`
 
 2. **Date-fns Compatibility**
    - **Challenge**: Some date-fns functions used in the calendar component were not available

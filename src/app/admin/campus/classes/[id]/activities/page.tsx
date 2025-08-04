@@ -8,10 +8,10 @@ import { PageLayout } from '@/components/layout/page-layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/data-display/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/forms/select';
 import { Plus } from 'lucide-react';
-import { ArrowLeft } from '@/components/ui/icons';
+import { ChevronLeft } from '@/components/ui/icons';
 import { useToast } from '@/components/ui/feedback/toast';
 import { api } from '@/trpc/react';
-import { ActivityPurpose, LearningActivityType, AssessmentType, SystemStatus } from '@prisma/client';
+import { ActivityPurpose, LearningActivityType, AssessmentType, SystemStatus } from '@/server/api/constants';
 import { DataTable } from '@/components/ui/data-display/data-table';
 import { Badge } from '@/components/ui/data-display/badge';
 import { ActivityLessonPlanFilter } from '@/components/shared/entities/activities/ActivityLessonPlanFilter';
@@ -26,8 +26,11 @@ export default function ClassActivitiesPage() {
   const [purpose, setPurpose] = useState<ActivityPurpose | 'ALL'>('ALL');
   const [learningType, setLearningType] = useState<LearningActivityType | 'ALL'>('ALL');
   const [assessmentType, setAssessmentType] = useState<AssessmentType | 'ALL'>('ALL');
-  const [status, setStatus] = useState<SystemStatus>('ACTIVE');
-  const [lessonPlanId, setLessonPlanId] = useState<string | null>(searchParams.get('lessonPlanId'));
+  const [status, setStatus] = useState<SystemStatus>(SystemStatus.ACTIVE);
+  // FIXED: Handle the case where searchParams might be null
+  const [lessonPlanId, setLessonPlanId] = useState<string | null>(
+    searchParams ? searchParams.get('lessonPlanId') : null
+  );
 
   const { data: classData } = api.class.getById.useQuery({
     classId,
@@ -43,15 +46,14 @@ export default function ClassActivitiesPage() {
   });
 
   const { data: activities, isLoading } = api.activity.list.useQuery({
-    classId,
-    purpose: purpose === 'ALL' ? undefined : purpose,
-    learningType: learningType === 'ALL' ? undefined : learningType,
-    assessmentType: assessmentType === 'ALL' ? undefined : assessmentType,
-    status,
-    lessonPlanId: lessonPlanId || undefined,
-    page: 1,
-    pageSize: 50
-  });
+  purpose: purpose === 'ALL' ? undefined : purpose,
+  learningType: learningType === 'ALL' ? undefined : learningType,
+  assessmentType: assessmentType === 'ALL' ? undefined : assessmentType,
+  status: status,
+  lessonPlanId: lessonPlanId || undefined,
+  page: 1,
+  pageSize: 50
+});
 
   const columns = [
     {
@@ -141,7 +143,7 @@ export default function ClassActivitiesPage() {
         <>
           <Button asChild variant="outline" className="mr-2">
             <Link href={`/admin/campus/classes/${classId}`}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
+              <ChevronLeft className="h-4 w-4 mr-2" />
               Back to Class
             </Link>
           </Button>

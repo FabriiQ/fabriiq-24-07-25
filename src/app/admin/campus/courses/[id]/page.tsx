@@ -3,7 +3,7 @@ import { redirect, notFound } from "next/navigation";
 import { prisma } from "@/server/db";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { CourseDetailsContent } from "@/app/admin/campus/courses/[id]/CourseDetailsContent";
 
 interface CourseDetailsPageProps {
@@ -137,7 +137,7 @@ export default async function CourseDetailsPage({ params }: CourseDetailsPagePro
       <div className="flex items-center justify-between">
         <Button variant="ghost" size="sm" asChild>
           <Link href="/admin/campus/courses" className="flex items-center gap-2">
-            <ArrowLeft className="h-4 w-4" />
+            <ChevronLeft className="h-4 w-4" />
             Back to Courses
           </Link>
         </Button>

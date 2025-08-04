@@ -19,9 +19,8 @@ import {
   Download,
   Clock,
   User,
-  CalendarClock
+  Calendar
 } from 'lucide-react';
-import { Badge } from '@/components/ui/data-display/badge';
 import { Separator } from '@/components/ui/atoms/separator';
 import { SubmissionStatus } from '@prisma/client';
 
@@ -30,34 +29,41 @@ export const metadata: Metadata = {
   description: 'View student assessment submission details',
 };
 
-function getSubmissionStatusBadge(status: SubmissionStatus) {
-  let variant: 'default' | 'success' | 'destructive' | 'warning' | 'outline' = 'default';
-  
-  switch (status) {
-    case SubmissionStatus.GRADED:
-      variant = 'success';
-      break;
-    case SubmissionStatus.SUBMITTED:
-      variant = 'default';
-      break;
-    case SubmissionStatus.LATE:
-      variant = 'warning';
-      break;
-    case SubmissionStatus.REJECTED:
-      variant = 'destructive';
-      break;
-    case SubmissionStatus.RESUBMITTED:
-      variant = 'outline';
-      break;
-  }
-  
+function getSubmissionStatusDisplay(status: SubmissionStatus) {
+  const statusConfig = {
+    [SubmissionStatus.GRADED]: { 
+      text: 'Graded', 
+      className: 'bg-green-100 text-green-800 border-green-200' 
+    },
+    [SubmissionStatus.SUBMITTED]: { 
+      text: 'Submitted', 
+      className: 'bg-blue-100 text-blue-800 border-blue-200' 
+    },
+    [SubmissionStatus.LATE]: { 
+      text: 'Late', 
+      className: 'bg-orange-100 text-orange-800 border-orange-200' 
+    },
+    [SubmissionStatus.REJECTED]: { 
+      text: 'Rejected', 
+      className: 'bg-red-100 text-red-800 border-red-200' 
+    },
+    [SubmissionStatus.RESUBMITTED]: { 
+      text: 'Resubmitted', 
+      className: 'bg-purple-100 text-purple-800 border-purple-200' 
+    },
+  };
+
+  const config = statusConfig[status] || { 
+    text: status, 
+    className: 'bg-gray-100 text-gray-800 border-gray-200' 
+  };
+
   return (
-    <Badge variant={variant} className="capitalize">
-      {status.toLowerCase().replace('_', ' ')}
-    </Badge>
+    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border capitalize ${config.className}`}>
+      {config.text.toLowerCase().replace('_', ' ')}
+    </span>
   );
 }
-
 // Types to handle assessment data
 type AssessmentQuestion = {
   id: string;
@@ -163,7 +169,7 @@ export default async function SubmissionDetailPage({
                       </CardDescription>
                     </div>
                     <div>
-                      {getSubmissionStatusBadge(submission.status)}
+                      {getSubmissionStatusDisplay(submission.status)}
                     </div>
                   </div>
                 </CardHeader>
@@ -175,7 +181,7 @@ export default async function SubmissionDetailPage({
                         <span>{submission.student.user.email}</span>
                       </div>
                       <div className="flex items-center">
-                        <CalendarClock className="mr-2 h-4 w-4 text-muted-foreground" />
+                        <Calendar className="mr-2 h-4 w-4 text-muted-foreground" />
                         <span>
                           Submitted: {submissionDate?.toLocaleString() || 'N/A'}
                           {isDueDatePassed && (

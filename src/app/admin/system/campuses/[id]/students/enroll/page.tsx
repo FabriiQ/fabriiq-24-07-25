@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { PageHeader } from '@/components/ui/page-header';
-import { ArrowLeftIcon } from 'lucide-react';
+import { ChevronLeftIcon } from 'lucide-react';
 import { EnrollStudentDialog } from '@/components/campus/EnrollStudentDialog';
 import { api } from '~/trpc/react';
 import { SystemStatus } from '@prisma/client';
@@ -64,7 +64,7 @@ export default function EnrollStudentPage() {
       <div className="container mx-auto py-6 space-y-6">
         <div className="flex items-center space-x-4">
           <Button variant="outline" size="icon" onClick={() => router.back()}>
-            <ArrowLeftIcon className="h-4 w-4" />
+            <ChevronLeftIcon className="h-4 w-4" />
           </Button>
           <PageHeader
             title="Enroll Student"
@@ -84,7 +84,7 @@ export default function EnrollStudentPage() {
       <div className="container mx-auto py-6 space-y-6">
         <div className="flex items-center space-x-4">
           <Button variant="outline" size="icon" onClick={() => router.back()}>
-            <ArrowLeftIcon className="h-4 w-4" />
+            <ChevronLeftIcon className="h-4 w-4" />
           </Button>
           <PageHeader
             title="Error"
@@ -115,7 +115,7 @@ export default function EnrollStudentPage() {
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex items-center space-x-4">
         <Button variant="outline" size="icon" onClick={() => router.back()}>
-          <ArrowLeftIcon className="h-4 w-4" />
+          <ChevronLeftIcon className="h-4 w-4" />
         </Button>
         <PageHeader
           title={`Enroll Student - ${campus.name}`}

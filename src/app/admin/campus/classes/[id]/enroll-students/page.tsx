@@ -12,7 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/data-d
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/forms/form';
 import { Checkbox } from '@/components/ui/forms/checkbox';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Search, Users } from 'lucide-react';
+import { ChevronLeft, Search, Users } from 'lucide-react';
 import { useToast } from '@/components/ui/feedback/toast';
 import { api } from '@/trpc/react';
 import { useSession } from 'next-auth/react';
@@ -306,7 +306,7 @@ export default function EnrollStudentsPage() {
       actions={
         <Button asChild variant="outline">
           <Link href={`/admin/campus/classes/${classId}`}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ChevronLeft className="h-4 w-4 mr-2" />
             Back to Class
           </Link>
         </Button>

@@ -6,7 +6,7 @@ import { PageHeader } from '@/components/ui/page-header';
 import { UserType } from '@prisma/client';
 import { logger } from '@/server/api/utils/logger';
 import { Button } from '@/components/ui/atoms/button';
-import { ArrowLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import LessonPlanForm from '@/components/teacher/lesson-plans/LessonPlanForm';
 
@@ -85,7 +85,7 @@ export default async function NewLessonPlanPage({
           />
           <Button variant="outline" asChild>
             <Link href={`/teacher/classes/${classId}/lesson-plans`}>
-              <ArrowLeft className="mr-2 h-4 w-4" />
+              <ChevronLeft className="mr-2 h-4 w-4" />
               Back to Lesson Plans
             </Link>
           </Button>

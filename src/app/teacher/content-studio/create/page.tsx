@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/atoms/page-header";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
-import { ArrowLeft, FileText, BookOpen, ClipboardCheck } from "lucide-react";
+import { ChevronLeft, FileText, BookOpen, ClipboardCheck } from "lucide-react";
 import Link from "next/link";
 
 export default function CreateContentPage() {
@@ -37,7 +37,7 @@ export default function CreateContentPage() {
         />
         <Button variant="outline" asChild className="flex items-center">
           <Link href="/teacher/content-studio">
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ChevronLeft className="h-4 w-4 mr-2" />
             Back
           </Link>
         </Button>

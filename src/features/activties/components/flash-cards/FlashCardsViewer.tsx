@@ -497,7 +497,7 @@ export const FlashCardsViewer: React.FC<FlashCardsViewerProps> = ({
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             handleFlip();
-          } else if (e.key === 'ArrowLeft') {
+          } else if (e.key === 'ChevronLeft') {
             handlePreviousCard();
           } else if (e.key === 'ArrowRight') {
             handleNextCard();

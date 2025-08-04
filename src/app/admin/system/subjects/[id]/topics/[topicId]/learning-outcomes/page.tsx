@@ -6,7 +6,7 @@ import { api } from '@/trpc/react';
 import { PageHeader } from '@/components/ui/layout/page-header';
 import { Card } from '@/components/ui/data-display/card';
 import { Loader2 } from 'lucide-react';
-import { ArrowLeft } from '@/components/ui/icons/lucide-icons';
+import { ChevronLeft } from '@/components/ui/icons/lucide-icons';
 import { Button } from '@/components/ui/core/button';
 import { LearningOutcomeList } from '@/components/admin/learning-outcomes/LearningOutcomeList';
 import { BloomsDistributionChart } from '@/features/bloom/components/taxonomy/BloomsDistributionChart';
@@ -80,7 +80,7 @@ function TopicLearningOutcomesPageContent({ subjectId, topicId }: { subjectId: s
           onClick={handleBack}
           className="mr-4"
         >
-          <ArrowLeft className="h-4 w-4 mr-2" />
+          <ChevronLeft className="h-4 w-4 mr-2" />
           Back to Topic
         </Button>
 

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { DatePickerWithRange } from '@/components/ui/date-range-picker';
 import { useToast } from '@/components/ui/use-toast';
 import { api } from '@/utils/api';
-import { Loader2, RefreshCw, ArrowLeft } from 'lucide-react';
+import { Loader2, RefreshCw, ChevronLeft } from 'lucide-react';
 import { useOfflineStatus } from '@/hooks/use-offline-status';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -93,7 +93,7 @@ export function ClassAnalyticsDashboard({
               onClick={onNavigateToCourses}
               className="flex items-center gap-1"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <ChevronLeft className="h-4 w-4" />
               Back to Courses
             </Button>
           )}

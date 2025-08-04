@@ -215,8 +215,8 @@ export const CheckSquare = React.forwardRef<SVGSVGElement, LucideProps>(
 
 CheckSquare.displayName = 'CheckSquare';
 
-// ArrowLeft icon implementation
-export const ArrowLeft = React.forwardRef<SVGSVGElement, LucideProps>(
+// ChevronLeft icon implementation
+export const ChevronLeft = React.forwardRef<SVGSVGElement, LucideProps>(
   ({ color = 'currentColor', size = 24, strokeWidth = 2, ...props }, ref) => {
     return (
       <svg
@@ -238,7 +238,7 @@ export const ArrowLeft = React.forwardRef<SVGSVGElement, LucideProps>(
   }
 );
 
-ArrowLeft.displayName = 'ArrowLeft';
+ChevronLeft.displayName = 'ChevronLeft';
 
 // DollarSign icon implementation
 export const DollarSign = React.forwardRef<SVGSVGElement, LucideProps>(

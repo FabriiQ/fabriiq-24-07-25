@@ -8,7 +8,7 @@ import { useToast } from '@/components/ui';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { LoadingSpinner } from '@/components/ui/loading';
-import { ArrowLeft, Loader2, CheckCircle, XCircle } from 'lucide-react';
+import { ChevronLeft, Loader2, CheckCircle, XCircle } from 'lucide-react';
 
 export default function FixCoordinatorProfilesPage() {
   const router = useRouter();
@@ -46,7 +46,7 @@ export default function FixCoordinatorProfilesPage() {
         <div className="flex items-center space-x-2">
           <Button variant="ghost" size="icon" asChild>
             <Link href="/admin/campus/coordinators">
-              <ArrowLeft className="h-4 w-4" />
+              <ChevronLeft className="h-4 w-4" />
             </Link>
           </Button>
           <h1 className="text-3xl font-bold tracking-tight">Fix Coordinator Profiles</h1>

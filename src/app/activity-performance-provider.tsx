@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect } from 'react';
-import { PerformanceMonitor } from '@/features/activities/components/PerformanceMonitor';
 
 /**
  * Provider component that initializes activity performance monitoring
@@ -26,7 +25,7 @@ export function ActivityPerformanceProvider({
   return (
     <>
       {children}
-      {showMonitor && <PerformanceMonitor />}
+      {/* PerformanceMonitor component removed - can be added back when implemented */}
     </>
   );
 }

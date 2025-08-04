@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/data-display/card";
 import { PageHeader } from "@/components/ui/atoms/page-header";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
-import { ArrowLeft, FileText, Sparkles } from "lucide-react";
+import { ChevronLeft, FileText, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -168,7 +168,7 @@ export default function CreateWorksheetPage() {
         />
         <Button variant="outline" asChild className="flex items-center">
           <Link href="/teacher/content-studio">
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ChevronLeft className="h-4 w-4 mr-2" />
             Back
           </Link>
         </Button>

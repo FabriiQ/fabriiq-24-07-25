@@ -4,15 +4,18 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle, Users } from 'lucide-react';
+import { use } from 'react';
 
 interface EngagementAnalyticsPageProps {
-  params: {
+  params: Promise<{
     classId: string;
-  };
+  }>;
 }
 
 export default function EngagementAnalyticsPage({ params }: EngagementAnalyticsPageProps) {
-  const { classId } = params;
+  // Unwrap the params Promise using React's use() hook
+  const resolvedParams = use(params);
+  const { classId } = resolvedParams;
   
   return (
     <div className="container py-6">
@@ -20,7 +23,7 @@ export default function EngagementAnalyticsPage({ params }: EngagementAnalyticsP
         <div>
           <h1 className="text-2xl font-bold">Student Engagement Analytics</h1>
           <p className="text-muted-foreground">
-            Participation and engagement metrics
+            Participation and engagement metrics for Class {classId}
           </p>
         </div>
       </div>

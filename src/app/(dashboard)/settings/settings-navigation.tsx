@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Settings, User, Bell, Shield, Palette } from 'lucide-react';
+import { Settings, User, Bell } from 'lucide-react';
 import { cn } from '@/utils/cn';
 
 export default function SettingsNavigation() {
@@ -18,7 +18,6 @@ export default function SettingsNavigation() {
     {
       title: 'Preferences',
       href: '/settings/preferences',
-      icon: <Palette className="h-5 w-5 mr-2" />,
     },
     {
       title: 'Notifications',
@@ -28,7 +27,6 @@ export default function SettingsNavigation() {
     {
       title: 'Security',
       href: '/settings/security',
-      icon: <Shield className="h-5 w-5 mr-2" />,
     },
   ];
 

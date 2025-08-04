@@ -10,7 +10,7 @@ import { DataTable } from '~/components/ui/data-display/data-table';
 import { formatDate } from '~/lib/utils';
 import { api } from '~/trpc/react';
 import { useToast } from '~/components/ui/feedback/toast';
-import { FileEdit, ArrowLeft, FileText, BarChart2, Users, Download } from 'lucide-react';
+import { FileEdit, ChevronLeft, FileText, BarChart2, Users, Download } from 'lucide-react';
 import { SystemStatus, SubmissionStatus, AssessmentCategory } from '~/server/api/constants';
 
 // Define extended assessment type to handle missing properties
@@ -219,7 +219,7 @@ export function AssessmentDetail({ assessmentId }: AssessmentDetailProps) {
           variant="outline"
           onClick={() => router.push('/admin/system/assessments')}
         >
-          <ArrowLeft className="mr-2 h-4 w-4" />
+          <ChevronLeft className="mr-2 h-4 w-4" />
           Back to Assessments
         </Button>
         <div className="flex gap-2">

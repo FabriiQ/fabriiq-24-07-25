@@ -7,25 +7,38 @@ import { api } from '@/trpc/react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
+import { use } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface BloomsAnalyticsPageProps {
-  params: {
+  params: Promise<{
     classId: string;
-  };
+  }>;
 }
 
 export default function BloomsAnalyticsPage({ params }: BloomsAnalyticsPageProps) {
-  const { classId } = params;
+  // Unwrap the params Promise using React's use() hook
+  const resolvedParams = use(params);
+  const { classId } = resolvedParams;
+  
   const { data: session, status } = useSession();
+  const router = useRouter();
+  
+  // Redirect if not authenticated
+  React.useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/login');
+    }
+  }, [status, router]);
   
   // Get class details
-  const { data: classDetails, isLoading: isLoadingClass } = api.class.getClassById.useQuery(
+  const { data: classDetails, isLoading: isLoadingClass, error: classError } = api.class.getClassById.useQuery(
     { id: classId },
-    { enabled: !!classId }
+    { enabled: !!classId && status === 'authenticated' }
   );
   
   // Get teacher ID
-  const { data: teacher, isLoading: isLoadingTeacher } = api.teacher.getTeacherByUserId.useQuery(
+  const { data: teacher, isLoading: isLoadingTeacher, error: teacherError } = api.teacher.getTeacherByUserId.useQuery(
     { userId: session?.user?.id || '' },
     { enabled: !!session?.user?.id }
   );
@@ -45,15 +58,35 @@ export default function BloomsAnalyticsPage({ params }: BloomsAnalyticsPageProps
     );
   }
   
-  // Not authenticated
+  // Return null while redirecting
   if (status === 'unauthenticated') {
+    return null;
+  }
+  
+  // Handle teacher query error
+  if (teacherError) {
     return (
       <div className="container py-6">
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Authentication Error</AlertTitle>
+          <AlertTitle>Error Loading Teacher Data</AlertTitle>
           <AlertDescription>
-            You must be signed in to view this page.
+            Failed to load teacher information. Please try again or contact support.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+  
+  // Handle class query error
+  if (classError) {
+    return (
+      <div className="container py-6">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error Loading Class Data</AlertTitle>
+          <AlertDescription>
+            Failed to load class information. Please try again or contact support.
           </AlertDescription>
         </Alert>
       </div>
@@ -83,7 +116,7 @@ export default function BloomsAnalyticsPage({ params }: BloomsAnalyticsPageProps
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Class Not Found</AlertTitle>
           <AlertDescription>
-            The requested class could not be found.
+            The requested class could not be found or you don't have permission to access it.
           </AlertDescription>
         </Alert>
       </div>

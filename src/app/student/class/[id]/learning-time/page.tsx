@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { Clock, ArrowLeft } from 'lucide-react';
+import { Clock, ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { LearningTimeAnalytics } from '@/components/student/LearningTimeAnalytics';
 import Link from 'next/link';
@@ -31,7 +31,7 @@ export default function LearningTimePage() {
           <div className="flex items-center">
             <Link href={`/student/class/${classId}/dashboard`}>
               <Button variant="ghost" size="icon" className="mr-2">
-                <ArrowLeft className="h-4 w-4" />
+                <ChevronLeft className="h-4 w-4" />
               </Button>
             </Link>
             <h1 className="text-2xl font-bold">Learning Time Analytics</h1>

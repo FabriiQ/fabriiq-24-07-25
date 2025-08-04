@@ -17,7 +17,7 @@ import {
   RefreshCw as RotateCw,
   ChevronLeft,
   ChevronRight,
-  Download as FileDown,
+  Download as Download,
   Settings
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -214,7 +214,7 @@ export function PrintPreview({
             size="sm"
             onClick={handleDownload}
           >
-            <FileDown className="h-4 w-4 mr-1" />
+            <Download className="h-4 w-4 mr-1" />
             Download PDF
           </Button>
 

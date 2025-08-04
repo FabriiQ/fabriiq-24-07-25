@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Skeleton } from "@/components/ui/atoms/skeleton";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
-import AssessmentCreator from "@/components/teacher/assessments/AssessmentCreator";
+import { UnifiedAssessmentCreator } from "@/components/teacher/assessments/UnifiedAssessmentCreator";
 
 interface ClassType {
   id: string;
@@ -130,7 +130,18 @@ export default function CreateAssessmentPage() {
           </div>
           
           {selectedClassId ? (
-            <AssessmentCreator classId={selectedClassId} />
+            <UnifiedAssessmentCreator
+              classId={selectedClassId}
+              mode="create"
+              onSuccess={() => {
+                // Handle success - could redirect or show success message
+                console.log('Assessment created successfully');
+              }}
+              onCancel={() => {
+                // Handle cancel - could redirect back
+                console.log('Assessment creation cancelled');
+              }}
+            />
           ) : (
             <p className="text-gray-500 text-center py-10">
               Please select a class to create an assessment

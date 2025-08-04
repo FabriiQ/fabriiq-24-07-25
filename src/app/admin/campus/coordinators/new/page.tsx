@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { LoadingSpinner } from '@/components/ui/loading';
-import { ArrowLeft, Loader2, Plus, X, Eye, EyeOff } from 'lucide-react';
+import { ChevronLeft, Loader2, Plus, X, Eye, EyeOff } from 'lucide-react';
 
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -256,7 +256,7 @@ export default function NewCoordinatorPage() {
         <div className="flex items-center space-x-2">
           <Button variant="ghost" size="icon" asChild>
             <Link href="/admin/campus/coordinators">
-              <ArrowLeft className="h-4 w-4" />
+              <ChevronLeft className="h-4 w-4" />
             </Link>
           </Button>
           <h1 className="text-3xl font-bold tracking-tight">Add New Coordinator</h1>

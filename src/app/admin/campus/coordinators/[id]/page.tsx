@@ -12,7 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { LoadingSpinner } from '@/components/ui/loading';
 import { CoordinatorAssignmentManager } from '@/components/admin/campus/CoordinatorAssignmentManager';
 import {
-  ArrowLeft,
+  ChevronLeft,
   BookOpen,
   Building,
   GraduationCap,
@@ -120,7 +120,7 @@ export default function CoordinatorDetailPage() {
         <div className="flex items-center space-x-2">
           <Button variant="ghost" size="icon" asChild>
             <Link href="/admin/campus/coordinators">
-              <ArrowLeft className="h-4 w-4" />
+              <ChevronLeft className="h-4 w-4" />
             </Link>
           </Button>
           <h1 className="text-3xl font-bold tracking-tight">Coordinator Profile</h1>

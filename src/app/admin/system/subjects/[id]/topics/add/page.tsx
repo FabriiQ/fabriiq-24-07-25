@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { TopicForm } from "~/components/admin/subjects/TopicForm";
 import { Button } from "~/components/ui";
-import { ArrowLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { use } from "react";
 
 // Create a wrapper component to handle the params
@@ -22,7 +22,7 @@ function TopicPageContent({ id }: { id: string }) {
           onClick={() => router.push(`/admin/system/subjects/${id}`)}
           className="mb-2"
         >
-          <ArrowLeft className="mr-2 h-4 w-4" />
+          <ChevronLeft className="mr-2 h-4 w-4" />
           Back to Subject
         </Button>
         <h1 className="text-2xl font-bold">Add New Topic</h1>

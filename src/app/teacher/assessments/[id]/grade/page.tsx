@@ -9,16 +9,20 @@ import { Skeleton } from "@/components/ui/atoms/skeleton";
 import GradingInterface from "@/components/teacher/assessments/GradingInterface";
 import { ChevronLeft, BarChart } from "lucide-react";
 import Link from "next/link";
+import { use } from "react";
 
 interface GradePageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default function AssessmentGradePage({ params }: GradePageProps) {
+  // Unwrap the params Promise using React's use() hook
+  const resolvedParams = use(params);
+  const assessmentId = resolvedParams.id;
+  
   const { data: session, status } = useSession();
-  const assessmentId = params.id;
   
   // Redirect if not authenticated
   if (status === "unauthenticated") {
@@ -114,4 +118,4 @@ function AssessmentGradePageSkeleton() {
       </div>
     </div>
   );
-} 
+}

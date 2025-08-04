@@ -4,7 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/data-display/card';
-import { ArrowLeft } from '@/components/ui/icons';
+import { ChevronLeft } from '@/components/ui/icons';
 
 import { api } from '@/trpc/react';
 import { useSession } from 'next-auth/react';
@@ -87,7 +87,7 @@ export default function StudentTransferPage() {
         <div className="flex items-center space-x-2">
           <Button variant="ghost" size="icon" asChild>
             <Link href={`/admin/campus/students/${studentId}`}>
-              <ArrowLeft className="h-5 w-5" />
+              <ChevronLeft className="h-5 w-5" />
             </Link>
           </Button>
           <h1 className="text-3xl font-bold tracking-tight">Transfer Student</h1>
@@ -104,7 +104,7 @@ export default function StudentTransferPage() {
       <div className="flex items-center space-x-2">
         <Button variant="ghost" size="icon" asChild>
           <Link href={`/admin/campus/students/${studentId}`}>
-            <ArrowLeft className="h-5 w-5" />
+            <ChevronLeft className="h-5 w-5" />
           </Link>
         </Button>
         <h1 className="text-3xl font-bold tracking-tight">Transfer Student</h1>

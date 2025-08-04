@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { AssessmentForm } from '~/components/assessment/assessment-form';
+import { UnifiedAssessmentCreator } from '@/components/teacher/assessments/UnifiedAssessmentCreator';
 import { PageHeader } from '~/components/ui/layout/page-header';
 
 export const metadata: Metadata = {
@@ -23,7 +23,17 @@ export default async function EditAssessmentPage({ params }: EditAssessmentPageP
         title="Edit Assessment"
         description="Modify an existing assessment"
       />
-      <AssessmentForm assessmentId={id} />
+      <UnifiedAssessmentCreator
+        classId=""
+        mode="edit"
+        assessmentId={id}
+        onSuccess={(assessment) => {
+          console.log('Assessment updated:', assessment);
+        }}
+        onCancel={() => {
+          console.log('Assessment edit cancelled');
+        }}
+      />
     </div>
   );
 }

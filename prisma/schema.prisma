@@ -136,6 +136,12 @@ model User {
   // Notifications
   notifications              Notification[]
 
+  // Analytics relationships
+  performanceAnalytics       PerformanceAnalytics[]
+  studentPerformanceMetrics  StudentPerformanceMetrics[]
+  bloomsProgression          BloomsProgression[]
+  performanceAlerts          PerformanceAlert[]
+
   @@index([institutionId, email])
   @@index([institutionId, username])
   @@index([institutionId, status])
@@ -368,6 +374,12 @@ model Subject {
   rubrics                   Rubric[]                      // Direct relationship to rubrics
   rubricCriteria            RubricCriteria[]              // Direct relationship to rubric criteria
 
+  // Analytics relationships
+  performanceAnalytics      PerformanceAnalytics[]
+  studentPerformanceMetrics StudentPerformanceMetrics[]
+  bloomsProgression         BloomsProgression[]
+  performanceAlerts         PerformanceAlert[]
+
   @@index([code])
   @@index([courseId])
   @@index([status])
@@ -510,6 +522,13 @@ model Class {
 
   // Notifications
   notifications             Notification[]
+
+  // Analytics relationships
+  performanceAnalytics      PerformanceAnalytics[]
+  studentPerformanceMetrics StudentPerformanceMetrics[]
+  classActivityMetrics      ClassActivityMetrics[]
+  bloomsProgression         BloomsProgression[]
+  performanceAlerts         PerformanceAlert[]
 
   @@index([courseCampusId, termId])
   @@index([status, termId])
@@ -699,6 +718,10 @@ model Activity {
   createdBy           User?                 @relation(fields: [createdById], references: [id])
   learningOutcomes    ActivityOutcome[]
   socialTags          SocialActivityTag[]
+
+  // Analytics relationships
+  performanceAnalytics PerformanceAnalytics[]
+  classActivityMetrics ClassActivityMetrics[]
 
   @@index([status, classId])
   @@index([subjectId, purpose])
@@ -2078,6 +2101,9 @@ model SubjectTopic {
   topicMasteries     TopicMastery[]
   rubricCriteria     RubricCriteria[]      // Criteria associated with this topic
 
+  // Analytics relationships
+  performanceAnalytics PerformanceAnalytics[]
+
   @@unique([subjectId, code])
   @@index([subjectId, nodeType])
   @@index([parentTopicId])
@@ -2112,12 +2138,28 @@ model ActivityGrade {
   commitmentDeadline DateTime?
   commitmentMet      Boolean?
 
+  // Essay-specific fields for AI grading and analysis
+  wordCount          Int?      // Word count for essay submissions
+  aiScore            Float?    // AI-generated score (0-100)
+  aiFeedback         String?   // AI-generated feedback text
+  aiAnalysis         Json?     // Detailed AI analysis (grammar, structure, content, etc.)
+  aiConfidence       Float?    // AI confidence score (0-1)
+  aiBloomsLevel      String?   // AI-detected Bloom's taxonomy level
+  manualOverride     Boolean   @default(false) // Whether teacher manually overrode AI grade
+  finalScore         Float?    // Final score after manual review (if any)
+  gradingMethod      String?   // "AI", "MANUAL", "HYBRID"
+  reviewRequired     Boolean   @default(false) // Whether manual review is required
+  reviewNotes        String?   // Teacher notes during manual review
+
   // Relations
   activity            Activity            @relation(fields: [activityId], references: [id])
   gradedBy            User?               @relation(fields: [gradedById], references: [id])
   student             StudentProfile      @relation(fields: [studentId], references: [id])
   commitment          CommitmentContract? @relation(fields: [commitmentId], references: [id])
   learningTimeRecords LearningTimeRecord[]
+
+  // Analytics relationship
+  performanceAnalytics PerformanceAnalytics?
 
   @@unique([activityId, studentId])
   @@index([studentId])
@@ -2134,6 +2176,13 @@ model ActivityGrade {
   @@index([timeSpentMinutes])
   @@index([learningStartedAt])
   @@index([learningCompletedAt])
+  @@index([aiScore])
+  @@index([aiConfidence])
+  @@index([manualOverride])
+  @@index([gradingMethod])
+  @@index([reviewRequired])
+  @@index([aiBloomsLevel])
+  @@index([wordCount])
   @@map("activity_grades")
 }
 
@@ -4013,4 +4062,150 @@ enum ReportStatus {
   RESOLVED
   DISMISSED
   ESCALATED
+}
+
+// Unified Analytics Models
+model PerformanceAnalytics {
+  id            String   @id @default(cuid())
+  submissionId  String   @unique
+  studentId     String
+  activityId    String
+  classId       String
+  subjectId     String
+  topicId       String?
+
+  // Performance metrics
+  score         Float
+  maxScore      Float
+  percentage    Float
+  timeSpent     Int      // in seconds
+  attemptCount  Int
+  engagementScore Float
+
+  // Bloom's taxonomy data
+  bloomsLevel         String?
+  demonstratedLevel   String?
+  bloomsLevelScores   Json?
+
+  // Metadata
+  gradingType   String   // AUTO, MANUAL, AI, HYBRID
+  activityType  String
+  gradedAt      DateTime
+  submittedAt   DateTime
+  completedAt   DateTime
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  submission    ActivityGrade      @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  student       User               @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  activity      Activity           @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  class         Class              @relation(fields: [classId], references: [id], onDelete: Cascade)
+  subject       Subject            @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  topic         SubjectTopic?      @relation(fields: [topicId], references: [id], onDelete: SetNull)
+
+  @@map("performance_analytics")
+}
+
+model StudentPerformanceMetrics {
+  id                String   @id @default(cuid())
+  studentId         String
+  subjectId         String
+  classId           String
+
+  // Aggregate metrics
+  totalScore        Float
+  totalMaxScore     Float
+  activityCount     Int
+  averageScore      Float
+  averagePercentage Float
+  lastActivityDate  DateTime
+  totalTimeSpent    Int      // in seconds
+  averageEngagement Float
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  student           User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  subject           Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  class             Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, subjectId])
+  @@map("student_performance_metrics")
+}
+
+model ClassActivityMetrics {
+  id                 String   @id @default(cuid())
+  classId            String
+  activityId         String
+
+  // Aggregate metrics
+  submissionCount    Int
+  totalScore         Float
+  averageScore       Float
+  averagePercentage  Float
+  lastSubmissionDate DateTime
+  averageTimeSpent   Float
+
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  // Relations
+  class              Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  activity           Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+
+  @@unique([classId, activityId])
+  @@map("class_activity_metrics")
+}
+
+model BloomsProgression {
+  id                    String   @id @default(cuid())
+  studentId             String
+  subjectId             String
+  classId               String
+
+  // Progression data
+  levelCounts           Json     // Record<BloomsTaxonomyLevel, number>
+  lastDemonstratedLevel String?
+  lastActivityDate      DateTime
+
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // Relations
+  student               User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  subject               Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  class                 Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, subjectId])
+  @@map("blooms_progression")
+}
+
+model PerformanceAlert {
+  id          String   @id @default(cuid())
+  type        String   // struggling_student, exceptional_performance, significant_improvement
+  studentId   String
+  classId     String
+  subjectId   String
+
+  // Alert content
+  message     String
+  confidence  Float
+  metadata    Json     // Additional alert data
+  isRead      Boolean  @default(false)
+
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  student     User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  class       Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  subject     Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@index([studentId, isRead])
+  @@index([classId, createdAt])
+  @@index([type, createdAt])
+  @@map("performance_alerts")
 }

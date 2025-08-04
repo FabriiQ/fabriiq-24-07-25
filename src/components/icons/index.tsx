@@ -3,8 +3,8 @@
 import React from 'react';
 import { LucideProps } from 'lucide-react';
 
-// Custom ArrowLeft icon
-export const ArrowLeft = (props: LucideProps) => (
+// Custom ChevronLeft icon
+export const ChevronLeft = (props: LucideProps) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="24"

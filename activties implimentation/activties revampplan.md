@@ -398,7 +398,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/data-display/card';
 import { Select } from '@/components/ui/forms/select';
 import { Input } from '@/components/ui/forms/input';
-import { ArrowLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { useToast } from '@/components/ui/feedback/toast';
 import { api } from '@/trpc/react';
 

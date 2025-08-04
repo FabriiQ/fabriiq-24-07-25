@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/atoms/badge';
 import { api } from '@/trpc/react';
 import { useToast } from '@/components/ui/feedback/toast';
 import { formatDate } from '@/lib/utils';
-import { EditIcon, CalendarIcon, TrashIcon, ClockIcon, CheckCircleIcon, XCircleIcon, ArrowLeftIcon, BookIcon, UsersIcon } from 'lucide-react';
+import { EditIcon, CalendarIcon, TrashIcon, ClockIcon, CheckCircleIcon, XCircleIcon, ChevronLeftIcon, BookIcon, UsersIcon } from 'lucide-react';
 import { Dialog } from '@/components/ui/custom-dialog';
 
 export default function TermDetailPage() {
@@ -168,7 +168,7 @@ export default function TermDetailPage() {
             variant="outline"
             onClick={() => router.push(`/admin/system/academic-cycles/${(params.id as string)}/terms`)}
           >
-            <ArrowLeftIcon className="mr-2 h-4 w-4" />
+            <ChevronLeftIcon className="mr-2 h-4 w-4" />
             Back to Terms
           </Button>
           <Button

@@ -21,14 +21,13 @@ import {
   TableRow
 } from '@/components/ui/table';
 import {
-  ArrowLeft,
+  ChevronLeft,
   FileText,
   CheckCircle2,
   Clock,
   AlertCircle,
   RotateCcw
 } from 'lucide-react';
-import { Badge } from '@/components/ui/data-display/badge';
 import { SubmissionStatus } from "@/server/api/constants";
 
 // Helper functions for submission status display
@@ -49,31 +48,39 @@ function getSubmissionStatusIcon(status: SubmissionStatus) {
   }
 }
 
-function getSubmissionStatusBadge(status: SubmissionStatus) {
-  let variant: 'default' | 'success' | 'destructive' | 'warning' | 'outline' = 'default';
+function getSubmissionStatusDisplay(status: SubmissionStatus) {
+  const statusConfig = {
+    'GRADED': { 
+      text: 'Graded', 
+      className: 'bg-green-100 text-green-800 border-green-200' 
+    },
+    'SUBMITTED': { 
+      text: 'Submitted', 
+      className: 'bg-blue-100 text-blue-800 border-blue-200' 
+    },
+    'LATE': { 
+      text: 'Late', 
+      className: 'bg-orange-100 text-orange-800 border-orange-200' 
+    },
+    'REJECTED': { 
+      text: 'Rejected', 
+      className: 'bg-red-100 text-red-800 border-red-200' 
+    },
+    'RESUBMITTED': { 
+      text: 'Resubmitted', 
+      className: 'bg-purple-100 text-purple-800 border-purple-200' 
+    },
+  };
 
-  switch (status) {
-    case 'GRADED':
-      variant = 'success';
-      break;
-    case 'SUBMITTED':
-      variant = 'default';
-      break;
-    case 'LATE':
-      variant = 'warning';
-      break;
-    case 'REJECTED':
-      variant = 'destructive';
-      break;
-    case 'RESUBMITTED':
-      variant = 'outline';
-      break;
-  }
+  const config = statusConfig[status] || { 
+    text: status, 
+    className: 'bg-gray-100 text-gray-800 border-gray-200' 
+  };
 
   return (
-    <Badge variant={variant} className="capitalize">
-      {status.toLowerCase().replace('_', ' ')}
-    </Badge>
+    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border capitalize ${config.className}`}>
+      {config.text.toLowerCase().replace('_', ' ')}
+    </span>
   );
 }
 
@@ -81,17 +88,36 @@ export default function AssessmentSubmissionsPage() {
   const params = useParams();
   const searchParams = useSearchParams();
 
-  const classId = params.id as string;
-  const assessmentId = params.assessmentId as string;
-  const statusParam = searchParams.get('status');
+  // FIX: Add null checks for params and searchParams
+  const classId = params?.id as string;
+  const assessmentId = params?.assessmentId as string;
+  const statusParam = searchParams?.get('status');
   const status = statusParam ? statusParam as SubmissionStatus : null;
-  const pageParam = searchParams.get('page');
+  const pageParam = searchParams?.get('page');
   const page = pageParam ? Number(pageParam) : 1;
   const pageSize = 20;
 
   // State for data
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // FIX: Add early return if params are null
+  if (!params || !classId || !assessmentId) {
+    return (
+      <PageLayout
+        title="Loading..."
+        description="Loading page parameters"
+        breadcrumbs={[]}
+      >
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Loading...</p>
+          </div>
+        </div>
+      </PageLayout>
+    );
+  }
 
   // Fetch class details
   const { data: classInfo } = api.class.getById.useQuery({
@@ -204,7 +230,7 @@ export default function AssessmentSubmissionsPage() {
           <div className="flex items-center gap-2 mb-1">
             <Link href={`/admin/campus/classes/${classId}/assessments/${assessmentId}`}>
               <Button size="sm" variant="ghost">
-                <ArrowLeft className="h-4 w-4 mr-1" />
+                <ChevronLeft className="h-4 w-4 mr-1" />
                 Back
               </Button>
             </Link>
@@ -298,7 +324,8 @@ export default function AssessmentSubmissionsPage() {
                       <TableCell>
                         <div className="flex items-center gap-2">
                           {getSubmissionStatusIcon(submission.status as SubmissionStatus)}
-                          {getSubmissionStatusBadge(submission.status as SubmissionStatus)}
+                          {/* FIX: Changed from getSubmissionStatusBadge to getSubmissionStatusDisplay */}
+                          {getSubmissionStatusDisplay(submission.status as SubmissionStatus)}
                         </div>
                       </TableCell>
                       <TableCell>

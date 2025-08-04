@@ -5,7 +5,7 @@ import { prisma } from "@/server/db";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/data-display/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowLeft } from "@/components/ui/icons";
+import { ChevronLeft } from "@/components/ui/icons";
 import { User as UserIcon, Mail, Calendar, MapPin } from "lucide-react";
 
 // Custom Phone icon
@@ -212,7 +212,7 @@ export default async function StudentProfilePage({ params }: { params: Promise<{
         <div className="flex items-center justify-between">
           <Button variant="ghost" asChild>
             <Link href="/admin/campus/students" className="flex items-center gap-2">
-              <ArrowLeft className="h-4 w-4" />
+              <ChevronLeft className="h-4 w-4" />
               Back to Students
             </Link>
           </Button>

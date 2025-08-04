@@ -7,7 +7,7 @@ import { PageHeader } from '@/components/ui/layout/page-header';
 import { Card } from '@/components/ui/data-display/card';
 import { Button } from '@/components/ui/core/button';
 import { Loader2, Edit, GraduationCap } from 'lucide-react';
-import { ArrowLeft } from '@/components/ui/icons/lucide-icons';
+import { ChevronLeft } from '@/components/ui/icons/lucide-icons';
 import { Badge } from '@/components/ui/core/badge';
 import { useToast } from '@/components/ui/feedback/toast';
 import { BloomsDistributionChart } from '@/features/bloom/components/taxonomy/BloomsDistributionChart';
@@ -117,7 +117,7 @@ function TopicDetailPageContent({ subjectId, topicId }: { subjectId: string; top
             variant="outline"
             onClick={handleBackToSubject}
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ChevronLeft className="h-4 w-4 mr-2" />
             Back to Subject
           </Button>
         </div>

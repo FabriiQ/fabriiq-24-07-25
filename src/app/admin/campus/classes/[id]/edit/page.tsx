@@ -13,7 +13,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/forms/select';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, Save } from 'lucide-react';
+import { ChevronLeft, Save } from 'lucide-react';
 import { useToast } from '@/components/ui/feedback/toast';
 import { prisma } from '@/server/db';
 import { Facility, SystemStatus } from '@prisma/client';
@@ -148,7 +148,7 @@ export default function EditClassPage() {
       actions={
         <Button asChild variant="outline">
           <Link href={`/admin/campus/classes/${classId}`}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ChevronLeft className="h-4 w-4 mr-2" />
             Back to Class
           </Link>
         </Button>

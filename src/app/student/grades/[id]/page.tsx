@@ -102,7 +102,7 @@ export default async function StudentGradeDetailPage({
       title: 'Chemistry Final Exam',
       subject: 'Science',
       type: 'Exam',
-      date: new Date(Date.now() - 2592000000), // 30 days ago
+      date: new Date(Date.now() - (30 * 24 * 60 * 60 * 1000)), // 30 days ago
       score: 88,
       totalScore: 100,
       grade: 'B+',
@@ -158,7 +158,7 @@ export default async function StudentGradeDetailPage({
       title: 'Literature Analysis Final',
       subject: 'English',
       type: 'Exam',
-      date: new Date(Date.now() - 2592000000), // 30 days ago
+      date: new Date(Date.now() - (30 * 24 * 60 * 60 * 1000)), // 30 days ago
       score: 92,
       totalScore: 100,
       grade: 'A-',
@@ -187,7 +187,7 @@ export default async function StudentGradeDetailPage({
       title: 'Medieval History Research Paper',
       subject: 'History',
       type: 'Assignment',
-      date: new Date(Date.now() - 2160000000), // 25 days ago
+      date: new Date(Date.now() - (25 * 24 * 60 * 60 * 1000)), // 25 days ago
       score: 45,
       totalScore: 50,
       grade: 'A-',
@@ -200,7 +200,7 @@ export default async function StudentGradeDetailPage({
       title: 'Modern History Presentation',
       subject: 'History',
       type: 'Project',
-      date: new Date(Date.now() - 3456000000), // 40 days ago
+      date: new Date(Date.now() - (40 * 24 * 60 * 60 * 1000)), // 40 days ago
       score: 28,
       totalScore: 30,
       grade: 'A',

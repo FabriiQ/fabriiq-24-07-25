@@ -13,7 +13,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/forms/select';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeftIcon } from 'lucide-react';
+import { ChevronLeftIcon } from 'lucide-react';
 import { useToast } from '@/components/ui/feedback/toast';
 import { api } from '@/trpc/react';
 import { FacilityType, SystemStatus } from '@prisma/client';
@@ -109,7 +109,7 @@ export default function EditFacilityPage() {
         action={
           <Link href={`/admin/system/campuses/${campusId}/facilities`}>
             <Button variant="outline">
-              <ArrowLeftIcon className="mr-2 h-4 w-4" />
+              <ChevronLeftIcon className="mr-2 h-4 w-4" />
               Back
             </Button>
           </Link>

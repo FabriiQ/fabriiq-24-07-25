@@ -5,7 +5,7 @@ import { prisma } from "@/server/db";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/data-display/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { EnrollmentForm } from "./enrollment-form";
 
 export default async function EnrollStudentPage(props: { params: Promise<{ id: string }> }) {
@@ -53,7 +53,7 @@ export default async function EnrollStudentPage(props: { params: Promise<{ id: s
         <div className="flex items-center space-x-2">
           <Button variant="ghost" size="icon" asChild>
             <Link href="/admin/campus/students">
-              <ArrowLeft className="h-5 w-5" />
+              <ChevronLeft className="h-5 w-5" />
             </Link>
           </Button>
           <h1 className="text-3xl font-bold tracking-tight">Student Not Found</h1>
@@ -73,7 +73,7 @@ export default async function EnrollStudentPage(props: { params: Promise<{ id: s
         <div className="flex items-center space-x-2">
           <Button variant="ghost" size="icon" asChild>
             <Link href="/admin/campus/students">
-              <ArrowLeft className="h-5 w-5" />
+              <ChevronLeft className="h-5 w-5" />
             </Link>
           </Button>
           <h1 className="text-3xl font-bold tracking-tight">Student Profile Not Found</h1>
@@ -141,7 +141,7 @@ export default async function EnrollStudentPage(props: { params: Promise<{ id: s
       <div className="flex items-center space-x-2">
         <Button variant="ghost" size="icon" asChild>
           <Link href={`/admin/campus/students/${studentId}`}>
-            <ArrowLeft className="h-5 w-5" />
+            <ChevronLeft className="h-5 w-5" />
           </Link>
         </Button>
         <h1 className="text-3xl font-bold tracking-tight">Enroll Student</h1>

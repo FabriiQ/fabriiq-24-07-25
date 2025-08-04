@@ -20,13 +20,13 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import {
-  FileTextIcon,
-  MoreHorizontalIcon,
-  PencilIcon,
-  TrashIcon,
-  EyeIcon,
-  CheckIcon,
-  XIcon
+  FileText,
+  MoreHorizontal,
+  Pencil,
+  Trash,
+  Eye,
+  Check,
+  X
 } from 'lucide-react';
 import { Assessment } from '@/types';
 
@@ -89,12 +89,12 @@ export function AssessmentsList({ assessments, classId }: AssessmentsListProps) 
               <TableCell>
                 {assessment.isPublished ? (
                   <Badge variant="success" className="flex gap-1 items-center">
-                    <CheckIcon className="h-3 w-3" />
+                    <Check className="h-3 w-3" />
                     Published
                   </Badge>
                 ) : (
                   <Badge variant="secondary" className="flex gap-1 items-center">
-                    <XIcon className="h-3 w-3" />
+                    <X className="h-3 w-3" />
                     Draft
                   </Badge>
                 )}
@@ -103,31 +103,31 @@ export function AssessmentsList({ assessments, classId }: AssessmentsListProps) 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon">
-                      <MoreHorizontalIcon className="h-4 w-4" />
+                      <MoreHorizontal className="h-4 w-4" />
                       <span className="sr-only">Actions</span>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem asChild>
                       <Link href={`/admin/campus/classes/${classId}/assessments/${assessment.id}`}>
-                        <EyeIcon className="h-4 w-4 mr-2" />
+                        <Eye className="h-4 w-4 mr-2" />
                         View
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link href={`/admin/campus/classes/${classId}/assessments/${assessment.id}/edit`}>
-                        <PencilIcon className="h-4 w-4 mr-2" />
+                        <Pencil className="h-4 w-4 mr-2" />
                         Edit
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link href={`/admin/campus/classes/${classId}/assessments/${assessment.id}/submissions`}>
-                        <FileTextIcon className="h-4 w-4 mr-2" />
+                        <FileText className="h-4 w-4 mr-2" />
                         Submissions
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem className="text-destructive">
-                      <TrashIcon className="h-4 w-4 mr-2" />
+                      <Trash className="h-4 w-4 mr-2" />
                       Delete
                     </DropdownMenuItem>
                   </DropdownMenuContent>

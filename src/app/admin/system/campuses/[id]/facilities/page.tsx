@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/data-display/card";
 import { Badge } from "@/components/ui/atoms/badge";
-import { ArrowLeftIcon, PlusIcon, BuildingIcon, UsersIcon, HomeIcon } from "lucide-react";
+import { ChevronLeftIcon, PlusIcon, BuildingIcon, UsersIcon, HomeIcon } from "lucide-react";
 import { getUserSession } from "@/server/api/trpc";
 import { prisma } from "@/server/db";
 import { FacilityType } from "@prisma/client";
@@ -103,7 +103,7 @@ export default async function CampusFacilitiesPage({ params }: CampusFacilitiesP
       <div className="flex items-center space-x-4">
         <Link href={`/admin/system/campuses/${id}`}>
           <Button variant="outline" size="icon">
-            <ArrowLeftIcon className="h-4 w-4" />
+            <ChevronLeftIcon className="h-4 w-4" />
           </Button>
         </Link>
         <PageHeader

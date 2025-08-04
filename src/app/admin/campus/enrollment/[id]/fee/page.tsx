@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle, ArrowLeft } from "lucide-react";
+import { AlertCircle, ChevronLeft } from "lucide-react";
 import { FeeDetailCard } from "@/components/shared/entities/fee/fee-detail-card";
 import { EnrollmentFeeForm } from "@/components/shared/entities/fee/enrollment-fee-form";
 import { api } from "@/trpc/react";
@@ -350,7 +350,7 @@ export default function EnrollmentFeePage() {
         </Alert>
         <div className="mt-4">
           <Button onClick={() => router.back()}>
-            <ArrowLeft className="mr-2 h-4 w-4" />
+            <ChevronLeft className="mr-2 h-4 w-4" />
             Go Back
           </Button>
         </div>
@@ -368,7 +368,7 @@ export default function EnrollmentFeePage() {
           </p>
         </div>
         <Button variant="outline" onClick={() => router.back()}>
-          <ArrowLeft className="mr-2 h-4 w-4" />
+          <ChevronLeft className="mr-2 h-4 w-4" />
           Back to Enrollment
         </Button>
       </div>

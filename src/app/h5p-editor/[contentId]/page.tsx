@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/atoms/spinner';
-import { AlertCircle, ArrowLeft, Save } from 'lucide-react';
+import { AlertCircle, ChevronLeft, Save } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui';
 import ClientOnly from '@/components/client-only';
 import { H5PUploadProcessor } from '@/components/h5p/H5PUploadProcessor';
@@ -147,7 +147,7 @@ export default function H5PEditorPage({ params }: { params: Promise<{ contentId:
             onClick={() => router.push('/h5p-manager')}
             className="mr-4"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ChevronLeft className="h-4 w-4" />
           </Button>
           <div>
             <h1 className="text-3xl font-bold">

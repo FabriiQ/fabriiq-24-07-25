@@ -9,7 +9,7 @@ import { Card } from '@/components/ui/card';
 import { toast } from '@/components/ui';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowLeftIcon } from 'lucide-react';
+import { ChevronLeftIcon } from 'lucide-react';
 
 
 
@@ -77,7 +77,7 @@ export default function EditUserPage() {
       <div className="flex items-center space-x-4">
         <Link href="/admin/system/users">
           <Button variant="outline" size="icon">
-            <ArrowLeftIcon className="h-4 w-4" />
+            <ChevronLeftIcon className="h-4 w-4" />
           </Button>
         </Link>
         <PageHeader

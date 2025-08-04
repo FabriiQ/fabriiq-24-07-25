@@ -9,16 +9,20 @@ import { Skeleton } from "@/components/ui/atoms/skeleton";
 import ResultsViewer from "@/components/teacher/assessments/ResultsViewer";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
+import { use } from "react";
 
 interface ResultsPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default function AssessmentResultsPage({ params }: ResultsPageProps) {
+  // Unwrap the params Promise using React's use() hook
+  const resolvedParams = use(params);
+  const assessmentId = resolvedParams.id;
+  
   const { data: session, status } = useSession();
-  const assessmentId = params.id;
   
   // Redirect if not authenticated
   if (status === "unauthenticated") {
@@ -105,4 +109,4 @@ function AssessmentResultsPageSkeleton() {
       </div>
     </div>
   );
-} 
+}

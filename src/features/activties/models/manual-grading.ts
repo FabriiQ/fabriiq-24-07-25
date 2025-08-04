@@ -12,7 +12,7 @@ import { BloomsTaxonomyLevel } from '@/features/bloom/types/bloom-taxonomy';
 
 /**
  * Manual Grading Activity Interface
- * Represents a complete manual grading activity
+ * Represents a complete manual grading activity including offline class activities
  */
 export interface ManualGradingActivity extends BaseActivity {
   activityType: 'manual-grading';
@@ -24,6 +24,22 @@ export interface ManualGradingActivity extends BaseActivity {
   submissionInstructions?: string;
   isGradable: true; // Always gradable
   maxScore: number; // Maximum score for the activity
+
+  // Offline class activity features - activities conducted in class but graded/feedback added digitally
+  activityCategory?: 'online' | 'offline_class' | 'homework' | 'project' | 'presentation';
+  isOfflineClassActivity?: boolean; // True for activities conducted in physical classroom
+  classroomInstructions?: string; // Instructions for conducting the activity in class
+
+  bloomsAnalytics?: {
+    targetLevel: BloomsTaxonomyLevel;
+    expectedSkills: string[];
+    assessmentCriteria: Array<{
+      skill: string;
+      bloomsLevel: BloomsTaxonomyLevel;
+      weight: number;
+    }>;
+  };
+
   settings?: ActivitySettings & {
     allowFileUpload?: boolean;
     allowTextSubmission?: boolean;
@@ -36,7 +52,33 @@ export interface ManualGradingActivity extends BaseActivity {
     latePenaltyPercentage?: number;
     showRubricToStudents?: boolean;
     gradingMethod?: 'auto' | 'manual'; // Whether to use automatic or manual grading
-    gradingType?: 'score' | 'rubric'; // Whether to use score-based or rubric-based grading
+    gradingType?: 'score' | 'rubric' | 'blooms_based'; // Enhanced grading types
+
+    // Offline class activity specific settings
+    offlineClassSettings?: {
+      conductedInClass: boolean; // Activity was conducted in physical classroom
+      requiresDigitalFeedback: boolean; // Teacher will add feedback digitally later
+      allowGrading: boolean; // Whether this activity can be graded or just feedback
+      materialsList?: string[]; // Materials needed for classroom activity
+      timeAllocation?: number; // Time allocated in class (minutes)
+      groupActivity?: boolean;
+      maxGroupSize?: number;
+      observationPoints?: string[]; // Key points for teacher to observe during activity
+    };
+
+    // Enhanced rubric integration
+    customRubricCriteria?: Array<{
+      id: string;
+      name: string;
+      description: string;
+      bloomsLevel: BloomsTaxonomyLevel;
+      maxPoints: number;
+      levels: Array<{
+        level: number;
+        description: string;
+        points: number;
+      }>;
+    }>;
   };
 }
 
@@ -53,7 +95,7 @@ export interface ManualGradingAttachment {
 }
 
 /**
- * Manual Grading Submission
+ * Manual Grading Submission - Enhanced for offline class activities
  */
 export interface ManualGradingSubmission {
   id: string;
@@ -61,18 +103,39 @@ export interface ManualGradingSubmission {
   activityId: string;
   attachments: ManualGradingAttachment[];
   submittedAt: Date;
-  status: 'draft' | 'submitted' | 'graded' | 'returned';
+  status: 'draft' | 'submitted' | 'graded' | 'returned' | 'conducted_in_class' | 'pending_feedback';
   score?: number;
   feedback?: string;
   bloomsLevelScores?: Record<BloomsTaxonomyLevel, number>;
+
+  // Enhanced for offline class activities
+  offlineClassData?: {
+    conductedAt?: Date; // When the activity was conducted in class
+    attendanceConfirmed: boolean; // Student was present for the activity
+    participationLevel?: 'low' | 'medium' | 'high';
+    observationNotes?: string; // Teacher's observations during class
+    digitalFeedbackAdded?: boolean; // Whether teacher has added digital feedback
+    gradingCompleted?: boolean; // Whether grading is complete
+  };
+
   gradingDetails?: {
     criteriaResults?: Array<{
       criterionId: string;
       levelId: string;
       score: number;
       feedback?: string;
+      bloomsLevel?: BloomsTaxonomyLevel;
     }>;
     bloomsLevelScores?: Record<BloomsTaxonomyLevel, number>;
+    overallBloomsLevel?: BloomsTaxonomyLevel; // Demonstrated Bloom's level
+
+    // Points and scoring integration
+    pointsEarned?: number;
+    pointsBreakdown?: Array<{
+      category: string;
+      points: number;
+      maxPoints: number;
+    }>;
   };
 }
 

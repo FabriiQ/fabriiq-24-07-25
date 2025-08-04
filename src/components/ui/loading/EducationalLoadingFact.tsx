@@ -4,7 +4,7 @@ import React from 'react';
 import { useLoadingFacts } from '@/hooks/useLoadingFacts';
 import { Card, CardContent } from '@/components/ui/data-display/card';
 import { Lightbulb } from '@/components/ui/icons/lightbulb';
-import { ArrowRight, ArrowLeft } from '@/components/ui/icons/arrows';
+import { ArrowRight, ChevronLeft } from '@/components/ui/icons/arrows';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -60,7 +60,7 @@ export function EducationalLoadingFact({
                       onClick={previousFact}
                       className="h-8 px-2 text-foreground hover:text-foreground hover:bg-muted"
                     >
-                      <ArrowLeft className="h-4 w-4 mr-1" />
+                      <ChevronLeft className="h-4 w-4 mr-1" />
                       Previous
                     </Button>
                     <Button
