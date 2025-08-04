@@ -4,7 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { PageLayout } from '@/components/layout/page-layout';
-import { ArrowLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { useToast } from '@/components/ui/feedback/toast';
 import { api } from '@/trpc/react';
 import dynamic from 'next/dynamic';
@@ -120,7 +120,7 @@ export default function EditActivityPage() {
       actions={
         <Button asChild variant="outline">
           <Link href={`/admin/campus/classes/${classId}/activities/${activityId}`}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ChevronLeft className="h-4 w-4 mr-2" />
             Back to Activity
           </Link>
         </Button>

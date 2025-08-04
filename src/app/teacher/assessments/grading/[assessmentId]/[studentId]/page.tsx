@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { ChevronLeft, Loader2 } from 'lucide-react';
 import { ClassNavigation } from '@/components/teacher/classes/ClassNavigation';
 import { PageHeader } from '@/components/ui/page-header';
 import { AssessmentGrading } from '@/features/assessments/components/grading/AssessmentGrading';
@@ -83,7 +83,7 @@ export default function TeacherAssessmentGradingPage() {
         <ClassNavigation />
         <div className="mt-6">
           <Button variant="outline" onClick={handleBack} className="mb-4">
-            <ArrowLeft className="mr-2 h-4 w-4" />
+            <ChevronLeft className="mr-2 h-4 w-4" />
             Back
           </Button>
           <Alert variant="error">
@@ -102,7 +102,7 @@ export default function TeacherAssessmentGradingPage() {
       <ClassNavigation />
       <div className="mt-6">
         <Button variant="outline" onClick={handleBack} className="mb-4">
-          <ArrowLeft className="mr-2 h-4 w-4" />
+          <ChevronLeft className="mr-2 h-4 w-4" />
           Back
         </Button>
         

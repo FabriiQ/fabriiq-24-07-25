@@ -13,15 +13,46 @@ import {
   CardDescription
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { Separator } from '@/components/ui/atoms/separator';
 import { BulkGradingForm } from './components/BulkGradingForm';
 import { SubmissionStatus } from '@/server/api/constants';
 
 export default function BulkGradePage() {
   const params = useParams();
+  
+  // ✅ Handle null params case
+  if (!params) {
+    return (
+      <div className="p-6">
+        <div className="text-center">
+          <h3 className="text-lg font-medium mb-2">Loading...</h3>
+          <p className="text-muted-foreground">Please wait while we load the page.</p>
+        </div>
+      </div>
+    );
+  }
+  
+  // ✅ Now TypeScript knows params is not null
   const classId = params.id as string;
   const assessmentId = params.assessmentId as string;
+  
+  // ✅ Additional validation for required params
+  if (!classId || !assessmentId) {
+    return (
+      <div className="p-6">
+        <div className="text-center">
+          <h3 className="text-lg font-medium mb-2">Invalid URL</h3>
+          <p className="text-muted-foreground mb-4">
+            Required parameters are missing from the URL.
+          </p>
+          <Link href="/admin/campus/classes">
+            <Button>Back to Classes</Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   const { data: assessment } = api.assessment.getById.useQuery({
     assessmentId,
@@ -59,7 +90,7 @@ export default function BulkGradePage() {
         <div className="flex items-center gap-2 mb-6">
           <Link href={`/admin/campus/classes/${classId}/assessments/${assessmentId}/submissions`}>
             <Button size="sm" variant="ghost">
-              <ArrowLeft className="h-4 w-4 mr-1" />
+              <ChevronLeft className="h-4 w-4 mr-1" />
               Back to Submissions
             </Button>
           </Link>
@@ -70,7 +101,7 @@ export default function BulkGradePage() {
           <div className="md:col-span-2">
             <Card>
               <CardHeader>
-                <CardTitle>{assessment.subject.name}</CardTitle>
+                <CardTitle>{assessment.subject?.name || assessment.title}</CardTitle>
                 <CardDescription>
                   {submissions.length} submissions awaiting grading
                 </CardDescription>
@@ -95,13 +126,13 @@ export default function BulkGradePage() {
                       submittedAt: sub.submittedAt || undefined
                     }))}
                     assessment={{
-                      id: assessment.id,
-                      title: assessment.subject.name,
-                      maxScore: assessment.maxScore || 0,
-                      description: assessment.subject.code || '',
-                      questions: [],
-                      dueDate: assessment.dueDate || undefined
-                    }}
+  id: assessment.id,
+  title: assessment.subject?.name || assessment.title,
+  maxScore: assessment.maxScore || 0,
+  description: assessment.subject?.code || '', // ✅ Fixed: removed non-existent 'description'
+  questions: [],
+  dueDate: assessment.dueDate || undefined
+}}
                   />
                 ) : (
                   <div className="text-center py-8">

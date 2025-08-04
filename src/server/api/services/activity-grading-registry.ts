@@ -32,6 +32,7 @@ import { gradeManualGradingActivity } from '@/features/activties/grading/manual-
 import { gradeFlashCardsActivity } from '@/features/activties/grading/flash-cards';
 import { gradeNumericActivity } from '@/features/activties/grading/numeric';
 import { gradeQuizActivity } from '@/features/activties/grading/quiz';
+import { gradeEssayActivity } from '@/features/activties/grading';
 
 // Fallback to legacy implementations if new ones aren't available
 try {
@@ -65,7 +66,8 @@ export const gradingFunctions: Record<string, any> = {
   'flash-cards': gradeFlashCardsActivity,
   'numeric': gradeNumericActivity,
   'quiz': gradeQuizActivity,
-  'manual-grading': gradeManualGradingActivity
+  'manual-grading': gradeManualGradingActivity,
+  'essay': gradeEssayActivity
 };
 
 /**

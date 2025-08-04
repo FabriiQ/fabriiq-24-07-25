@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { WifiOff, RefreshCw, Home, Users, GraduationCap, BookOpen } from 'lucide-react';
+import { WifiOff, Home, Users, GraduationCap, BookOpen } from 'lucide-react';
 import Link from 'next/link';
+import { RefreshButton } from './RefreshButton';
 
 export const metadata: Metadata = {
   title: 'Offline Mode - Coordinator Portal',
@@ -35,13 +35,7 @@ export default function OfflinePage() {
             </p>
             
             <div className="flex justify-center">
-              <Button 
-                onClick={() => window.location.reload()}
-                className="mt-2"
-              >
-                <RefreshCw className="mr-2 h-4 w-4" />
-                Check Connection
-              </Button>
+              <RefreshButton />
             </div>
             
             <div className="mt-8">

@@ -9,15 +9,17 @@ export const metadata: Metadata = {
 
 interface ClassAnalyticsLayoutProps {
   children: React.ReactNode;
-  params: {
+  params: Promise<{
     classId: string;
-  };
+  }>;
 }
 
-export default function ClassAnalyticsLayout({ children, params }: ClassAnalyticsLayoutProps) {
+export default async function ClassAnalyticsLayout({ children, params }: ClassAnalyticsLayoutProps) {
+  const { classId } = await params;
+  
   return (
     <div>
-      <ClassNavigation classId={params.classId} activeTab="analytics" />
+      <ClassNavigation classId={classId} activeTab="analytics" />
       {children}
     </div>
   );

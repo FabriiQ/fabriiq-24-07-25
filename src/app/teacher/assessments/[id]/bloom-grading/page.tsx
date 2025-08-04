@@ -8,15 +8,19 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import { api } from '@/trpc/react';
+import { use } from 'react';
 
 interface BloomGradingPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default function BloomGradingPage({ params }: BloomGradingPageProps) {
-  const { id: assessmentId } = params;
+  // Unwrap the params Promise using React's use() hook
+  const resolvedParams = use(params);
+  const { id: assessmentId } = resolvedParams;
+  
   const { data: session, status } = useSession();
   const router = useRouter();
 

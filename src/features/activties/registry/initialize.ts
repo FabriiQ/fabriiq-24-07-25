@@ -13,12 +13,16 @@ import { BloomsTaxonomyLevel } from '@/features/bloom/types/bloom-taxonomy';
 import { activityRegistry } from './index';
 import { ManualGradingCreator } from '../components/activity-creators/ManualGradingCreator';
 import { ManualGradingViewer } from '../components/activity-viewers/ManualGradingViewer';
+import { registerEssayActivity } from '../types/essay';
 
 // Initialize all activity types
 export function initializeActivityRegistry() {
   // Register manual grading activity
   registerManualGradingActivity();
-  
+
+  // Register essay activity with AI grading capabilities
+  registerEssayActivity();
+
   // Add other activity type registrations here
   // registerMultipleChoiceActivity();
   // registerTrueFalseActivity();

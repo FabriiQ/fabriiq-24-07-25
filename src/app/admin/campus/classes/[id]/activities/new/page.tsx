@@ -4,7 +4,7 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/core/button';
 import { PageLayout } from '@/components/layout/page-layout';
-import { ChevronLeft as ArrowLeft } from 'lucide-react';
+import { ChevronLeft as ChevronLeft } from 'lucide-react';
 import dynamic from 'next/dynamic';
 
 // Use dynamic import for the new ActivityCreator from features/activities
@@ -35,7 +35,7 @@ export default function NewActivityPage() {
       <div className="flex items-center mb-6">
         <Link href={`/admin/campus/classes/${classId}/activities`} className="mr-4">
           <Button variant="ghost" size="sm">
-            <ArrowLeft className="mr-2 h-4 w-4" />
+            <ChevronLeft className="mr-2 h-4 w-4" />
             Back to Activities
           </Button>
         </Link>

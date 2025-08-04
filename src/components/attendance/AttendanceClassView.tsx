@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/atoms/skeleton';
-import { ArrowLeft, Clock, Download } from 'lucide-react';
+import { ChevronLeft, Clock, Download } from 'lucide-react';
 import { format } from 'date-fns';
 import {
   Table,
@@ -62,7 +62,7 @@ export function AttendanceClassView({ classId, date, onBack }: AttendanceClassVi
     <div className="space-y-6">
       <div className="flex items-center gap-2">
         <Button variant="ghost" size="icon" onClick={onBack}>
-          <ArrowLeft className="h-4 w-4" />
+          <ChevronLeft className="h-4 w-4" />
         </Button>
         {isLoadingClass ? (
           <Skeleton className="h-8 w-[200px]" />

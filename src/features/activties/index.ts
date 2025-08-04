@@ -25,6 +25,7 @@ export * from './models/reading';
 export * from './models/video';
 export * from './models/book';
 export * from './models/manual-grading';
+export * from './models/essay';
 // Export quiz model with explicit exports to avoid ambiguity
 export type {
   QuizActivity,
@@ -104,6 +105,9 @@ export { ThemeWrapper } from './components/ui/ThemeWrapper';
 // Reward Integration
 export { ActivityCompletionHandler } from './components/reward-integration/ActivityCompletionHandler';
 
+// Unified Components
+export { UnifiedActivityCreator } from './components/UnifiedActivityCreator';
+
 // Accessibility Testing
 export {
   runAccessibilityTests,
@@ -150,6 +154,7 @@ export { gradeNumericActivity } from './grading/numeric';
 export { gradeQuizActivity } from './grading/quiz';
 export { gradeBookActivity, isBookActivityGradable } from './grading/book';
 export { gradeManualGradingActivity } from './grading/manual-grading';
+export { gradeEssayActivity } from './grading/essay';
 
 // Analytics
 export {

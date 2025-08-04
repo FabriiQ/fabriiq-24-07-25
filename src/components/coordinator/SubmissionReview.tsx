@@ -12,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { LoadingSpinner } from '@/components/ui/loading';
-import { ArrowLeft, CheckCircle, FileText, User, Save } from 'lucide-react';
+import { ChevronLeft, CheckCircle, FileText, User, Save } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import { SubmissionStatus } from '@/server/api/constants';
 
@@ -77,7 +77,7 @@ export function SubmissionReview({ assessmentId, submissionId }: SubmissionRevie
                 className="mt-4"
                 onClick={() => router.push(`/admin/coordinator/assessments/${assessmentId}`)}
               >
-                <ArrowLeft className="mr-2 h-4 w-4" />
+                <ChevronLeft className="mr-2 h-4 w-4" />
                 Back to Assessment
               </Button>
             </div>
@@ -127,7 +127,7 @@ export function SubmissionReview({ assessmentId, submissionId }: SubmissionRevie
           variant="outline"
           onClick={() => router.push(`/admin/coordinator/assessments/${assessmentId}`)}
         >
-          <ArrowLeft className="mr-2 h-4 w-4" />
+          <ChevronLeft className="mr-2 h-4 w-4" />
           Back to Assessment
         </Button>
         {submission.status !== SubmissionStatus.GRADED && (

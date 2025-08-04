@@ -9,19 +9,32 @@ export const metadata: Metadata = {
 
 interface EngagementAnalyticsLayoutProps {
   children: React.ReactNode;
-  params: {
+  params: Promise<{
     classId: string;
-  };
+  }>;
 }
 
-export default function EngagementAnalyticsLayout({ children, params }: EngagementAnalyticsLayoutProps) {
+export default async function EngagementAnalyticsLayout({ 
+  children, 
+  params 
+}: EngagementAnalyticsLayoutProps) {
+  // Await the params Promise in the async layout component
+  const resolvedParams = await params;
+  const { classId } = resolvedParams;
+
   // Create tabs for the ClassNav component
   const tabs = [
     {
       id: 'analytics',
       name: 'Analytics',
-      href: `/teacher/classes/${params.classId}/analytics`,
+      href: `/teacher/classes/${classId}/analytics`,
       icon: () => <span>📊</span>,
+    },
+    {
+      id: 'engagement',
+      name: 'Engagement',
+      href: `/teacher/classes/${classId}/analytics/engagement`,
+      icon: () => <span>👥</span>,
     },
     // Add other tabs as needed
   ];

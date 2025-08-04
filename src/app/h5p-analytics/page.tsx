@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Spinner } from '@/components/ui';
-import { AlertCircle, ArrowLeft, BarChart3, Download, Users } from 'lucide-react';
+import { AlertCircle, ChevronLeft, BarChart3, Download, Users } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui';
 import { Progress } from '@/components/ui/progress';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -226,7 +226,7 @@ export default function H5PAnalyticsPage() {
             onClick={() => router.push('/h5p-manager')}
             className="mr-4"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ChevronLeft className="h-4 w-4" />
           </Button>
           <div>
             <h1 className="text-3xl font-bold">H5P Analytics</h1>

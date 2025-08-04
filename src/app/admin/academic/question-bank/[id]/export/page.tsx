@@ -4,7 +4,7 @@ import React from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { ExportForm } from '@/features/question-bank/components/bulk/ExportForm';
 import { Button } from '@/components/ui/button';
-import { ArrowLeftIcon } from '@radix-ui/react-icons';
+import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import { api } from '@/utils/api';
 
@@ -38,7 +38,7 @@ export default function ExportPage() {
           asChild
         >
           <Link href={`/admin/academic/question-bank/${questionBankId}`}>
-            <ArrowLeftIcon className="h-5 w-5" />
+            <ChevronLeft className="h-5 w-5" />
           </Link>
         </Button>
         <h1 className="text-3xl font-bold">Export Questions</h1>

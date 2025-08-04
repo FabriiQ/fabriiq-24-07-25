@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { EditStudentForm } from "./EditStudentForm";
 
-// Import a custom ArrowLeft icon component
-const ArrowLeft = (props: React.SVGProps<SVGSVGElement>) => (
+// Import a custom ChevronLeft icon component
+const ChevronLeft = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="24"
@@ -101,7 +101,7 @@ export default async function EditStudentPage(props: { params: Promise<{ id: str
         <div className="flex items-center space-x-2">
           <Button variant="ghost" size="icon" asChild>
             <Link href={`/admin/campus/students${foundViaProfile && studentProfile ? `/${studentProfile.id}` : ''}`}>
-              <ArrowLeft className="h-5 w-5" />
+              <ChevronLeft className="h-5 w-5" />
             </Link>
           </Button>
           <h1 className="text-3xl font-bold tracking-tight">Student Not Found</h1>
@@ -159,7 +159,7 @@ export default async function EditStudentPage(props: { params: Promise<{ id: str
         <div className="flex items-center space-x-2">
           <Button variant="ghost" size="icon" asChild>
             <Link href={`/admin/campus/students/${foundViaProfile && studentProfile ? studentProfile.id : studentId}`}>
-              <ArrowLeft className="h-5 w-5" />
+              <ChevronLeft className="h-5 w-5" />
             </Link>
           </Button>
           <h1 className="text-3xl font-bold tracking-tight">Edit Student Profile</h1>

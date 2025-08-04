@@ -2,34 +2,29 @@
 
 import React from 'react';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { api } from '@/trpc/react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertCircle, BarChart, Brain, LineChart, Users } from 'lucide-react';
+import { AlertCircle, BarChart, Lightbulb, LineChart, Users } from 'lucide-react';
 
-interface ClassAnalyticsPageProps {
-  params: {
-    classId: string;
-  };
-}
-
-export default function ClassAnalyticsPage({ params }: ClassAnalyticsPageProps) {
-  const { classId } = params;
+export default function ClassAnalyticsPage() {
+  const params = useParams();
+  const classId = params.classId as string;
   const { data: session, status } = useSession();
   const router = useRouter();
   
   // Get class details
-  const { data: classDetails, isLoading: isLoadingClass } = api.class.getClassById.useQuery(
+  const { data: classDetails, isLoading: isLoadingClass } = api.class.getById.useQuery(
     { id: classId },
     { enabled: !!classId }
   );
-  
+
   // Get teacher ID
-  const { data: teacher, isLoading: isLoadingTeacher } = api.teacher.getTeacherByUserId.useQuery(
+  const { data: teacher, isLoading: isLoadingTeacher } = api.teacher.getTeacherById.useQuery(
     { userId: session?.user?.id || '' },
     { enabled: !!session?.user?.id }
   );
@@ -53,7 +48,7 @@ export default function ClassAnalyticsPage({ params }: ClassAnalyticsPageProps) 
   if (status === 'unauthenticated') {
     return (
       <div className="container py-6">
-        <Alert variant="destructive">
+        <Alert className="border-destructive bg-destructive/10">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Authentication Error</AlertTitle>
           <AlertDescription>
@@ -63,12 +58,12 @@ export default function ClassAnalyticsPage({ params }: ClassAnalyticsPageProps) 
       </div>
     );
   }
-  
+
   // No teacher found
   if (!teacher) {
     return (
       <div className="container py-6">
-        <Alert variant="destructive">
+        <Alert className="border-destructive bg-destructive/10">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Access Error</AlertTitle>
           <AlertDescription>
@@ -78,12 +73,12 @@ export default function ClassAnalyticsPage({ params }: ClassAnalyticsPageProps) 
       </div>
     );
   }
-  
+
   // No class found
   if (!classDetails) {
     return (
       <div className="container py-6">
-        <Alert variant="destructive">
+        <Alert className="border-destructive bg-destructive/10">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Class Not Found</AlertTitle>
           <AlertDescription>
@@ -114,7 +109,7 @@ export default function ClassAnalyticsPage({ params }: ClassAnalyticsPageProps) 
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader>
             <CardTitle className="flex items-center">
-              <Brain className="mr-2 h-5 w-5" />
+              <Lightbulb className="mr-2 h-5 w-5" />
               Bloom's Taxonomy
             </CardTitle>
             <CardDescription>

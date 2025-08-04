@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/forms/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { SubmitButton } from '@/components/ui/loading-button';
+import { LoadingButton } from '@/components/ui/loading-button'; // ✅ Use LoadingButton instead of SubmitButton
 import { 
   Table, 
   TableBody, 
@@ -348,7 +348,8 @@ export function BulkGradingForm({
           >
             Cancel
           </Button>
-          <SubmitButton
+          {/* ✅ Fixed: Use LoadingButton instead of SubmitButton and can now use loadingText */}
+          <LoadingButton
             type="submit"
             loading={isSubmitting}
             loadingText="Grading Submissions..."
@@ -357,9 +358,9 @@ export function BulkGradingForm({
             {watchedSubmissions.filter(s => s.selected).length > 0
               ? `Grade ${watchedSubmissions.filter(s => s.selected).length} Submissions`
               : 'Grade Submissions'}
-          </SubmitButton>
+          </LoadingButton>
         </div>
       </form>
     </Form>
   );
-} 
+}

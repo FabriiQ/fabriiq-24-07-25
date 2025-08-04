@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/data-display/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/navigation/tabs';
 import { PageLayout } from '@/components/layout/page-layout';
-import { ArrowLeft, CalendarDays, Users, UserPlus, CheckCircle2, XCircle } from 'lucide-react';
+import { ChevronLeft, CalendarDays, Users, UserPlus, CheckCircle2, XCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/components/ui/feedback/toast';
 import { api } from '@/trpc/react';
@@ -198,7 +198,7 @@ export default function TeacherClassesPage() {
         <div className="flex space-x-2">
           <Button variant="outline" asChild>
             <Link href={`/admin/campus/teachers/${teacherId}`}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
+              <ChevronLeft className="h-4 w-4 mr-2" />
               Back to Profile
             </Link>
           </Button>

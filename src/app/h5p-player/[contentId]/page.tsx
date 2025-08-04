@@ -7,7 +7,7 @@ import dynamic from 'next/dynamic';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Spinner } from '@/components/ui';
-import { AlertCircle, ArrowLeft, Edit } from 'lucide-react';
+import { AlertCircle, ChevronLeft, Edit } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui';
 import ClientOnly from '@/components/client-only';
 
@@ -95,7 +95,7 @@ export default function H5PPlayerPage({ params }: { params: Promise<{ contentId:
             onClick={() => router.push('/h5p-manager')}
             className="mr-4"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ChevronLeft className="h-4 w-4" />
           </Button>
           <div>
             <h1 className="text-3xl font-bold">

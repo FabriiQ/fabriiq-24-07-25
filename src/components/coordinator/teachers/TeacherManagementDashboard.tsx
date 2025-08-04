@@ -14,7 +14,7 @@ import {
   Users,
   BarChart,
   Calendar,
-  ArrowRight as ArrowLeftRight,
+  ArrowRight as ChevronLeftRight,
   Loader2
 } from 'lucide-react';
 
@@ -241,7 +241,7 @@ export function TeacherManagementDashboard({
           </CardHeader>
           <CardContent>
             <div className="flex items-center">
-              <ArrowLeftRight className="h-5 w-5 text-muted-foreground mr-2" />
+              <ChevronLeftRight className="h-5 w-5 text-muted-foreground mr-2" />
               <div className="text-2xl font-bold">
                 {isLoading ? '...' : transfersQuery.data?.transfers?.length || 0}
               </div>

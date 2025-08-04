@@ -9,19 +9,32 @@ export const metadata: Metadata = {
 
 interface PerformanceAnalyticsLayoutProps {
   children: React.ReactNode;
-  params: {
+  params: Promise<{
     classId: string;
-  };
+  }>;
 }
 
-export default function PerformanceAnalyticsLayout({ children, params }: PerformanceAnalyticsLayoutProps) {
+export default async function PerformanceAnalyticsLayout({ 
+  children, 
+  params 
+}: PerformanceAnalyticsLayoutProps) {
+  // Await the params Promise in the async layout component
+  const resolvedParams = await params;
+  const { classId } = resolvedParams;
+
   // Create tabs for the ClassNav component
   const tabs = [
     {
       id: 'analytics',
       name: 'Analytics',
-      href: `/teacher/classes/${params.classId}/analytics`,
+      href: `/teacher/classes/${classId}/analytics`,
       icon: () => <span>📊</span>,
+    },
+    {
+      id: 'performance',
+      name: 'Performance',
+      href: `/teacher/classes/${classId}/analytics/performance`,
+      icon: () => <span>📈</span>,
     },
     // Add other tabs as needed
   ];

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/data-display/card';
 import { Separator } from '@/components/ui/separator';
 import { api } from '@/trpc/react';
-import { ArrowLeft } from '@/components/ui/icons/lucide-icons';
+import { ChevronLeft } from '@/components/ui/icons/lucide-icons';
 import { DiscountTypeForm, DiscountTypeFormValues } from '@/components/shared/entities/fee';
 import { useToast } from '@/components/ui/use-toast';
 import { LoadingSpinner } from '@/components/ui/loading';
@@ -83,7 +83,7 @@ export default function EditDiscountTypePage() {
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex items-center space-x-4">
         <Button variant="outline" size="icon" onClick={() => router.back()}>
-          <ArrowLeft className="h-4 w-4" />
+          <ChevronLeft className="h-4 w-4" />
         </Button>
         <div>
           <h1 className="text-3xl font-bold">Edit Discount Type</h1>

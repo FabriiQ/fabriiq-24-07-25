@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, Clock } from 'lucide-react';
-import { ArrowLeft } from '@/components/ui/icons/custom-icons';
+import { ChevronLeft } from '@/components/ui/icons/custom-icons';
 import { api } from '@/trpc/react';
 import { SubmissionStatus } from '../../types/enums';
 import { GradingResultsView } from './GradingResultsView';
@@ -142,7 +142,7 @@ export function SubmissionConfirmationPage({
         )}
 
         <Button variant="outline" onClick={handleReturnToDashboard}>
-          <ArrowLeft className="h-4 w-4 mr-2" />
+          <ChevronLeft className="h-4 w-4 mr-2" />
           Return to Dashboard
         </Button>
       </CardFooter>

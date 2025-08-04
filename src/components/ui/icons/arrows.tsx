@@ -31,7 +31,7 @@ export const ArrowRight: React.FC<ArrowProps> = ({
   );
 };
 
-export const ArrowLeft: React.FC<ArrowProps> = ({
+export const ChevronLeft: React.FC<ArrowProps> = ({
   size = 24,
   strokeWidth = 2,
   ...props
@@ -55,4 +55,4 @@ export const ArrowLeft: React.FC<ArrowProps> = ({
   );
 };
 
-export default { ArrowRight, ArrowLeft };
+export default { ArrowRight, ChevronLeft };

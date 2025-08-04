@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { prisma } from "@/server/db";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { EnrollmentForm } from "./enrollment-form";
 
@@ -126,7 +126,7 @@ export default async function CreateEnrollmentPage() {
         <div className="flex items-center space-x-2">
           <Button variant="ghost" size="icon" asChild>
             <Link href="/admin/campus/enrollment">
-              <ArrowLeft className="h-5 w-5" />
+              <ChevronLeft className="h-5 w-5" />
             </Link>
           </Button>
           <h1 className="text-3xl font-bold tracking-tight">New Enrollment</h1>

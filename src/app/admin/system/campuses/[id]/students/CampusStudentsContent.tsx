@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardContent } from "@/components/ui/data-display/card";
-import { ArrowLeftIcon, PlusIcon } from "lucide-react";
+import { ChevronLeftIcon, PlusIcon } from "lucide-react";
 import { StudentFilters } from "@/components/campus/StudentFilters";
 import { Suspense } from "react";
 import { LoadingSpinner } from "@/components/ui/loading";
@@ -36,7 +36,7 @@ export function CampusStudentsContent({
         <div className="flex items-center gap-4">
           <Button variant="ghost" asChild>
             <Link href={`/admin/system/campuses/${campus.id}`}>
-              <ArrowLeftIcon className="mr-2 h-4 w-4" />
+              <ChevronLeftIcon className="mr-2 h-4 w-4" />
               Back to Campus
             </Link>
           </Button>

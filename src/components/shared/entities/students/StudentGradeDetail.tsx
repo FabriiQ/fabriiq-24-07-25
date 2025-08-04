@@ -16,7 +16,7 @@ import {
   Download,
   Printer
 } from 'lucide-react';
-import { ArrowLeft, Share2 } from './icons';
+import { ChevronLeft, Share2 } from './icons';
 import { Grade } from './StudentGradesList';
 
 export interface Question {
@@ -132,7 +132,7 @@ export const StudentGradeDetail: React.FC<StudentGradeDetailProps> = ({
       <div className="flex items-center gap-2 mb-6">
         {onBack && (
           <Button variant="outline" size="icon" onClick={onBack}>
-            <ArrowLeft className="h-4 w-4" />
+            <ChevronLeft className="h-4 w-4" />
           </Button>
         )}
         <div>

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { SubmissionStatus } from '@prisma/client';
+import { SubmissionStatus } from '@/server/api/constants';
 import { api } from '@/trpc/react';
 import { Button } from '@/components/ui/button';
 import {
@@ -28,7 +28,6 @@ import {
 } from '@/components/ui/select';
 import { toast } from '@/components/ui/use-toast';
 import { Loader2 } from 'lucide-react';
-
 // Form schema
 const formSchema = z.object({
   score: z.coerce.number()
@@ -113,7 +112,8 @@ export function GradingForm({
       submissionId,
       score: values.score,
       feedback: values.feedback,
-      status: values.status,
+      status: values.status as SubmissionStatus,
+
     });
   }
   

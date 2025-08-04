@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { PageLayout } from '@/components/layout/page-layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/data-display/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/forms/select';
-import { ArrowLeft, Trash, UserPlus, User } from 'lucide-react';
+import { ChevronLeft, Trash, UserPlus, User } from 'lucide-react';
 import { BackToClassButton } from './components/ClientNavigation';
 import { useToast } from '@/components/ui/feedback/toast';
 import { api } from '@/trpc/react';

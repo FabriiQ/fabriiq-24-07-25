@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/atoms/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/forms/select";
-import { ArrowLeft, Download, FileDown } from "lucide-react";
+import { ChevronLeft, Download } from "lucide-react";
 import Link from "next/link";
 import { Checkbox } from "@/components/ui/forms/checkbox";
 
@@ -96,7 +96,7 @@ export default async function ExportAttendancePage() {
         <div className="flex items-center space-x-2">
           <Button variant="ghost" size="icon" asChild>
             <Link href="/admin/campus/attendance">
-              <ArrowLeft className="h-5 w-5" />
+              <ChevronLeft className="h-5 w-5" />
             </Link>
           </Button>
           <h1 className="text-3xl font-bold tracking-tight">Export Attendance</h1>
@@ -223,7 +223,7 @@ export default async function ExportAttendancePage() {
             <Link href="/admin/campus/attendance">Cancel</Link>
           </Button>
           <Button type="submit">
-            <FileDown className="mr-2 h-4 w-4" /> Export Data
+            <Download className="mr-2 h-4 w-4" /> Export Data
           </Button>
         </CardFooter>
       </Card>

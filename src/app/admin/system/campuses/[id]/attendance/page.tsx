@@ -14,7 +14,6 @@ import {
   Users,
   BookOpen,
   Home,
-  FileDown,
   FileText
 } from 'lucide-react';
 import { api } from "@/trpc/react";
@@ -99,7 +98,7 @@ export default function CampusAttendancePage() {
   }, [studentsWithIssues]);
 
   // Filter classes based on search
-  const filteredClasses = classes?.data || [];
+ classes?.data || []
 
   // Filter students with issues based on search
   const filteredStudentsWithIssues = studentsWithUniqueKeys.filter(student =>
@@ -507,13 +506,13 @@ export default function CampusAttendancePage() {
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="outline" size="sm">
-                        <FileDown className="h-4 w-4 mr-2" />
+                        <Download className="h-4 w-4 mr-2" />
                         Export
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem onClick={() => exportStudentsData('CSV')}>
-                        <FileDown className="h-4 w-4 mr-2" />
+                        <Download className="h-4 w-4 mr-2" />
                         Export as CSV
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => exportStudentsData('PDF')}>

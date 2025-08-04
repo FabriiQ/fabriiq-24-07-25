@@ -3,6 +3,11 @@ import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import { LeaderboardEntityType, TimeGranularity, StandardLeaderboardEntry } from "@/features/leaderboard/types/standard-leaderboard";
 import { UnifiedLeaderboardService } from "@/features/leaderboard/services/unified-leaderboard.service";
+import { UnifiedPerformanceQueryService } from "../services/unified-performance-queries";
+import {
+  PerformanceQueryParams
+} from "../models/unified-performance-models";
+import { BloomsTaxonomyLevel } from '@/features/bloom/types/bloom-taxonomy';
 
 // Define analytics event schema
 const trackEventSchema = z.object({
@@ -1404,6 +1409,221 @@ export const analyticsRouter = createTRPCRouter({
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Failed to generate intervention suggestions",
+          cause: error,
+        });
+      }
+    }),
+
+  // ============================================================================
+  // UNIFIED PERFORMANCE ANALYTICS ENDPOINTS
+  // ============================================================================
+
+  /**
+   * Get unified performance records with advanced filtering and pagination
+   * Uses efficient database queries with proper caching
+   */
+  getPerformanceRecords: protectedProcedure
+    .input(z.object({
+      studentIds: z.array(z.string().cuid()).optional(),
+      activityIds: z.array(z.string().cuid()).optional(),
+      classIds: z.array(z.string().cuid()).optional(),
+      subjectIds: z.array(z.string().cuid()).optional(),
+      topicIds: z.array(z.string().cuid()).optional(),
+      activityTypes: z.array(z.string()).optional(),
+      gradingTypes: z.array(z.enum(['AUTO', 'MANUAL', 'AI', 'HYBRID'])).optional(),
+      bloomsLevels: z.array(z.nativeEnum(BloomsTaxonomyLevel)).optional(),
+      dateRange: z.object({
+        from: z.date(),
+        to: z.date(),
+      }).optional(),
+      scoreRange: z.object({
+        min: z.number().min(0).max(100),
+        max: z.number().min(0).max(100),
+      }).optional(),
+      flags: z.object({
+        isExceptional: z.boolean().optional(),
+        isStruggling: z.boolean().optional(),
+        isImproving: z.boolean().optional(),
+        needsAttention: z.boolean().optional(),
+      }).optional(),
+      pagination: z.object({
+        page: z.number().min(1).default(1),
+        limit: z.number().min(1).max(100).default(50),
+      }).optional(),
+      sort: z.object({
+        field: z.enum(['id', 'studentId', 'activityId', 'classId', 'subjectId', 'score', 'percentage', 'gradedAt', 'createdAt']),
+        direction: z.enum(['asc', 'desc']).default('desc'),
+      }).optional(),
+      include: z.object({
+        student: z.boolean().optional(),
+        activity: z.boolean().optional(),
+        class: z.boolean().optional(),
+        subject: z.boolean().optional(),
+        topic: z.boolean().optional(),
+      }).optional(),
+    }))
+    .query(async ({ ctx, input }) => {
+      try {
+        const queryService = new UnifiedPerformanceQueryService(ctx.prisma);
+
+        // Convert input to PerformanceQueryParams with authorization
+        const params: PerformanceQueryParams = {
+          ...input,
+          // Add user context for authorization
+          ...(ctx.session.user.userType === 'STUDENT' && {
+            studentIds: [ctx.session.user.id],
+          }),
+        };
+
+        const result = await queryService.getPerformanceRecords(params);
+
+        return result;
+      } catch (error) {
+        console.error('Error in getPerformanceRecords:', error);
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to fetch performance records',
+          cause: error,
+        });
+      }
+    }),
+
+  /**
+   * Get student performance summary across subjects
+   * Optimized for dashboard displays and student profiles
+   */
+  getStudentSummary: protectedProcedure
+    .input(z.object({
+      studentId: z.string().cuid(),
+      subjectId: z.string().cuid().optional(),
+    }))
+    .query(async ({ ctx, input }) => {
+      try {
+        // Authorization check
+        if (ctx.session.user.userType === 'STUDENT' && ctx.session.user.id !== input.studentId) {
+          throw new TRPCError({
+            code: 'FORBIDDEN',
+            message: 'Students can only access their own performance data',
+          });
+        }
+
+        const queryService = new UnifiedPerformanceQueryService(ctx.prisma);
+        const summaries = await queryService.getStudentPerformanceSummary(
+          input.studentId,
+          input.subjectId
+        );
+
+        return summaries;
+      } catch (error) {
+        console.error('Error in getStudentSummary:', error);
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to fetch student performance summary',
+          cause: error,
+        });
+      }
+    }),
+
+  /**
+   * Get class activity performance with detailed analytics
+   * Optimized for teacher dashboards and class analytics
+   */
+  getClassPerformance: protectedProcedure
+    .input(z.object({
+      classId: z.string().cuid(),
+      activityId: z.string().cuid().optional(),
+    }))
+    .query(async ({ ctx, input }) => {
+      try {
+        // Authorization check - only teachers and admins can access class performance
+        if (!['TEACHER', 'ADMIN', 'COORDINATOR', 'CAMPUS_TEACHER', 'CAMPUS_ADMIN'].includes(ctx.session.user.userType)) {
+          throw new TRPCError({
+            code: 'FORBIDDEN',
+            message: 'Insufficient permissions to access class performance data',
+          });
+        }
+
+        const queryService = new UnifiedPerformanceQueryService(ctx.prisma);
+        const performances = await queryService.getClassActivityPerformance(
+          input.classId,
+          input.activityId
+        );
+
+        return performances;
+      } catch (error) {
+        console.error('Error in getClassPerformance:', error);
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to fetch class performance data',
+          cause: error,
+        });
+      }
+    }),
+
+  /**
+   * Get real-time analytics for dashboards
+   * Optimized for frequent updates and real-time displays
+   */
+  getRealTime: protectedProcedure
+    .input(z.object({
+      entityType: z.enum(['student', 'class', 'subject']),
+      entityId: z.string().cuid(),
+      timeWindow: z.number().min(1).max(365).default(7), // days
+    }))
+    .query(async ({ ctx, input }) => {
+      try {
+        // Authorization check based on entity type
+        if (input.entityType === 'student' &&
+            ctx.session.user.userType === 'STUDENT' &&
+            ctx.session.user.id !== input.entityId) {
+          throw new TRPCError({
+            code: 'FORBIDDEN',
+            message: 'Students can only access their own analytics',
+          });
+        }
+
+        const queryService = new UnifiedPerformanceQueryService(ctx.prisma);
+        const analytics = await queryService.getRealTimeAnalytics(
+          input.entityType,
+          input.entityId,
+          input.timeWindow
+        );
+
+        return analytics;
+      } catch (error) {
+        console.error('Error in getRealTime:', error);
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to fetch real-time analytics',
+          cause: error,
+        });
+      }
+    }),
+
+  /**
+   * Mark performance alert as read
+   * Updates alert status and triggers dashboard refresh
+   * Note: This endpoint will be fully functional once the PerformanceAlert model is migrated
+   */
+  markAlertAsRead: protectedProcedure
+    .input(z.object({
+      alertId: z.string().cuid(),
+    }))
+    .mutation(async ({ input }) => {
+      try {
+        // TODO: Implement once PerformanceAlert model is migrated to database
+        // For now, return success to maintain API compatibility
+        console.log('markAlertAsRead called with alertId:', input.alertId);
+
+        return {
+          success: true,
+          message: 'Alert marking functionality will be available after database migration'
+        };
+      } catch (error) {
+        console.error('Error in markAlertAsRead:', error);
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to mark alert as read',
           cause: error,
         });
       }

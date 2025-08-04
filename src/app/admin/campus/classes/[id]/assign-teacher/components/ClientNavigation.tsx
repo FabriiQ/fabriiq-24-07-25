@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, UserPlus } from 'lucide-react';
+import { ChevronLeft, UserPlus } from 'lucide-react';
 import { NavigationButton } from '@/components/ui/navigation/navigation-link';
 import { InstitutionNavigationButton } from '@/components/ui/navigation/institution-navigation-link';
 
@@ -67,7 +67,7 @@ export function BackToClassButton({ classId }: { classId: string }) {
       href={`/admin/campus/classes/${classId}`}
       variant="outline"
     >
-      <ArrowLeft className="h-4 w-4 mr-2" />
+      <ChevronLeft className="h-4 w-4 mr-2" />
       Back to Class
     </InstitutionNavigationButton>
   );

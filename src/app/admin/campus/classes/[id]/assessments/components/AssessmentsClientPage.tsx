@@ -24,7 +24,7 @@ export function AssessmentsClientPage({
   error
 }: AssessmentsClientPageProps) {
   const searchParams = useSearchParams();
-  const [lessonPlanId, setLessonPlanId] = useState<string | null>(searchParams.get('lessonPlanId'));
+  const [lessonPlanId, setLessonPlanId] = useState<string | null>(searchParams?.get('lessonPlanId') || null);
 
   // Fetch assessments with the lesson plan filter
   const { data: assessmentsData, isLoading } = api.assessment.listByClass.useQuery({

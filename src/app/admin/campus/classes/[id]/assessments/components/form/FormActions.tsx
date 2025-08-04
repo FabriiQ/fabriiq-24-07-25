@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { UseFormReturn } from "react-hook-form";
 import { FormValues } from "./types";
-import { ArrowLeft, ArrowRight, Save } from "lucide-react";
+import { ChevronLeft, ArrowRight, Save } from "lucide-react";
 
 interface FormActionsProps {
   form: UseFormReturn<FormValues>;
@@ -52,7 +52,7 @@ export function FormActions(props: FormActionsProps) {
               variant="outline"
               onClick={onPrevious}
             >
-              <ArrowLeft className="mr-2 h-4 w-4" />
+              <ChevronLeft className="mr-2 h-4 w-4" />
               Previous
             </Button>
           )}

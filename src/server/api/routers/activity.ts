@@ -23,6 +23,7 @@ import { ActivityRewardIntegration } from "@/features/rewards/activity-integrati
 import { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { BloomsTaxonomyLevel } from "@/features/bloom/types";
+import { EventDrivenAnalyticsService } from "../services/event-driven-analytics";
 
 // Activity content schema
 const activityContentSchema = z.object({
@@ -235,6 +236,8 @@ export const activityRouter = createTRPCRouter({
             score: gradingResult.score,
             feedback: gradingResult.feedback,
             status: SubmissionStatus.GRADED,
+            gradedAt: new Date(),
+            gradedById: ctx.session.user.id,
             attachments: {
               ...(typeof submission.attachments === 'object' && submission.attachments !== null
                 ? submission.attachments as object
@@ -247,6 +250,38 @@ export const activityRouter = createTRPCRouter({
             },
           },
         });
+
+        // ✅ NEW: Integrate with event-driven analytics service
+        try {
+          const eventAnalyticsService = new EventDrivenAnalyticsService(prisma);
+          await eventAnalyticsService.processGradeEvent({
+            submissionId: updatedSubmission.id,
+            studentId,
+            activityId,
+            classId: activity.classId,
+            subjectId: activity.subjectId,
+            score: gradingResult.score,
+            maxScore: activity.maxScore || 100,
+            percentage: ((gradingResult.score / (activity.maxScore || 100)) * 100),
+            gradingType: 'AUTO',
+            gradedBy: ctx.session.user.id,
+            gradedAt: new Date(),
+            bloomsLevelScores: gradingResult.bloomsLevelScores,
+          });
+
+          logger.info('Event-driven analytics processed for auto-graded activity', {
+            submissionId: updatedSubmission.id,
+            activityId,
+            studentId,
+            score: gradingResult.score,
+          });
+        } catch (analyticsError) {
+          // Don't fail the grading if analytics fails
+          logger.error('Failed to process event-driven analytics for auto-graded activity', {
+            error: analyticsError,
+            submissionId: updatedSubmission.id,
+          });
+        }
 
         return updatedSubmission;
       } catch (error) {

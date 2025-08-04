@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/data-d
 import { Button } from '@/components/ui/atoms/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 
 export default function StudentGradesPage() {
   const params = useParams<{ classId: string; studentId: string }>();
@@ -57,7 +57,7 @@ export default function StudentGradesPage() {
       <div className="mb-4">
         <Button variant="outline" size="sm" asChild>
           <Link href={`/teacher/classes/${classId}/grades`}>
-            <ArrowLeft className="h-4 w-4 mr-1" />
+            <ChevronLeft className="h-4 w-4 mr-1" />
             Back to Class Grades
           </Link>
         </Button>

@@ -6,7 +6,7 @@ import { Card } from "~/components/ui/atoms/card";
 import { Button } from "~/components/ui/atoms/button";
 import { PageHeader } from "~/components/ui/atoms/page-header";
 import { Breadcrumbs } from "~/components/ui/navigation/breadcrumbs";
-import { ArrowLeft, Save } from "lucide-react";
+import { ChevronLeft, Save } from "lucide-react";
 import { useToast } from "@/components/ui/feedback/toast";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -85,7 +85,7 @@ export default function AddObjectivePage() {
           variant="outline"
           onClick={() => router.push(`/admin/system/subjects/${subjectId}`)}
         >
-          <ArrowLeft className="h-4 w-4 mr-2" />
+          <ChevronLeft className="h-4 w-4 mr-2" />
           Back to Subject
         </Button>
       </div>

@@ -7,7 +7,7 @@ import { PageHeader } from '@/components/ui/page-header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/data-display/card';
 import { Button } from '@/components/ui/atoms/button';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 
 export default function EditGradingSettingsPage() {
@@ -55,7 +55,7 @@ export default function EditGradingSettingsPage() {
       <div className="mb-4">
         <Button variant="outline" size="sm" asChild>
           <Link href={`/teacher/classes/${classId}/grades`}>
-            <ArrowLeft className="h-4 w-4 mr-1" />
+            <ChevronLeft className="h-4 w-4 mr-1" />
             Back to Class Grades
           </Link>
         </Button>

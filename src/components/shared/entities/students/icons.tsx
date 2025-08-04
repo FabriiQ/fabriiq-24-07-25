@@ -171,7 +171,7 @@ export const MapPin: React.FC<IconProps> = ({
   );
 };
 
-export const ArrowLeft: React.FC<IconProps> = ({
+export const ChevronLeft: React.FC<IconProps> = ({
   size = 24,
   strokeWidth = 2,
   ...props

@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { PageLayout } from '@/components/layout/page-layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/data-display/card';
-import { ArrowLeft, Plus, Calendar, Clock, MapPin } from 'lucide-react';
+import { ChevronLeft, Plus, Calendar, Clock, MapPin } from 'lucide-react';
 import { api } from '@/trpc/react';
 import { DataTable } from '@/components/ui/data-display/data-table';
 import { format } from 'date-fns';
@@ -166,7 +166,7 @@ export default function ClassSchedulePage() {
         <div className="flex gap-2">
           <Button asChild variant="outline">
             <Link href={`/admin/campus/classes/${classId}`}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
+              <ChevronLeft className="h-4 w-4 mr-2" />
               Back to Class
             </Link>
           </Button>

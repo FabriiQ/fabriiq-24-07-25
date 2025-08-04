@@ -3,7 +3,7 @@
 // export { ActivityTypeSelectorGrid } from './ActivityTypeSelectorGrid';
 // Placeholder implementation
 export const ActivityTypeSelectorGrid = () => null;
-export { UnifiedActivityCreator } from './UnifiedActivityCreator';
+export { UnifiedActivityCreator } from '@/features/activties/components/UnifiedActivityCreator';
 export { ActivityViewer } from './ActivityViewer';
 export { ActivityEditor } from './ActivityEditor';
 export { ActivityAnalyticsWrapper } from './ActivityAnalyticsWrapper';

@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { PageLayout } from '@/components/layout/page-layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/data-display/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, BarChart, Download, FileText, PieChart, Search, Users } from 'lucide-react';
+import { ChevronLeft, BarChart, Download, FileText, PieChart, Search, Users } from 'lucide-react';
 import { useToast } from '@/components/ui/feedback/toast';
 import { Progress } from '@/components/ui/progress';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/forms/select';
@@ -207,7 +207,7 @@ export default function ClassReportsPage() {
       actions={
         <Button asChild variant="outline">
           <Link href={`/admin/campus/classes/${classId}`}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ChevronLeft className="h-4 w-4 mr-2" />
             Back to Class
           </Link>
         </Button>

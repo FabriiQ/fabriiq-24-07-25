@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/data-display/card';
 import { Separator } from '@/components/ui/separator';
 // import { api } from '@/trpc/react'; // Will be used when API is implemented
-import { ArrowLeft } from '@/components/ui/icons/custom-icons';
+import { ChevronLeft } from '@/components/ui/icons/custom-icons';
 import { FeeStructureForm, FeeStructureFormValues, FeeComponent } from '@/components/shared/entities/fee';
 import { useToast } from '@/components/ui/use-toast';
 import { LoadingSpinner } from '@/components/ui/loading';
@@ -147,7 +147,7 @@ export default async function EditFeeStructurePage({ params }: { params: Promise
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex items-center space-x-4">
         <Button variant="outline" size="icon" onClick={() => router.back()}>
-          <ArrowLeft className="h-4 w-4" />
+          <ChevronLeft className="h-4 w-4" />
         </Button>
         <div>
           <h1 className="text-3xl font-bold">Edit Fee Structure</h1>

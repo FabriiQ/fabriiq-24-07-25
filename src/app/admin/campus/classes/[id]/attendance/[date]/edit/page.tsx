@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { format, parse } from 'date-fns';
-import { ArrowLeft, Calendar, CheckCircle, Save, XCircle, Loader2 } from 'lucide-react';
+import { ChevronLeft, Calendar, CheckCircle, Save, XCircle, Loader2 } from 'lucide-react';
 import { api } from "@/trpc/react";
 import { useAttendance } from "@/hooks/useAttendance";
 import { useToast } from '@/components/ui/feedback/toast';
@@ -247,7 +247,7 @@ export default function EditAttendancePage() {
         <div className="flex gap-2">
           <Button asChild variant="outline">
             <Link href={`/admin/campus/classes/${classId}/attendance`}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
+              <ChevronLeft className="h-4 w-4 mr-2" />
               Back
             </Link>
           </Button>

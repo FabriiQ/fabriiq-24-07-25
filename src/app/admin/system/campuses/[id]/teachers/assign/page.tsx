@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { PageHeader } from '@/components/ui/page-header';
-import { ArrowLeftIcon } from 'lucide-react';
+import { ChevronLeftIcon } from 'lucide-react';
 import { AssignTeacherDialog } from '@/components/campus/AssignTeacherDialog';
 import { api } from '@/trpc/react';
 
@@ -38,7 +38,7 @@ export default function AssignTeacherPage() {
       <div className="container mx-auto py-6 space-y-6">
         <div className="flex items-center space-x-4">
           <Button variant="outline" size="icon" onClick={() => router.back()}>
-            <ArrowLeftIcon className="h-4 w-4" />
+            <ChevronLeftIcon className="h-4 w-4" />
           </Button>
           <PageHeader
             title="Assign Teacher"
@@ -58,7 +58,7 @@ export default function AssignTeacherPage() {
       <div className="container mx-auto py-6 space-y-6">
         <div className="flex items-center space-x-4">
           <Button variant="outline" size="icon" onClick={() => router.back()}>
-            <ArrowLeftIcon className="h-4 w-4" />
+            <ChevronLeftIcon className="h-4 w-4" />
           </Button>
           <PageHeader
             title="Error"
@@ -78,7 +78,7 @@ export default function AssignTeacherPage() {
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex items-center space-x-4">
         <Button variant="outline" size="icon" onClick={() => router.back()}>
-          <ArrowLeftIcon className="h-4 w-4" />
+          <ChevronLeftIcon className="h-4 w-4" />
         </Button>
         <PageHeader
           title={`Assign Teacher - ${campus.name}`}
